@@ -1,4 +1,6 @@
-	//John
+//add import file paths for key names;
+
+
 import java.io.*;
 import java.security.*;
 import java.security.spec.*;
@@ -6,7 +8,7 @@ import java.security.spec.*;
 import javax.crypto.*;
 import javax.crypto.spec.*;
 
-/*Class Packet 
+/*Class NetworkCrypto 
  * Class in charge of encryption and decryption for packets which are passed to 
  * and from the user and the server.
  * Also contains functions fro verification and signing the same packets for 
@@ -14,7 +16,8 @@ import javax.crypto.spec.*;
  * Implemented with Asymetric Crypto RSA 3072
  *  
  *  */
-public class Packet {
+
+public class NetworkCrypto {
 	private String[] userkeynames = {"serverEnc.txt","serverVer.txt","Dec.txt","Sig.txt"};
 	private String[] serverkeynames = {"serverDec.txt","serverSig.txt","Enc.txt","Ver.txt"};
 	//server RSA keys
@@ -38,6 +41,7 @@ public class Packet {
 		//fill keyring with for loop reading in all keys needed server/user
 		return false;
 	}
+	//enrollment is for a new user, or generating new keys for a user. 
 	public KeyPair enrollRSA(){
 		return null;
 	}
@@ -388,4 +392,5 @@ public class Packet {
 		
 	}
 	
+
 }
