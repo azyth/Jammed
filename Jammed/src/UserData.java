@@ -98,7 +98,7 @@ public class UserData {
 	}
 	
 	//Encrypts the data for sending back to server. 
-	public String encCipherText(String text) throws NoSuchAlgorithmException, NoSuchPaddingException, 
+	public String encData(String text) throws NoSuchAlgorithmException, NoSuchPaddingException, 
 			InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException{
 		Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
 		IvParameterSpec ips = new IvParameterSpec(iv);
