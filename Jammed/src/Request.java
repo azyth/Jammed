@@ -1,4 +1,4 @@
-	//John
+	//John and megan
 
 /*
  * Request
@@ -8,6 +8,21 @@
  */
 public class Request {
 //TODO everything
+	
+	/*
+	 * variables 
+	 * event
+	 * success
+	 * username
+	 * password
+	 * userdata
+	 * 
+	 * 
+	 * toString()
+	 * get/set()
+	 */
+	
+	
 	//Log in
 	public String loginReq(String username, String password){
 		return null;
@@ -15,7 +30,7 @@ public class Request {
 	public String loginReqAccepted(){
 		return null;
 	}
-	public String loginReqDenied(){
+	public String loginReqDenied(String errorMessage){
 		return null;
 	}
 	
