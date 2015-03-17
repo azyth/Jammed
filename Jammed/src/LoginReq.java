@@ -11,7 +11,6 @@ public class LoginReq extends Request {
 	private String username;
 	private String password;
 	
-<<<<<<< HEAD
 	//Response constructor - err should be "none" if success is true
 	public LoginReq(String username, boolean success, ErrorMessage err){
 		this.username=username;
@@ -22,11 +21,7 @@ public class LoginReq extends Request {
 	public LoginReq(String username, String password){
 		this.username=username;
 		this.password=password;
-=======
-	public LoginReq(LoginInfo l){
-		this.username=l.username;
-		this.password=l.password;
->>>>>>> b84a1f9730646c6548996d135e863c2a5f8a2178
+
 	}
 	
 	
