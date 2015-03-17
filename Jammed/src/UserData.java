@@ -42,6 +42,9 @@ public class UserData {
 	public boolean init(){
 		return false;
 	}
+
+  public String decData(String thing) { return ""; }
+  public String encData(String thing) { return ""; }
 	
 	
 	

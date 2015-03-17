@@ -8,6 +8,16 @@
  */
 public class Request {
 //TODO everything
+
+  // dummied in begin
+  public Request(LoginInfo l) {}
+  public Request() {}
+  public static Request fromJSON(String thing) { return new Request(); }
+  public Request(String thing) {}
+  public boolean getVerified() { return false; }
+  public String getData() { return ""; }
+  // dummied in end
+
 	//Log in
 	public String loginReq(String username, String password){
 		return null;
