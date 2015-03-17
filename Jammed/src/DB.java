@@ -4,10 +4,9 @@
 
    NOTES:
     1) As of 3/16/15, interface is not final.
-    2) Constants are used to read specific types of files.
+    2) Constants are used to differentiate files. May be changed to enums.
  */
-import static java.nio.file.StandardOpenOption.*;
-import java.nio.file.*;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -123,6 +122,7 @@ public class DB {
             try {
                 bw.write(dataToLog);
                 bw.newLine();
+                bw.flush();
             } finally {
                 bw.close();
             }
@@ -135,7 +135,7 @@ public class DB {
     }
 
     /** Method Description here */
-    public static byte[] readFile(String uid, double fileType) {
+    public static byte[] readFile(String uid, double fileType) { // TODO Return output as a file
         // To do
         String fname;
         if(fileType == Constants.USER_DATA) {
@@ -165,7 +165,7 @@ public class DB {
     }
 
     /** Method Description here */
-    public static boolean writeFile(String uid, double fileType, File fileData) {
+    public static boolean writeFile(String uid, double fileType, File fileData) { // TODO: Determine fileData input type
         // To do
         String fname;
         if(fileType == Constants.USER_DATA) {
@@ -179,6 +179,7 @@ public class DB {
             return false;
         }
 
+        // TODO: Handle writing to the log differently
         Path fileToRead = Paths.get(usersPath + uid + "/" + uid + fname);
         if(Files.exists(fileToRead)) {
             return false;
