@@ -12,8 +12,13 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class DB {
+
+    private static final String serverPath = "root/server/";
+    private static final String usersPath = "root/users/";
 
     /* Testing */
     public static void main(String[] args) {
@@ -26,14 +31,14 @@ public class DB {
         boolean didWriteLog = writeLog(dataToLog);
         System.out.println(didWriteLog);
 
-        byte[] fileData = readFile("test001", Constants.USER_DATA);
-        System.out.println(fileData);
+        /*byte[] fileData = readFile("test001", Constants.USER_DATA);
+        System.out.println(fileData); */
     }
 
     /** Method Description here */
     public static boolean initialize() {
-        Path server = Paths.get("root/server/");
-        Path user = Paths.get("root/users/");
+        Path server = Paths.get(serverPath);
+        Path user = Paths.get(usersPath);
 
         if(Files.exists(server) && Files.exists(user)) {
             System.out.println("DB has already been initialized");
@@ -54,13 +59,30 @@ public class DB {
             return false;
         }
 
-        System.out.println("Successfully made dirs");
+        // create server log file
+        try {
+            Path lgPath = Paths.get(serverPath + "log.txt");
+            Files.createFile(lgPath);
+            FileOutputStream initLog = new FileOutputStream(serverPath + "log.txt");
+            try {
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+                String initialCreation = "Database initialized on " + timeStamp;
+                byte[] iCBytes = initialCreation.getBytes();
+                initLog.write(iCBytes);
+            } finally {
+                initLog.close();
+            }
+        } catch(Exception e) {
+            System.out.println("Could not create server log file!");
+        }
+
+        System.out.println("Successfully set up DB!");
         return true;
     }
 
     /** Method Description here */
     public static boolean newUser(String uid) {
-        Path newUser = Paths.get("root/users/" + uid + "/");
+        Path newUser = Paths.get(usersPath + uid + "/");
 
         if(Files.exists(newUser)) {
             System.out.println("User already exists");
@@ -79,13 +101,14 @@ public class DB {
 
     /** Method Description here */
     public static boolean searchUser(String uid) {
-        Path user = Paths.get("root/users/" + uid + "/");
+        Path user = Paths.get(usersPath + uid + "/");
         return Files.exists(user);
     }
 
     /** Method Description here */
     public static boolean writeLog(String dataToLog) {
-        Path lgname = Paths.get("root/server/log.txt");
+        Path lgname = Paths.get(serverPath + "log.txt");
+        File log = new File(serverPath + "log.txt");
         if(!Files.exists(lgname)) {
             try {
                 Files.createFile(lgname);
@@ -95,13 +118,17 @@ public class DB {
             }
         }
 
-        // Convert the string to a byte array.
-        byte data[] = dataToLog.getBytes();
+
         try {
-            OutputStream out = new BufferedOutputStream(Files.newOutputStream(lgname, CREATE, APPEND));
-            out.write(data, 0, data.length);
-        } catch (IOException x) {
-            System.out.println("Could not write data to log.");
+            FileWriter appendLog = new FileWriter(log.getName(), true);
+            BufferedWriter bw = new BufferedWriter(appendLog);
+            try {
+                bw.write(dataToLog);
+            } finally {
+                bw.close();
+            }
+        } catch(Exception e) {
+            System.out.println("Could not append data to log!");
             return false;
         }
         return true;
@@ -123,7 +150,7 @@ public class DB {
             return null;
         }
 
-        Path fileToRead = Paths.get("root/users/" + uid + "/" + uid + fname);
+        Path fileToRead = Paths.get(usersPath + uid + "/" + uid + fname);
         if(Files.exists(fileToRead)) {
             byte[] fileArray;
             try {
@@ -153,7 +180,7 @@ public class DB {
             return false;
         }
 
-        Path fileToRead = Paths.get("root/users/" + uid + "/" + uid + fname);
+        Path fileToRead = Paths.get(usersPath + uid + "/" + uid + fname);
         if(Files.exists(fileToRead)) {
             return false;
         }

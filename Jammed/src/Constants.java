@@ -4,6 +4,7 @@
 
 /**
  * Constants that are needed by multiple classes
+ * TODO: Turn into enum
  * */
 public class Constants {
     private Constants() {}
