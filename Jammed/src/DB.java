@@ -7,7 +7,9 @@
     2) Enums used to differentiate files.
  */
 
+import com.sun.org.apache.xerces.internal.impl.io.UTF8Reader;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,12 +39,30 @@ public class DB {
         boolean didWriteLog = writeLog(dataToLog);
         System.out.println(didWriteLog);
 
-        // Write data to a user file
-        /*byte[] fileData = readFile("test001", Constants.USER_DATA);
-        System.out.println(fileData); */
-        // read that data
+        // Stress test the log
+        for(int i = 0; i < 1000; i++) {
+            String msg = "This is a test, #" + i;
+            boolean sTest = writeLog(msg);
+        }
 
-        // update user log
+        // Write data to a user file
+        String samplePassword = "username: mvp34, password: 123";
+        String passwordUpdated = "Password Updated";
+        String login = "username: example, password: exampleP, salt: 123";
+
+        boolean udRes = writeFile("test001", DBFileTypes.USER_DATA, samplePassword);
+        boolean pwdRes = writeFile("test001", DBFileTypes.USER_PWD_FILE, login);
+        boolean logRes = writeFile("test001", DBFileTypes.USER_LOG, passwordUpdated);
+
+        // read that data
+        String userData = readFile("test001", DBFileTypes.USER_DATA);
+        String userLogin = readFile("test001", DBFileTypes.USER_PWD_FILE);
+        String userLog = readFile("test001", DBFileTypes.USER_LOG);
+
+        System.out.println("User data: " + userData);
+        System.out.println("User login: " + userLogin);
+        System.out.println("User Log: " + userLog);
+
     }
 
     /** Purpose: Initializes the file structure for the DB in the current folder
@@ -167,36 +187,42 @@ public class DB {
     /** Purpose: Reads a specified file from a specific user.
      *  Input: User id uid of user who's data is needed, fileType of which file to read.
      *  Output: None.
-     *  Return: The data of the file.
+     *  Return: The data of the file (As a string).
      * */
-    public static byte[] readFile(String uid, DBFileTypes fileType) { // TODO determine output type
+    public static String readFile(String uid, DBFileTypes fileType) { // TODO determine output type
         // To do
+        if(!searchUser(uid)) {
+            return null;
+        }
+
         String fname;
+        String fileAsString = "";
         switch (fileType) {
             case USER_DATA:
-                fname = "USERDATA.bin";
+                fname = "USERDATA.txt";
                 break;
             case USER_PWD_FILE:
-                fname = "PWD.bin";
+                fname = "PWD.txt";
                 break;
             case USER_LOG:
-                fname = "LOG.bin";
+                fname = "LOG.txt";
                 break;
             default:
                 return null;
         }
-
 
         Path fileToRead = Paths.get(usersPath + uid + "/" + uid + fname);
         if(Files.exists(fileToRead)) {
             byte[] fileArray;
             try {
                 fileArray = Files.readAllBytes(fileToRead);
+                Charset charset=Charset.forName("UTF-8");
+                fileAsString = new String(fileArray, charset);
             } catch (Exception e) {
                 System.out.println("Could not read User Data");
                 return null;
             }
-            return fileArray;
+            return fileAsString;
         }
 
         return null;
@@ -208,28 +234,50 @@ public class DB {
      *  Output: Updated version of the file in the specified uid folder.
      *  Return: Boolean, true if operation successful.
      * */
-    public static boolean writeFile(String uid, DBFileTypes fileType, File fileData) { // TODO: Determine fileData input type
+    public static boolean writeFile(String uid, DBFileTypes fileType, String fileData) { // TODO: Determine fileData input type
         // To do
+        if(!searchUser(uid)) {
+            return false;
+        }
+
         String fname;
+        boolean isLog = false;
         switch (fileType) {
             case USER_DATA:
-                fname = "USERDATA.bin";
+                fname = "USERDATA.txt";
                 break;
             case USER_PWD_FILE:
-                fname = "PWD.bin";
+                fname = "PWD.txt";
                 break;
             case USER_LOG:
-                fname = "LOG.bin";
+                fname = "LOG.txt";
+                isLog = true;
                 break;
             default:
                 return false;
         }
 
-        // TODO: Handle writing to the log differently
-        Path fileToRead = Paths.get(usersPath + uid + "/" + uid + fname);
-        if(Files.exists(fileToRead)) {
+        String dataToWrite = fileData;
+        try {
+            FileWriter writer = new FileWriter(usersPath + uid + "/" + uid + fname);
+            BufferedWriter bw = new BufferedWriter(writer);
+            try {
+                if(isLog) {
+                    String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
+                    dataToWrite = "Entry: " + fileData + " | time written" + timeStamp;
+                }
+                bw.write(dataToWrite);
+                bw.newLine();
+                bw.flush();
+            } finally {
+                bw.close();
+            }
+        } catch(Exception e) {
+            System.out.println("Could not write data to file!");
             return false;
         }
+
+
         return false;
     }
 
