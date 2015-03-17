@@ -1,6 +1,7 @@
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -36,10 +37,10 @@ public class UserData {
 	private byte[] iv;
 	private Hashtable<String, String> userData;//TODO. 
 	
-	
+	//Constructor
 	public UserData(byte[] cypherText, String username){
 		//Load SecretKey and IV
-		this.SECKEYFILE = username+"AESkey.txt";//TODO delete this 
+		this.SECKEYFILE = username+"AESkey.txt";
 		//TODO IV what do we wan tto use? does it change?
 		try {
 			loadKey();
@@ -51,6 +52,8 @@ public class UserData {
 	
 	/*
 	 * decrypt data package received from the server for user use. 
+	 * 
+	 * return hashtable or String?
 	 */
 	public String decData(String data) throws NoSuchAlgorithmException, 
 	        NoSuchPaddingException, InvalidKeyException, IOException, 
@@ -62,33 +65,47 @@ public class UserData {
 		IvParameterSpec ips = new IvParameterSpec(iv);
 		aes.init(Cipher.DECRYPT_MODE, this.dataSecKey, ips);
 		
-		byte[] block = new byte[data.length()];
-		//TODO block = string to byte array(data)
-		block = aes.doFinal();
-		return new String(block);
+		//TODO dec any string encoding
 		
-		//TODO convert to hash table
+		byte[] block = data.getBytes();
+
+		byte[] text = aes.doFinal(block);
+		return new String(text, "UTF8");
+		
+		//TODO String -> Hashtable
+		
 		//return / this.userdata= x
 		
+		/*	 
+		//decode the BASE64 coded message
+		BASE64Decoder decoder = new BASE64Decoder();
+		byte[] raw = decoder.decodeBuffer(encrypted); */
+	 
 	}
 	
 	/*
 	 * Encrypts the data for sending back to server. 
+	 * convert hashtabel -> string before passing to endData()
 	 */
 	public String encData(String text) throws NoSuchAlgorithmException, 
 			NoSuchPaddingException, InvalidKeyException, 
 			InvalidAlgorithmParameterException, IllegalBlockSizeException, 
-			BadPaddingException{
+			BadPaddingException, UnsupportedEncodingException{
 		Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
 		IvParameterSpec ips = new IvParameterSpec(iv);
 		aes.init(Cipher.ENCRYPT_MODE, this.dataSecKey, ips);
 		//TODO hashtable->String/byte[]
-		//TODO below is not quite right yet, just copied from above. 
-		byte[] block = new byte[text.length()];
-		//TODO block = stringto byte array(data)
-		block = aes.doFinal();
-		//can be anything not String
+		byte[] textbyte = text.getBytes("UTF8");
+		
+		byte[] block = aes.doFinal(textbyte);
+		//TODO any encoding or just plain bytes?
 		return new String(block);
+		
+		/*
+		//converts to base64 for easier display.
+		BASE64Encoder encoder = new BASE64Encoder();
+		String base64 = encoder.encode(raw);*/
+	 
 	}
 	
 
