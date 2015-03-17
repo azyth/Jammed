@@ -1,40 +1,39 @@
+
+
 	//John and megan
 
 /*
  * Request
  * 
  * 
- * requests is a object that store info for requests
+ * requests is a superclass object that stores info for requests across the network
  * 
- * is converted to a JSON using toString()
+ * some of this may seem irrelevant but may be useful later. 
  */
 public class Request {
-//TODO everything
-	
 	
 	//public enum Event{login,log,userDataDownload,userDataUpload,termination}
-	public enum MessageType{request,accept,denial}
-	public enum ErrorMessages{}
+	public enum MessageType{request,response}
+	public enum ErrorMessage{badArgument,validationFailed,somethingBad,none}//etc
 	
 	//private Event event;
 	private MessageType type;
 	private boolean success = false;
-	private String errorMessage;
+	private ErrorMessage error=ErrorMessage.none;
+	private String message = "none";
 	
 	
 //	public Event getEvent(){return this.event;}
 	public MessageType getType(){return this.type;}
 	public boolean getSuccess(){return this.success;}
-	public String getError(){return this.errorMessage;}
-	
+	public ErrorMessage getError(){return this.error;}
+	public String getMessage(){return this.message;}
 	
 //	public void setEvent(Event e){this.event=e;}
 	public void setType(MessageType t){this.type=t;}
 	public void setSuccess(boolean s){this.success=s;}
-	public void setError(String e){this.errorMessage=e;}
-	
-	
-	
+	public void setError(ErrorMessage e){this.error=e;}
+
 	public String toString(){
 		
 		return null;
@@ -43,7 +42,7 @@ public class Request {
 	
 	
 	
-	/*****************************************************************/
+	/*************************Depreciated Below******************************/
 	
 //	//Log in
 //	public String loginReq(String username, String password){
