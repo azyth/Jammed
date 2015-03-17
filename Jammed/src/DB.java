@@ -66,7 +66,7 @@ public class DB {
             FileOutputStream initLog = new FileOutputStream(serverPath + "log.txt");
             try {
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-                String initialCreation = "Database initialized on " + timeStamp;
+                String initialCreation = "Database initialized on " + timeStamp + "\n";
                 byte[] iCBytes = initialCreation.getBytes();
                 initLog.write(iCBytes);
             } finally {
@@ -108,7 +108,6 @@ public class DB {
     /** Method Description here */
     public static boolean writeLog(String dataToLog) {
         Path lgname = Paths.get(serverPath + "log.txt");
-        File log = new File(serverPath + "log.txt");
         if(!Files.exists(lgname)) {
             try {
                 Files.createFile(lgname);
@@ -118,12 +117,12 @@ public class DB {
             }
         }
 
-
         try {
-            FileWriter appendLog = new FileWriter(log.getName(), true);
+            FileWriter appendLog = new FileWriter(serverPath + "log.txt", true);
             BufferedWriter bw = new BufferedWriter(appendLog);
             try {
                 bw.write(dataToLog);
+                bw.newLine();
             } finally {
                 bw.close();
             }
