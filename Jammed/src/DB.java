@@ -4,7 +4,7 @@
 
    NOTES:
     1) As of 3/16/15, interface is not final.
-    2) Constants are used to differentiate files. May be changed to enums.
+    2) Enums used to differentiate files.
  */
 
 import java.io.*;
@@ -19,22 +19,39 @@ public class DB {
     private static final String serverPath = "root/server/";
     private static final String usersPath = "root/users/";
 
+    public enum DBFileTypes {
+        USER_DATA, USER_PWD_FILE, USER_LOG
+    }
+
     /* Testing */
     public static void main(String[] args) {
+        // Init db
         boolean res = initialize();
+        // make test user and search for it
         boolean mkUsr = newUser("test001");
         boolean srchUsr = searchUser("test001");
         System.out.println(srchUsr);
 
+        // Update the server log
         String dataToLog = "Hello world";
         boolean didWriteLog = writeLog(dataToLog);
         System.out.println(didWriteLog);
 
+        // Write data to a user file
         /*byte[] fileData = readFile("test001", Constants.USER_DATA);
         System.out.println(fileData); */
+        // read that data
+
+        // update user log
     }
 
-    /** Method Description here */
+    /** Purpose: Initializes the file structure for the DB in the current folder
+     *           and creates the server log. Only should be called once per install.
+     *  Input: None
+     *  Output: A folder tree root/(server or users)/, and log.txt under server with
+     *          time stamp of initialization.
+     *  Return: Boolean, true if initialization was successful
+     * */
     public static boolean initialize() {
         Path server = Paths.get(serverPath);
         Path user = Paths.get(usersPath);
@@ -64,8 +81,8 @@ public class DB {
             Files.createFile(lgPath);
             FileOutputStream initLog = new FileOutputStream(serverPath + "log.txt");
             try {
-                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-                String initialCreation = "Database initialized on " + timeStamp + "\n";
+                String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
+                String initialCreation = "Database initialization time: " + timeStamp + "\n";
                 byte[] iCBytes = initialCreation.getBytes();
                 initLog.write(iCBytes);
             } finally {
@@ -79,7 +96,11 @@ public class DB {
         return true;
     }
 
-    /** Method Description here */
+    /** Purpose: Adds a new user to be managed by the server.
+     *  Input: A unique user id: uid.
+     *  Output: A new user folder with name uid: root/users/uid/
+     *  Return: Boolean, true if creation was successful.
+     * */
     public static boolean newUser(String uid) {
         Path newUser = Paths.get(usersPath + uid + "/");
 
@@ -98,13 +119,21 @@ public class DB {
         return true;
     }
 
-    /** Method Description here */
+    /** Purpose: Searches the database for a user specified by uid.
+     *  Input: A user id, uid.
+     *  Output: None.
+     *  Return: True if uid found, false otherwise.
+     * */
     public static boolean searchUser(String uid) {
         Path user = Paths.get(usersPath + uid + "/");
         return Files.exists(user);
     }
 
-    /** Method Description here */
+    /** Purpose: Appends data to the server log.
+     *  Input: A string of the dataToLog.
+     *  Output: log.txt with dataToLog appended to it.
+     *  Return: Boolean, true if operation successful.
+     * */
     public static boolean writeLog(String dataToLog) {
         Path lgname = Paths.get(serverPath + "log.txt");
         if(!Files.exists(lgname)) {
@@ -120,7 +149,8 @@ public class DB {
             FileWriter appendLog = new FileWriter(serverPath + "log.txt", true);
             BufferedWriter bw = new BufferedWriter(appendLog);
             try {
-                bw.write(dataToLog);
+                String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
+                bw.write("Entry: " + dataToLog + " | time written: " + timeStamp);
                 bw.newLine();
                 bw.flush();
             } finally {
@@ -134,20 +164,28 @@ public class DB {
 
     }
 
-    /** Method Description here */
-    public static byte[] readFile(String uid, double fileType) { // TODO Return output as a file
+    /** Purpose: Reads a specified file from a specific user.
+     *  Input: User id uid of user who's data is needed, fileType of which file to read.
+     *  Output: None.
+     *  Return: The data of the file.
+     * */
+    public static byte[] readFile(String uid, DBFileTypes fileType) { // TODO determine output type
         // To do
         String fname;
-        if(fileType == Constants.USER_DATA) {
-            fname = "USERDATA.bin";
-        } else if(fileType == Constants.USER_PWD_FILE) {
-            fname = "PWD.bin";
-        } else if(fileType == Constants.USER_LOG) {
-            fname = "LOG.bin";
-        } else {
-            // Not a valid file, do nothing
-            return null;
+        switch (fileType) {
+            case USER_DATA:
+                fname = "USERDATA.bin";
+                break;
+            case USER_PWD_FILE:
+                fname = "PWD.bin";
+                break;
+            case USER_LOG:
+                fname = "LOG.bin";
+                break;
+            default:
+                return null;
         }
+
 
         Path fileToRead = Paths.get(usersPath + uid + "/" + uid + fname);
         if(Files.exists(fileToRead)) {
@@ -164,19 +202,27 @@ public class DB {
         return null;
     }
 
-    /** Method Description here */
-    public static boolean writeFile(String uid, double fileType, File fileData) { // TODO: Determine fileData input type
+    /** Purpose: Writes a file for a specific user.
+     *  Input: User id uid of user to be update, fileType of which file to written,
+     *         and the fileData to be written.
+     *  Output: Updated version of the file in the specified uid folder.
+     *  Return: Boolean, true if operation successful.
+     * */
+    public static boolean writeFile(String uid, DBFileTypes fileType, File fileData) { // TODO: Determine fileData input type
         // To do
         String fname;
-        if(fileType == Constants.USER_DATA) {
-            fname = "USERDATA.bin";
-        } else if(fileType == Constants.USER_PWD_FILE) {
-            fname = "PWD.bin";
-        } else if(fileType == Constants.USER_LOG) {
-            fname = "LOG.bin";
-        } else {
-            // Not a valid file, do nothing
-            return false;
+        switch (fileType) {
+            case USER_DATA:
+                fname = "USERDATA.bin";
+                break;
+            case USER_PWD_FILE:
+                fname = "PWD.bin";
+                break;
+            case USER_LOG:
+                fname = "LOG.bin";
+                break;
+            default:
+                return false;
         }
 
         // TODO: Handle writing to the log differently
