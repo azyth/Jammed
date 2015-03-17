@@ -11,12 +11,18 @@ public class UserDataReq extends Request {
 	public enum ReqType{upload,download}
 	private ReqType direction;
 	private byte[] userdata;//for storing AES encrypted User data
+<<<<<<< HEAD
 	
 	//Request
 	public UserDataReq(byte[] cyphertext, ReqType dir){
 		this.direction = dir;
 		//if (dir){direction=ReqType.download;		
 		//}else{direction=ReqType.upload;}
+=======
+		
+	public UserDataReq(byte[] cyphertext, ReqType dir){
+    direction = dir;
+>>>>>>> b84a1f9730646c6548996d135e863c2a5f8a2178
 		this.userdata=cyphertext;
 	}
 	//Response
