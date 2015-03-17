@@ -1,5 +1,5 @@
 //add import file paths for key names;
-
+//server and client will call seperate function no need to streamline
 
 import java.io.*;
 import java.security.*;

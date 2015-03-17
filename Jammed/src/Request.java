@@ -6,57 +6,41 @@
  * 
  * requests is a object that store info for requests
  * 
- * is converted using toString()
+ * is converted to a JSON using toString()
  */
 public class Request {
 //TODO everything
 	
-	/*
-	 * variables 
-	 * event
-	 * success
-	 * username
-	 * password
-	 * userdata
-	 * 
-	 * 
-	 * toString()
-	 * get/set()
-	 */
-	public enum Event{login,log,userData,termination}
-	public enum MessageType{request,upload,download,accept,denial}
 	
-	private Event event;
+	//public enum Event{login,log,userDataDownload,userDataUpload,termination}
+	public enum MessageType{request,accept,denial}
+	public enum ErrorMessages{}
+	
+	//private Event event;
 	private MessageType type;
 	private boolean success = false;
 	private String errorMessage;
-	private String username;
-	private String password;
-	private byte[] userdata;
 	
-	public Event getEvent(){return this.event;}
+	
+//	public Event getEvent(){return this.event;}
 	public MessageType getType(){return this.type;}
 	public boolean getSuccess(){return this.success;}
 	public String getError(){return this.errorMessage;}
-	public String getUsername(){return this.username;}
-	public String getPassword(){return this.password;}
-	public byte[] getData(){return this.userdata;}
 	
-	public void setEvent(Event e){this.event=e;}
+	
+//	public void setEvent(Event e){this.event=e;}
 	public void setType(MessageType t){this.type=t;}
 	public void setSuccess(boolean s){this.success=s;}
 	public void setError(String e){this.errorMessage=e;}
-	public void setUsername(String u){this.username=u;}
-	public void setPassword(String p){this.password=p;}
-	public void setData(byte[] d){this.userdata=d;}
+	
+	
 	
 	public String toString(){
-		if (this.event==Event.login && this.type==MessageType.request){
-			//loginrequest
-			return null;
-		}
+		
 		return null;
 	}
+	
+	
 	
 	
 	/*****************************************************************/
