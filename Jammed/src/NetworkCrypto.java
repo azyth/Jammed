@@ -1,4 +1,15 @@
+//This may be completely irrelivant with SSL
+
 //add import file paths for key names;
+//server and client will call seperate function no need to streamline
+
+
+
+
+
+	/*************************Possibly Depreciated*********************************/
+
+
 
 
 import java.io.*;

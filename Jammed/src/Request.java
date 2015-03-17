@@ -1,65 +1,48 @@
+
+
 	//John and megan
 
 /*
  * Request
  * 
  * 
- * requests is a object that store info for requests
+ * requests is a superclass object that stores info for requests across the network
  * 
- * is converted using toString()
+ * some of this may seem irrelevant but may be useful later. 
  */
 public class Request {
-//TODO everything
 	
-	/*
-	 * variables 
-	 * event
-	 * success
-	 * username
-	 * password
-	 * userdata
-	 * 
-	 * 
-	 * toString()
-	 * get/set()
-	 */
-	public enum Event{login,log,userData,termination}
-	public enum MessageType{request,upload,download,accept,denial}
+	//public enum Event{login,log,userDataDownload,userDataUpload,termination}
+	public enum MessageType{request,response}
+	public enum ErrorMessage{badArgument,validationFailed,somethingBad,none}//etc
 	
-	private Event event;
+	//private Event event;
 	private MessageType type;
 	private boolean success = false;
-	private String errorMessage;
-	private String username;
-	private String password;
-	private byte[] userdata;
+	private ErrorMessage error=ErrorMessage.none;
+	private String message = "none";
 	
-	public Event getEvent(){return this.event;}
+	
+//	public Event getEvent(){return this.event;}
 	public MessageType getType(){return this.type;}
 	public boolean getSuccess(){return this.success;}
-	public String getError(){return this.errorMessage;}
-	public String getUsername(){return this.username;}
-	public String getPassword(){return this.password;}
-	public byte[] getData(){return this.userdata;}
+	public ErrorMessage getError(){return this.error;}
+	public String getMessage(){return this.message;}
 	
-	public void setEvent(Event e){this.event=e;}
+//	public void setEvent(Event e){this.event=e;}
 	public void setType(MessageType t){this.type=t;}
 	public void setSuccess(boolean s){this.success=s;}
-	public void setError(String e){this.errorMessage=e;}
-	public void setUsername(String u){this.username=u;}
-	public void setPassword(String p){this.password=p;}
-	public void setData(byte[] d){this.userdata=d;}
-	
+	public void setError(ErrorMessage e){this.error=e;}
+
 	public String toString(){
-		if (this.event==Event.login && this.type==MessageType.request){
-			//loginrequest
-			return null;
-		}
+		
 		return null;
 	}
 	
 	
-	/*****************************************************************/
+	
+	
+	/*************************Depreciated Below******************************/
 	
 //	//Log in
 //	public String loginReq(String username, String password){
