@@ -11,6 +11,13 @@ public class LoginReq extends Request {
 	private String username;
 	private String password;
 	
+	//Response constructor - err should be "none" if success is true
+	public LoginReq(String username, boolean success, ErrorMessage err){
+		this.username=username;
+		this.setSuccess(success);
+		this.setError(err);
+	}
+	//Request constructor
 	public LoginReq(String username, String password){
 		this.username=username;
 		this.password=password;

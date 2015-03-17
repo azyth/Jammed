@@ -12,12 +12,25 @@ public class LogReq extends Request{
 	private String username; //used by the server to double check user identity, this better match the session username
 	private String userLog; //holds the log when passing back to the user.
 
+	//Request constructor
 	public LogReq(String username){
 		this.username = username;
+		this.setType(MessageType.request);
 	}
+	//Response constructors
+	//failure 
+	public LogReq(String username, ErrorMessage err){
+		this.username = username;
+		this.setError(err);
+		this.setType(MessageType.response);
+		this.setSuccess(false);
+	}
+	//succeed
 	public LogReq(String username, String log){
-		this(log);
+		this.username = username;
 		this.userLog=log;
+		this.setSuccess(true);
+		this.setType(MessageType.response);
 	}
 	
 //	public void setLog(String l){this.userLog=l;}

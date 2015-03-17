@@ -81,14 +81,14 @@ public class UserData {
 		byte[] block = data.getBytes();
 
 		byte[] text = aes.doFinal(block);
-		return new String(text, "UTF8");
+		this.userdata = new String(text, "UTF8");	//stores userdata to instance
 		
 		//TODO String -> Hashtable
+		return this.userdata;						//returns userdata string
 		
-		//return / this.userdata= x
 		
 		
-	 
+			 
 	}
 	
 	/*
@@ -106,7 +106,7 @@ public class UserData {
 		byte[] textbyte = text.getBytes("UTF8");
 		
 		byte[] block = aes.doFinal(textbyte);
-		//TODO any encoding or just plain bytes?
+		//TODO any encoding or just plain bytes?s
 		return new String(block);
 		
 		

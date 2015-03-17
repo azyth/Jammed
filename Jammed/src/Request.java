@@ -8,7 +8,10 @@
  * 
  * requests is a superclass object that stores info for requests across the network
  * 
- * some of this may seem irrelevant but may be useful later. 
+ * all requests are sent as either a "request" if it is the initiating message
+ * "responses" are direct responses to a "request" message
+ * 
+ * some of this may seem irrelevant but should be useful later. 
  */
 public class Request {
 	
