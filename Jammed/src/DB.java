@@ -26,7 +26,7 @@ public class DB {
     }
 
     /* Testing */
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         // Init db
         boolean res = initialize();
         // make test user and search for it
@@ -63,7 +63,7 @@ public class DB {
         System.out.println("User login: " + userLogin);
         System.out.println("User Log: " + userLog);
 
-    }
+    } */
 
     /** Purpose: Initializes the file structure for the DB in the current folder
      *           and creates the server log. Only should be called once per install.
@@ -77,21 +77,21 @@ public class DB {
         Path user = Paths.get(usersPath);
 
         if(Files.exists(server) && Files.exists(user)) {
-            System.out.println("DB has already been initialized");
+            //System.out.println("DB has already been initialized");
             return true;
         }
         // Create root and server folder
         try {
             Files.createDirectories(server);
         } catch(Exception e) {
-            System.out.println("Could not create root and server dir!");
+            //System.out.println("Could not create root and server dir!");
             return false;
         }
         // Create user folder
         try {
             Files.createDirectories(user);
         } catch(Exception e) {
-            System.out.println("Could not create root and user dir!");
+            //System.out.println("Could not create root and user dir!");
             return false;
         }
 
@@ -109,10 +109,11 @@ public class DB {
                 initLog.close();
             }
         } catch(Exception e) {
-            System.out.println("Could not create server log file!");
+            //System.out.println("Could not create server log file!");
+            return false;
         }
 
-        System.out.println("Successfully set up DB!");
+        //System.out.println("Successfully set up DB!");
         return true;
     }
 
@@ -125,14 +126,14 @@ public class DB {
         Path newUser = Paths.get(usersPath + uid + "/");
 
         if(Files.exists(newUser)) {
-            System.out.println("User already exists");
+            //System.out.println("User already exists");
             return false;
         }
         // Create root and server folder
         try {
             Files.createDirectories(newUser);
         } catch(Exception e) {
-            System.out.println("Could not create new user: " + uid);
+            //System.out.println("Could not create new user: " + uid);
             return false;
         }
 
@@ -160,7 +161,7 @@ public class DB {
             try {
                 Files.createFile(lgname);
             } catch(Exception e) {
-                System.out.println("Could not create log.");
+                //System.out.println("Could not create log.");
                 return false;
             }
         }
@@ -177,7 +178,7 @@ public class DB {
                 bw.close();
             }
         } catch(Exception e) {
-            System.out.println("Could not append data to log!");
+            //System.out.println("Could not append data to log!");
             return false;
         }
         return true;
@@ -219,7 +220,7 @@ public class DB {
                 Charset charset=Charset.forName("UTF-8");
                 fileAsString = new String(fileArray, charset);
             } catch (Exception e) {
-                System.out.println("Could not read User Data");
+                //System.out.println("Could not read User Data");
                 return null;
             }
             return fileAsString;
@@ -273,7 +274,7 @@ public class DB {
                 bw.close();
             }
         } catch(Exception e) {
-            System.out.println("Could not write data to file!");
+            //System.out.println("Could not write data to file!");
             return false;
         }
 
