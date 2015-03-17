@@ -35,9 +35,19 @@ public class UserData {
 	private String SECKEYFILE = "userAESkey.txt";//local file path key will be stored at
 	private SecretKey dataSecKey;
 	private byte[] iv;
-	private Hashtable<String, String> userData;//TODO. 
+	//private Hashtable<String, String> userData;//TODO. 
+	private String userdata;
 	
-	//Constructor
+	//New Key generation Constructor
+	public UserData(String username){
+		this.SECKEYFILE = username+"AESkey.txt";
+		try {
+			enroll();
+		} catch (NoSuchAlgorithmException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+	//Load Key and decrypt/encrypt Constructor
 	public UserData(byte[] cypherText, String username){
 		//Load SecretKey and IV
 		this.SECKEYFILE = username+"AESkey.txt";
@@ -46,7 +56,8 @@ public class UserData {
 			loadKey();
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException
 				| IOException e) {
-				}
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -76,10 +87,7 @@ public class UserData {
 		
 		//return / this.userdata= x
 		
-		/*	 
-		//decode the BASE64 coded message
-		BASE64Decoder decoder = new BASE64Decoder();
-		byte[] raw = decoder.decodeBuffer(encrypted); */
+		
 	 
 	}
 	
@@ -101,11 +109,7 @@ public class UserData {
 		//TODO any encoding or just plain bytes?
 		return new String(block);
 		
-		/*
-		//converts to base64 for easier display.
-		BASE64Encoder encoder = new BASE64Encoder();
-		String base64 = encoder.encode(raw);*/
-	 
+		
 	}
 	
 
