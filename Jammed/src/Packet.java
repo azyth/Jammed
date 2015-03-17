@@ -1,4 +1,23 @@
 	//John
+
+
+
+
+
+
+
+
+	/*************************Depreciated*********************************/
+
+
+
+
+
+
+
+
+
+
 import java.io.*;
 import java.security.*;
 import java.security.spec.*;
@@ -15,6 +34,8 @@ import javax.crypto.spec.*;
  *  
  *  */
 public class Packet {
+	private String[] userkeynames = {"serverEnc.txt","serverVer.txt","Dec.txt","Sig.txt"};
+	private String[] serverkeynames = {"serverDec.txt","serverSig.txt","Enc.txt","Ver.txt"};
 	//server RSA keys
 	private PublicKey serverEncKey; //distributed to all users
 	private PrivateKey serverDecKey; //only on server
@@ -28,7 +49,20 @@ public class Packet {
 	private PublicKey userSigKey; //only on Local machine, must be copied to all verified machines
 	private PrivateKey userVerKey; //sent to server, stored in user folder
 	
+	private Key[] keyRing;
 //RSA 3072 SHA 256
+	
+	public boolean init(String username){
+		//populate keynames with username
+		//fill keyring with for loop reading in all keys needed server/user
+		return false;
+	}
+	public KeyPair enrollRSA(){
+		return null;
+	}
+	public KeyPair enrollDigCert(){
+		return null;
+	}
 	
 	
 	/******************************************************************/
@@ -73,12 +107,76 @@ public class Packet {
 
 	}
 	
-	/*Loads a Keypair from files on machine to local variables
+	/*Loads a key ring from stored files on the server to local variables
+	 * 
 	 */
-	public boolean ImportKeyPair(String pubFile, String privFile){
-		//TODO Break into 2 functions
-		return false;
+	public boolean ImportServerKeyRing(String username){
+		int x = 0;
+		try {
+			while(x < 3){
+				File keyf = new File(this.serverkeynames[x]);
+				byte[] key = new byte[(int)this.serverkeynames[x].length()];
+				FileInputStream kInput = new FileInputStream(keyf);
+				kInput.read(key);
+				kInput.close();
+				
+				KeyFactory rsaKeyFact = KeyFactory.getInstance("RSA");
+				if(x==0){//"serverDec.txt",
+					this.serverDecKey = rsaKeyFact.generatePrivate(new PKCS8EncodedKeySpec(key));
+				}
+				else if(x==1){//"serverSig.txt",
+					this.serverSigKey = rsaKeyFact.generatePublic(new PKCS8EncodedKeySpec(key));//TODO check on encodeings of these keys
+				}
+				else if (x==2){//"Enc.txt",
+					this.userEncKey = rsaKeyFact.generatePublic(new PKCS8EncodedKeySpec(key));//TODO
+				}
+				else if(x==3){//"Ver.txt"
+					this.userVerKey = rsaKeyFact.generatePrivate(new PKCS8EncodedKeySpec(key));//TODO
+				}
+				x++;
+			}
+		} catch (NoSuchAlgorithmException
+				| InvalidKeySpecException | IOException e) {
+			return false;
+		}
+		return true;
 	}
+	
+	/*Loads a key ring from stored files on the server to local variables
+	 * 
+	 */
+	public boolean ImportUserKeyRing(String username){
+		int x = 0;
+		try {
+			while(x < 3){
+				File keyf = new File(this.userkeynames[x]);
+				byte[] key = new byte[(int)this.userkeynames[x].length()];
+				FileInputStream kInput = new FileInputStream(keyf);
+				kInput.read(key);
+				kInput.close();
+				
+				KeyFactory rsaKeyFact = KeyFactory.getInstance("RSA");
+				if(x==0){//"serverEnc.txt",
+					this.serverEncKey = rsaKeyFact.generatePublic(new PKCS8EncodedKeySpec(key));
+				}
+				else if(x==1){//"serverVer.txt",
+					this.serverVerKey = rsaKeyFact.generatePrivate(new PKCS8EncodedKeySpec(key));//TODO check on encodings of these keys
+				}
+				else if (x==2){//"Enc.txt",
+					this.userDecKey = rsaKeyFact.generatePrivate(new PKCS8EncodedKeySpec(key));//TODO
+				}
+				else if(x==3){//"Ver.txt"
+					this.userSigKey = rsaKeyFact.generatePublic(new PKCS8EncodedKeySpec(key));//TODO
+				}
+				x++;
+			}
+		} catch (NoSuchAlgorithmException
+				| InvalidKeySpecException | IOException e) {
+			return false;
+		}
+		return true;
+	}
+	
 	//DOCUMENT VERIFICATION
 	/*
 	 * Signs a document and saves the signature to a file 
@@ -170,7 +268,15 @@ public class Packet {
         	System.out.println("signature verification FAILED!, SUSPECT EVERYONE!");
         }
 	}
-
+	public String decryptRequest(String packet) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException{
+		Cipher rsa = Cipher.getInstance("RSA/ECB/OAEPwithSHA-256AndMGF1padding");
+		
+		rsa.init(Cipher.DECRYPT_MODE, rsaPrivKey);
+		return null;
+	}
+	public String encReq(String request){
+		return null;
+	}
 	
 	
 	/******************************************************************/

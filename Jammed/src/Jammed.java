@@ -25,10 +25,8 @@ public class Jammed {
     // (1) display a user interface
     UserInterface ui = new UserInterface();
 
-    NetworkCrypto netcrypt = new NetworkCrypto();
     UserData data = new UserData();
     try {
-      netcrypt.load(Paths.get(folder, priv));
       data.init();
     } catch (FileNotFoundException e) {
       ui.error("No key files found - have you enrolled yet?");
@@ -43,49 +41,45 @@ public class Jammed {
       return;
     }
 
-    boolean verified = false;
-    Request verifiedrequest = null;
-    while (!verified || verifiedrequest == null) {
+    UserDataReq verifiedrequest = null;
+    while (verifiedrequest == null || verifiedrequest.getData() == null) {
       // (2) get the user's login information
       LoginInfo login = ui.getLoginInfo();
-      Request loginrequest = new Request(login);
-      String loginencrypt = netcrypt.encryptRequest(loginrequest.toString());
+      Request loginrequest = new LoginReq(login);
 
       // (3) send the login information to the server for verification
-      String verifiedresp;
       try {
         server.send(loginencrypt);
 
         verifiedresp = server.receive();
+        verifiedrequest = (UserDataReq) Request.fromJSON(verifiedresp);
+      } catch (ClassCastException e) {
+        ui.error("Got a bad response from the server - exiting.");
+        return;
       } catch (Exception e) { // TODO make this more specific to the connection
         ui.error("Lost connection with server - exiting.");
         return;
       }
 
-      try {
-        verifiedrequest = Request.fromJSON(verifiedresp);
-        verified = verifiedrequest.getVerified();
-      } catch (Exception e) { // TODO make this more specific to requests
-        ui.error("Server did not respond as expected - exiting.");
-        return;
+      if (verifiedrequest != null && verifiedrequest.getData == null) {
+        ui.error("Could not verifiy those credentials - please try again.");
       }
     }
 
     // (5) display the data
-    String plaindata = data.decData(verifiedrequest.getData());
+    ArrayList<LoginInfo> plaindata = data.decData(verifiedrequest.getData());
     ui.display(plaindata);
 
     // (6) track any changes that were made
-    String newdata = ui.getChanges();
+    ArrayList<LoginInfo> newdata = ui.getChanges();
     if (newdata != null) {
       // (7) if changes were made, send updated data to server for storage
-      String encdata = data.encData(newdata);
-      Request uploadreq = new Request(encdata);
-      String uploadenc = netcrypt.encryptRequest(uploadreq.toString());
+      byte[] encdata = data.encData(newdata);
+      Request uploadreq = new UserDataReq(encdata, UserDataReq.upload);
 
       String uploadrespstr;
       try {
-        server.send(uploadenc);
+        server.send(uploadreq.toString());
 
         uploadrespstr = server.receive();
       } catch (Exception e) { // TODO make this more specific to the connection
