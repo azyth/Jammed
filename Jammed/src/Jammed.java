@@ -68,7 +68,7 @@ public class Jammed {
       if (newdata != null) {
         // (8) if changes were made, send updated data to server for storage
     	byte[] iv = data.generateIV();
-        byte[] encdata = data.encData(newdata, iv, ui.getLoginInfo().username); //TODO i updated this with username someone please check it is right
+        byte[] encdata = data.encData(newdata, iv); 
         server.send(new UserDataReq(encdata,iv));					//send upload request
 
         UserDataReq uploadresp = (UserDataReq) server.receive();//receive upload resonse with success of error message

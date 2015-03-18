@@ -29,65 +29,55 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class UserData {
 
-  // local file name key will be stored at
+    // local file name key will be stored at
 	private final String SECKEYFILE = "-AESkey.txt";
-  // local file name the IV will be stored at
-//	private String IVFILE = "-IV.txt";
-	private String keyfile;
-	//instance variables 
+ 	private String keyfile;
 	private SecretKey dataSecKey;
-//	private byte[] iv;
+
 	
 	// Load Key and decrypt/encrypt Constructor
-	public UserData(String username)
-         throws GeneralSecurityException, IOException, InvalidKeyException {
+	public UserData(String username) throws GeneralSecurityException, 
+	 		IOException, InvalidKeyException {
 		//Load SecretKey and IV
 		this.keyfile = username+SECKEYFILE;
 		loadKey();
-//      loadIV(username + IVFILE);
-		//this.iv=iv;
 	}
 	
 	
 	/*
 	 * decrypt data package received from the server for user use. 
 	 * 
-	 * return hashtable or String?
 	 */
-	public ArrayList<LoginInfo> decData(byte[] data, byte[] iv)
-         throws GeneralSecurityException, InvalidKeyException, IOException {
+	public ArrayList<LoginInfo> decData(byte[] data, byte[] iv) throws 
+			GeneralSecurityException, InvalidKeyException, IOException {
 		
 		Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
 
 		IvParameterSpec ips = new IvParameterSpec(iv);
 		aes.init(Cipher.DECRYPT_MODE, this.dataSecKey, ips);
-		
-		//TODO dec any string encoding
-		
+				
 		byte[] text = aes.doFinal(data);
-		String userdata = new String(text, "UTF8");	//stores userdata to instance
+		String userdata = new String(text, "UTF8");	
 		
-		//return userdata
 		return stringToList(userdata);
 	}
 	
 	/*
 	 * Encrypts the data for sending back to server. 
-	 * convert hashtabel -> string before passing to endData()
+	 * 
 	 */
-	public byte[] encData(ArrayList<LoginInfo> data, byte[] iv, String username)
-         throws GeneralSecurityException, InvalidKeyException, IOException {
+	public byte[] encData(ArrayList<LoginInfo> data, byte[] iv) throws 
+			GeneralSecurityException, InvalidKeyException, IOException {
 		Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
 		
 		IvParameterSpec ips = new IvParameterSpec(iv);
 		aes.init(Cipher.ENCRYPT_MODE, this.dataSecKey, ips);
 
-    String text = listToString(data);
+		String text = listToString(data);
 		byte[] textbyte = text.getBytes("UTF8");
 		
 		byte[] block = aes.doFinal(textbyte);
 		
-		//TODO any encoding or just plain bytes?s
 		return block;
 	}
 	
@@ -100,12 +90,10 @@ public class UserData {
 	/* used to initiate secret key and store it to users machine, 
 	 * either to replace a compromised key or for a new user
 	 */
-	public void enroll(String username)
-         throws IOException, GeneralSecurityException {
-			generateKey();
-			storeKey();
-//			byte[] iv = generateIV();
-//			storeIV(iv, username + IVFILE);
+	public void enroll(String username) throws IOException, 
+			GeneralSecurityException {
+		generateKey();
+		storeKey();
 	}
 	
 	//generates a new AES-256 secret key stores in dataSecKey
@@ -114,25 +102,13 @@ public class UserData {
 	    keyGenerator.init(256); 
 	    return keyGenerator.generateKey();
 	}
-
+	//generates a random string of bytes for a new IV
 	public byte[] generateIV(){
 			return SecureRandom.getSeed(16);
 	}
 
-//	These functions would only be used if we are not passing in the IV with userdata
-//	private void loadIV(String file) throws IOException {
-//		iv = Files.readAllBytes(Paths.get(file));
-//	}
-
-//	private void storeIV(byte[] iv, String ivfile) throws IOException {
-//		FileOutputStream ivout = new FileOutputStream(ivfile);
-//		ivout.write(iv);
-//		ivout.close();
-//	}
-
 	//loads secret key from a local file and stores it to dataSecKey
-	private void loadKey()
-          throws IOException, GeneralSecurityException {
+	private void loadKey() throws IOException, GeneralSecurityException {
 		byte[] encoded = Files.readAllBytes(Paths.get(this.keyfile));
 		SecretKeyFactory skf = SecretKeyFactory.getInstance("AES");
 		dataSecKey = skf.generateSecret(new SecretKeySpec(encoded,"AES"));
@@ -145,6 +121,16 @@ public class UserData {
 		fout.close();
 	}
 
+//	These functions would only be used if we are not passing in the IV with userdata
+	
+//	private void loadIV(String file) throws IOException {
+//		iv = Files.readAllBytes(Paths.get(file));
+//	}
+//	private void storeIV(byte[] iv, String ivfile) throws IOException {
+//		FileOutputStream ivout = new FileOutputStream(ivfile);
+//		ivout.write(iv);
+//		ivout.close();
+//	}
 
 	/************************  ARRAYLIST SECTION  *************************/
   // Note that, for these methods to work, no piece of user data can contain a
