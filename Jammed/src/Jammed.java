@@ -50,6 +50,9 @@ public class Jammed {
       UserDataReq datareq = (UserDataReq) server.receive(); 	//receive a download response with success and userdata or an error message
       if (datareq.getSuccess()){
     	  //proceeed
+    	  byte[] iv = datareq.getIV();
+    	  byte[] udata = datareq.getData();
+    	  //TODO UserData.decData(udata,iv,
       }else{
     	  //no data will be there
     	  Request.ErrorMessage err = datareq.getError();
@@ -59,13 +62,14 @@ public class Jammed {
       
       
       // (7) track any changes that were made
-      ArrayList<LoginInfo> plaindata = data.decData(datareq.getData());
+      ArrayList<LoginInfo> plaindata = data.decData(datareq.getData(), datareq.getIV());
       ArrayList<LoginInfo> newdata = ui.getChanges(plaindata);
 
       if (newdata != null) {
         // (8) if changes were made, send updated data to server for storage
-        byte[] encdata = data.encData(newdata);
-        server.send(new UserDataReq(encdata));					//send upload request
+    	byte[] iv = data.generateIV();
+        byte[] encdata = data.encData(newdata, iv, ui.getLoginInfo().username); //TODO i updated this with username someone please check it is right
+        server.send(new UserDataReq(encdata,iv));					//send upload request
 
         UserDataReq uploadresp = (UserDataReq) server.receive();//receive upload resonse with success of error message
         if (uploadresp.getSuccess()){

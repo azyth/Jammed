@@ -30,20 +30,22 @@ import javax.crypto.spec.SecretKeySpec;
 public class UserData {
 
   // local file name key will be stored at
-	private static final String SECKEYFILE = "-AESkey.txt";
+	private final String SECKEYFILE = "-AESkey.txt";
   // local file name the IV will be stored at
-  private static final String IVFILE = "-IV.txt";
-	
+//	private String IVFILE = "-IV.txt";
+	private String keyfile;
 	//instance variables 
 	private SecretKey dataSecKey;
-	private byte[] iv;
+//	private byte[] iv;
 	
 	// Load Key and decrypt/encrypt Constructor
 	public UserData(String username)
          throws GeneralSecurityException, IOException, InvalidKeyException {
 		//Load SecretKey and IV
-    loadKey(username + SECKEYFILE);
-    loadIV(username + IVFILE);
+		this.keyfile = username+SECKEYFILE;
+		loadKey();
+//      loadIV(username + IVFILE);
+		//this.iv=iv;
 	}
 	
 	
@@ -52,7 +54,7 @@ public class UserData {
 	 * 
 	 * return hashtable or String?
 	 */
-	public ArrayList<LoginInfo> decData(byte[] data)
+	public ArrayList<LoginInfo> decData(byte[] data, byte[] iv)
          throws GeneralSecurityException, InvalidKeyException, IOException {
 		
 		Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
@@ -73,12 +75,10 @@ public class UserData {
 	 * Encrypts the data for sending back to server. 
 	 * convert hashtabel -> string before passing to endData()
 	 */
-	public byte[] encData(ArrayList<LoginInfo> data)
+	public byte[] encData(ArrayList<LoginInfo> data, byte[] iv, String username)
          throws GeneralSecurityException, InvalidKeyException, IOException {
 		Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
-		//generateIV();
-		//storeIV(); // TODO do you use a different IV every time? What if you
-                 // want to access from multiple machines?
+		
 		IvParameterSpec ips = new IvParameterSpec(iv);
 		aes.init(Cipher.ENCRYPT_MODE, this.dataSecKey, ips);
 
@@ -100,47 +100,48 @@ public class UserData {
 	/* used to initiate secret key and store it to users machine, 
 	 * either to replace a compromised key or for a new user
 	 */
-	public static void enroll(String username)
+	public void enroll(String username)
          throws IOException, GeneralSecurityException {
-			SecretKey dataSecKey = generateKey();
-			storeKey(dataSecKey, username + SECKEYFILE);
-			byte[] iv = generateIV();
-			storeIV(iv, username + IVFILE);
+			generateKey();
+			storeKey();
+//			byte[] iv = generateIV();
+//			storeIV(iv, username + IVFILE);
 	}
 	
 	//generates a new AES-256 secret key stores in dataSecKey
-	private static SecretKey generateKey() throws GeneralSecurityException {
+	private SecretKey generateKey() throws GeneralSecurityException {
 	    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
 	    keyGenerator.init(256); 
 	    return keyGenerator.generateKey();
 	}
 
-	private static byte[] generateIV(){
+	public byte[] generateIV(){
 			return SecureRandom.getSeed(16);
 	}
 
-	private void loadIV(String file) throws IOException {
-    iv = Files.readAllBytes(Paths.get(file));
-	}
+//	These functions would only be used if we are not passing in the IV with userdata
+//	private void loadIV(String file) throws IOException {
+//		iv = Files.readAllBytes(Paths.get(file));
+//	}
 
-	private static void storeIV(byte[] iv, String ivfile) throws IOException {
-		FileOutputStream ivout = new FileOutputStream(ivfile);
-		ivout.write(iv);
-		ivout.close();
-	}
+//	private void storeIV(byte[] iv, String ivfile) throws IOException {
+//		FileOutputStream ivout = new FileOutputStream(ivfile);
+//		ivout.write(iv);
+//		ivout.close();
+//	}
 
 	//loads secret key from a local file and stores it to dataSecKey
-	private void loadKey(String file)
+	private void loadKey()
           throws IOException, GeneralSecurityException {
-		byte[] encoded = Files.readAllBytes(Paths.get(file));
+		byte[] encoded = Files.readAllBytes(Paths.get(this.keyfile));
 		SecretKeyFactory skf = SecretKeyFactory.getInstance("AES");
 		dataSecKey = skf.generateSecret(new SecretKeySpec(encoded,"AES"));
 	}
 	
 	//writes secret key to a file on local machine for storage 
-	private static void storeKey(SecretKey key, String kfile) throws IOException {
-		FileOutputStream fout = new FileOutputStream(kfile);
-		fout.write(key.getEncoded());
+	private void storeKey() throws IOException {
+		FileOutputStream fout = new FileOutputStream(this.keyfile);
+		fout.write(this.dataSecKey.getEncoded());
 		fout.close();
 	}
 

@@ -11,15 +11,17 @@ public class UserDataReq extends Request {
 	public enum ReqType{upload,download}
 	private ReqType direction;
 	private byte[] userdata;//for storing AES encrypted User data
+	private byte[] iv;
 
 	//Request download
 	public UserDataReq(){
 		this.direction = ReqType.download;
 	}
 	//Request upload
-	public UserDataReq(byte[] cyphertext){
+	public UserDataReq(byte[] cyphertext, byte[] iv){
 		this.direction = ReqType.upload;
 		this.userdata=cyphertext;
+		this.iv=iv;
 	}
 	//Response w/o data
 	public UserDataReq(boolean success, ReqType dir, ErrorMessage err){
@@ -28,15 +30,17 @@ public class UserDataReq extends Request {
 		this.setError(err);
 	}
 	//Response with data
-	public UserDataReq(boolean success, ReqType dir, ErrorMessage err, byte[] cyphertext){
+	public UserDataReq(boolean success, ReqType dir, ErrorMessage err, byte[] cyphertext, byte[] iv){
 		this.direction = dir;
 		this.setSuccess(success);
 		this.setError(err);
 		this.userdata=cyphertext;
+		this.iv=iv;
 	}
 		
 	public ReqType getDirection(){return this.direction;}
 	public byte[] getData(){return this.userdata;}
+	public byte[] getIV(){return this.iv;}
 
   public String toString() {
     // TODO
