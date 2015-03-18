@@ -12,17 +12,27 @@ public class UserDataReq extends Request {
 	private ReqType direction;
 	private byte[] userdata;//for storing AES encrypted User data
 
-	
-	//Request
-	public UserDataReq(byte[] cyphertext, ReqType dir){
-		this.direction = dir;
+	//Request download
+	public UserDataReq(){
+		this.direction = ReqType.download;
+	}
+	//Request upload
+	public UserDataReq(byte[] cyphertext){
+		this.direction = ReqType.upload;
 		this.userdata=cyphertext;
 	}
-	//Response
+	//Response w/o data
 	public UserDataReq(boolean success, ReqType dir, ErrorMessage err){
 		this.direction = dir;
 		this.setSuccess(success);
 		this.setError(err);
+	}
+	//Response with data
+	public UserDataReq(boolean success, ReqType dir, ErrorMessage err, byte[] cyphertext){
+		this.direction = dir;
+		this.setSuccess(success);
+		this.setError(err);
+		this.userdata=cyphertext;
 	}
 		
 	public ReqType getDirection(){return this.direction;}
