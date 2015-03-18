@@ -6,7 +6,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Hashtable;
+import java.util.ArrayList;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -35,29 +35,22 @@ public class UserData {
 	private String SECKEYFILE = "userAESkey.txt";//local file path key will be stored at
 	private SecretKey dataSecKey;
 	private byte[] iv;
-	//private Hashtable<String, String> userData;//TODO. 
 	private String userdata;
 	
-	//New Key generation Constructor
-	public UserData(String username){
+	// New Key generation Constructor
+	public UserData(String username) throws NoSuchAlgorithmException,
+                                          IOException {
 		this.SECKEYFILE = username+"AESkey.txt";
-		try {
-			enroll();
-		} catch (NoSuchAlgorithmException | IOException e) {
-			e.printStackTrace();
-		}
+    enroll();
 	}
-	//Load Key and decrypt/encrypt Constructor
-	public UserData(byte[] cypherText, String username){
+
+	// Load Key and decrypt/encrypt Constructor
+	public UserData(byte[] cypherText, String username)
+         throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 		//Load SecretKey and IV
 		this.SECKEYFILE = username+"AESkey.txt";
 		//TODO IV what do we wan tto use? does it change?
-		try {
-			loadKey();
-		} catch (NoSuchAlgorithmException | InvalidKeySpecException
-				| IOException e) {
-			e.printStackTrace();
-		}
+    loadKey();
 	}
 	
 	
@@ -66,10 +59,11 @@ public class UserData {
 	 * 
 	 * return hashtable or String?
 	 */
-	public String decData(String data) throws NoSuchAlgorithmException, 
-	        NoSuchPaddingException, InvalidKeyException, IOException, 
-	        InvalidAlgorithmParameterException, IllegalBlockSizeException, 
-	        BadPaddingException{
+	public ArrayList<LoginInfo> decData(byte[] data)
+         throws NoSuchAlgorithmException, NoSuchPaddingException,
+                InvalidKeyException, IOException,
+                InvalidAlgorithmParameterException, IllegalBlockSizeException, 
+                BadPaddingException {
 		
 		Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
 
@@ -78,38 +72,33 @@ public class UserData {
 		
 		//TODO dec any string encoding
 		
-		byte[] block = data.getBytes();
-
-		byte[] text = aes.doFinal(block);
+		byte[] text = aes.doFinal(data);
 		this.userdata = new String(text, "UTF8");	//stores userdata to instance
 		
 		//TODO String -> Hashtable
-		return this.userdata;						//returns userdata string
-		
-		
-		
-			 
+		//return this.userdata;						//returns userdata string
+    return null;
 	}
 	
 	/*
 	 * Encrypts the data for sending back to server. 
 	 * convert hashtabel -> string before passing to endData()
 	 */
-	public String encData(String text) throws NoSuchAlgorithmException, 
-			NoSuchPaddingException, InvalidKeyException, 
-			InvalidAlgorithmParameterException, IllegalBlockSizeException, 
-			BadPaddingException, UnsupportedEncodingException{
+	public byte[] encData(ArrayList<LoginInfo> data)
+         throws NoSuchAlgorithmException, NoSuchPaddingException,
+                InvalidKeyException, InvalidAlgorithmParameterException,
+                IllegalBlockSizeException, BadPaddingException,
+                UnsupportedEncodingException {
 		Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
 		IvParameterSpec ips = new IvParameterSpec(iv);
 		aes.init(Cipher.ENCRYPT_MODE, this.dataSecKey, ips);
 		//TODO hashtable->String/byte[]
+    String text = "";
 		byte[] textbyte = text.getBytes("UTF8");
 		
 		byte[] block = aes.doFinal(textbyte);
 		//TODO any encoding or just plain bytes?s
-		return new String(block);
-		
-		
+		return block;
 	}
 	
 
@@ -135,7 +124,7 @@ public class UserData {
 
 	//loads secret key from a local file and stores it to dataSecKey
 	private void loadKey() throws IOException, NoSuchAlgorithmException, 
-			InvalidKeySpecException{
+                                InvalidKeySpecException {
 		FileInputStream secInput = new FileInputStream(this.SECKEYFILE);
 		byte[] encoded = new byte[this.SECKEYFILE.length()];
 		secInput.read(encoded);
@@ -148,7 +137,6 @@ public class UserData {
 	
 	//writes secret key to a file on local machine for storage 
 	private void storeKey() throws IOException{
-		
 		FileOutputStream fout = new FileOutputStream(this.SECKEYFILE);
 		fout.write(dataSecKey.getEncoded());
 		fout.close();

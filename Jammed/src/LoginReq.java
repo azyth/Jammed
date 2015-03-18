@@ -18,16 +18,19 @@ public class LoginReq extends Request {
 		this.setError(err);
 	}
 	//Request constructor
-	public LoginReq(String username, String password){
-		this.username=username;
-		this.password=password;
+	public LoginReq(LoginInfo l){
+		this.username=l.username;
+		this.password=l.password;
 
 	}
 	
 	
 	public String getUsername(){return this.username;}
 	public String getPassword(){return this.password;}
-//	public void setUsername(String u){this.username=u;}
-//	public void setPassword(String p){this.password=p;}
+
+  public String toString() {
+    return "";
+    // TODO
+  }
 
 }

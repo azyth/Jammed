@@ -1,9 +1,9 @@
 
 public class Communication {
 	//Dan
-  public void send(String thing) {}
+  public void send(Request thing) {}
 
-  public String receive() { return ""; }
+  public Request receive() { return null; }
 
   public void close() {}
 

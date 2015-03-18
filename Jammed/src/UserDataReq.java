@@ -16,20 +16,21 @@ public class UserDataReq extends Request {
 	//Request
 	public UserDataReq(byte[] cyphertext, ReqType dir){
 		this.direction = dir;
-		//if (dir){direction=ReqType.download;		
-		//}else{direction=ReqType.upload;}
 		this.userdata=cyphertext;
 	}
 	//Response
 	public UserDataReq(boolean success, ReqType dir, ErrorMessage err){
 		this.direction = dir;
-		//if (dir){direction=ReqType.download;		
-		//}else{direction=ReqType.upload;}
 		this.setSuccess(success);
 		this.setError(err);
 	}
 		
 	public ReqType getDirection(){return this.direction;}
 	public byte[] getData(){return this.userdata;}
-//	public void setData(byte[] d){this.userdata=d;}
+
+  public String toString() {
+    // TODO
+    return "";
+  }
 }
+
