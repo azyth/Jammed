@@ -24,7 +24,7 @@ public class Jammed {
     UserInterface ui = new UserInterface();
 
     try {
-      Communication server = new Communication();
+      Communication server = new Communication(Communication.Type.CLIENT);
 
       LoginReq verified = null;
       UserData data = null;

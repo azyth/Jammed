@@ -13,3 +13,5 @@ hs_err_pid*
 
 # swp files (yay vim)
 *.swp
+
+.idea/*
