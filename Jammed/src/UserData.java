@@ -2,18 +2,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
@@ -25,39 +22,28 @@ import javax.crypto.spec.SecretKeySpec;
  * UserData Handles encryption and decryption of the user data file 
  * which contains all of the protected password information .
  * 
- * This is done with secretkey encryption of which the secret key is NEVER TRANSMITTED
- * except when enrolling a new machine
+ * This is done with secretkey encryption of which the secret key is NEVER
+ * TRANSMITTED except when enrolling a new machine
  *
  * AES 256 
  */
 public class UserData {
+
+  // local file name key will be stored at
+	private static final String SECKEYFILE = "-AESkey.txt";
+  // local file name the IV will be stored at
+  private static final String IVFILE = "-IV.txt";
 	
 	//instance variables 
-	private String SECKEYFILE = "userAESkey.txt";//local file path key will be stored at
-	private String IVFILE = "userIV.txt";
 	private SecretKey dataSecKey;
 	private byte[] iv;
-	private String userdata;
 	
-	// New Key generation Constructor
-	public UserData(String username) throws NoSuchAlgorithmException,
-                                          IOException {
-		this.SECKEYFILE = username+"AESkey.txt";
-		this.IVFILE = username+"IV.txt";
-    enroll();
-	}
-
 	// Load Key and decrypt/encrypt Constructor
-	public UserData(byte[] cypherText, String username)
-         throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, 
-         InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException, 
-         IllegalBlockSizeException, BadPaddingException {
+	public UserData(String username)
+         throws GeneralSecurityException, IOException, InvalidKeyException {
 		//Load SecretKey and IV
-		this.SECKEYFILE = username+"AESkey.txt";
-		this.IVFILE = username+"IV.txt";
-	    loadKey();
-	    loadIV();
-	    decData(cypherText); //automatically decode? or wait and manually call it later?
+    loadKey(username + SECKEYFILE);
+    loadIV(username + IVFILE);
 	}
 	
 	
@@ -67,10 +53,7 @@ public class UserData {
 	 * return hashtable or String?
 	 */
 	public ArrayList<LoginInfo> decData(byte[] data)
-         throws NoSuchAlgorithmException, NoSuchPaddingException,
-                InvalidKeyException, IOException,
-                InvalidAlgorithmParameterException, IllegalBlockSizeException, 
-                BadPaddingException {
+         throws GeneralSecurityException, InvalidKeyException, IOException {
 		
 		Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
 
@@ -80,12 +63,10 @@ public class UserData {
 		//TODO dec any string encoding
 		
 		byte[] text = aes.doFinal(data);
-		this.userdata = new String(text, "UTF8");	//stores userdata to instance
+		String userdata = new String(text, "UTF8");	//stores userdata to instance
 		
-		
-		//TODO String -> Hashtable
-		//return this.userdata;						//returns userdata string
-		return null;							//DO you want to actually return and array list here?
+		//return userdata
+		return stringToList(userdata);
 	}
 	
 	/*
@@ -93,17 +74,15 @@ public class UserData {
 	 * convert hashtabel -> string before passing to endData()
 	 */
 	public byte[] encData(ArrayList<LoginInfo> data)
-         throws NoSuchAlgorithmException, NoSuchPaddingException,
-                InvalidKeyException, InvalidAlgorithmParameterException,
-                IllegalBlockSizeException, BadPaddingException,
-                IOException {
+         throws GeneralSecurityException, InvalidKeyException, IOException {
 		Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
-		generateIV();
-		storeIV();
+		//generateIV();
+		//storeIV(); // TODO do you use a different IV every time? What if you
+                 // want to access from multiple machines?
 		IvParameterSpec ips = new IvParameterSpec(iv);
 		aes.init(Cipher.ENCRYPT_MODE, this.dataSecKey, ips);
-		//TODO hashtable->String/byte[]
-    String text = "";
+
+    String text = listToString(data);
 		byte[] textbyte = text.getBytes("UTF8");
 		
 		byte[] block = aes.doFinal(textbyte);
@@ -121,51 +100,134 @@ public class UserData {
 	/* used to initiate secret key and store it to users machine, 
 	 * either to replace a compromised key or for a new user
 	 */
-	public void enroll() throws NoSuchAlgorithmException, IOException{
-			generateKey();
-			storeKey();
-			generateIV();
-			storeIV();
+	public static void enroll(String username)
+         throws IOException, GeneralSecurityException {
+			SecretKey dataSecKey = generateKey();
+			storeKey(dataSecKey, username + SECKEYFILE);
+			byte[] iv = generateIV();
+			storeIV(iv, username + IVFILE);
 	}
 	
 	//generates a new AES-256 secret key stores in dataSecKey
-	private void generateKey() throws NoSuchAlgorithmException{
+	private static SecretKey generateKey() throws GeneralSecurityException {
 	    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
 	    keyGenerator.init(256); 
-	    dataSecKey =  keyGenerator.generateKey();
+	    return keyGenerator.generateKey();
 	}
-	private void generateIV(){
-						
-				iv = SecureRandom.getSeed(16);
+
+	private static byte[] generateIV(){
+			return SecureRandom.getSeed(16);
 	}
-	private void loadIV() throws IOException{
-		FileInputStream ivInput = new FileInputStream(this.IVFILE);
-		ivInput.read(iv);
-		ivInput.close();
+
+	private void loadIV(String file) throws IOException {
+    iv = Files.readAllBytes(Paths.get(file));
 	}
-	private void storeIV() throws IOException{
-		FileOutputStream ivout = new FileOutputStream(this.IVFILE);
+
+	private static void storeIV(byte[] iv, String ivfile) throws IOException {
+		FileOutputStream ivout = new FileOutputStream(ivfile);
 		ivout.write(iv);
 		ivout.close();
 	}
 
 	//loads secret key from a local file and stores it to dataSecKey
-	private void loadKey() throws IOException, NoSuchAlgorithmException, 
-                                InvalidKeySpecException {
-		FileInputStream secInput = new FileInputStream(this.SECKEYFILE);
-		byte[] encoded = new byte[this.SECKEYFILE.length()];
-		secInput.read(encoded);
-		secInput.close();
+	private void loadKey(String file)
+          throws IOException, GeneralSecurityException {
+		byte[] encoded = Files.readAllBytes(Paths.get(file));
 		SecretKeyFactory skf = SecretKeyFactory.getInstance("AES");
 		dataSecKey = skf.generateSecret(new SecretKeySpec(encoded,"AES"));
-		
-		System.out.println("session key has been aquired");//TODO comment
 	}
 	
 	//writes secret key to a file on local machine for storage 
-	private void storeKey() throws IOException{
-		FileOutputStream fout = new FileOutputStream(this.SECKEYFILE);
-		fout.write(dataSecKey.getEncoded());
+	private static void storeKey(SecretKey key, String kfile) throws IOException {
+		FileOutputStream fout = new FileOutputStream(kfile);
+		fout.write(key.getEncoded());
 		fout.close();
 	}
+
+
+	/************************  ARRAYLIST SECTION  *************************/
+  // Note that, for these methods to work, no piece of user data can contain a
+  // newline. This is probably OK. The UI ensures this.
+
+  // test test test
+  public static void main(String[] args) {
+    String good = "this\nis\na\ngood\nstring\nthing";
+    String bad = "this\none\nis\nnot";
+    String none = "";
+
+    LoginInfo l1 = new LoginInfo();
+    l1.website = "wone"; l1.username = "uone"; l1.password = "pone";
+    LoginInfo l2 = new LoginInfo();
+    l2.website = "wtwo"; l2.username = "utwo"; l2.password = "ptwo";
+
+    ArrayList<LoginInfo> empty = new ArrayList<LoginInfo>();
+    ArrayList<LoginInfo> oneentry = new ArrayList<LoginInfo>();
+    oneentry.add(l1);
+    ArrayList<LoginInfo> twoentries = new ArrayList<LoginInfo>();
+    twoentries.add(l1); twoentries.add(l2);
+
+    try {
+      System.out.print("Good: ");
+      System.out.println(good.equals(listToString(stringToList(good))));
+
+      System.out.print("None: ");
+      System.out.println(none.equals(listToString(stringToList(none))));
+
+      System.out.print("Bad: ");
+      System.out.println(bad.equals(listToString(stringToList(bad))));
+    } catch (IllegalArgumentException e) {
+      System.out.println("exception");
+    }
+
+    System.out.print("Empty: ");
+    System.out.println(listToString(empty).equals(""));
+
+    System.out.print("One: ");
+    System.out.println(listToString(oneentry).equals("wone\nuone\npone"));
+
+    System.out.print("Two: ");
+    System.out.println(listToString(twoentries).
+                       equals("wone\nuone\npone\nwtwo\nutwo\nptwo"));
+  }
+
+  private static String listToString(ArrayList<LoginInfo> lst) {
+    String str = "";
+
+    for (LoginInfo l : lst) {
+      if (str.length() > 0) {
+        str += "\n";
+      }
+      str += l.website + "\n" + l.username + "\n" + l.password;
+    }
+
+    return str;
+  }
+
+  private static ArrayList<LoginInfo> stringToList(String str) {
+    // handle zero-length string specially TODO any other edge cases?
+    if (str.equals("")) {
+      return new ArrayList<LoginInfo>();
+    }
+
+    String[] parts = str.split("\n");
+
+    // make sure there are 3x parts
+    if (parts.length % 3 != 0) {
+      throw new IllegalArgumentException();
+    }
+
+    ArrayList<LoginInfo> lst = new ArrayList<LoginInfo>();
+
+    for (int i=0; i<parts.length; i += 3) {
+      LoginInfo l = new LoginInfo();
+      l.website = parts[i];
+      l.username = parts[i+1];
+      l.password = parts[i+2];
+
+      lst.add(l);
+    }
+
+    return lst;
+  }
+
 }

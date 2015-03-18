@@ -1,24 +1,11 @@
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Paths;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 public class Jammed {
-
-  // the folder wherein client keys are stored on the local machine
-  private static final String folder = "JammedKeys";
-  // TODO the filename of the client's RSA private key
-  private static final String priv = "private.key";
-  // TODO the filename of the client's RSA public key
-  private static final String pub = "public.key";
 
   /**
    * Main client application: This should do the following:
@@ -40,7 +27,7 @@ public class Jammed {
       Communication server = new Communication();
 
       LoginReq verified = null;
-      String username = "";
+      UserData data = null;
       while (verified == null || !verified.getSuccess()) {
         // (2) get the user's login information
         LoginInfo login = ui.getLoginInfo();
@@ -54,14 +41,13 @@ public class Jammed {
         if (!verified.getSuccess()) {
           ui.error("Could not verifiy those credentials - please try again.");
         } else {
-          username = login.username;
+          data = new UserData(login.username);
         }
       }
 
       // (5) get the data
       // TODO send a request of some sort?
       UserDataReq datareq = (UserDataReq) server.receive();
-      UserData data = new UserData(datareq.getData(), username);
 
       // (6) display the data
       // (7) track any changes that were made
@@ -85,12 +71,7 @@ public class Jammed {
 
     } catch (FileNotFoundException e) {
       ui.error("No key files found - have you enrolled yet?");
-    } catch (NoSuchAlgorithmException e) {
-      ui.error("Necessary cryptographic algorithms are not supported on your " +
-               "machine - exiting...");
-    } catch (InvalidAlgorithmParameterException | InvalidKeyException |
-             InvalidKeySpecException | BadPaddingException |
-             IllegalBlockSizeException | NoSuchPaddingException e) {
+    } catch (GeneralSecurityException e) {
       ui.error("Something went wrong with the cryptography - exiting...");
     } catch (UnsupportedEncodingException e) {
       ui.error("Does your system not support UTF8? That's dumb.");

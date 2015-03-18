@@ -11,6 +11,20 @@ import java.util.Collections;
  */
 public class UserInterface {
 
+  // test test test
+  public static void main(String[] args) {
+    ArrayList<LoginInfo> data = new ArrayList<LoginInfo>();
+    UserInterface ui = new UserInterface();
+    ui.error("hihi error");
+    LoginInfo thing = ui.getLoginInfo();
+    System.out.println(thing);
+    data = ui.getChanges(data);
+    ui.error("ok done");
+    for (LoginInfo d : data) {
+      System.out.println(d);
+    }
+  }
+
   public UserInterface() {
     System.out.println("Welcome to Jammed");
     System.out.println("..._____...");
