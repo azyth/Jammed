@@ -28,9 +28,9 @@ public class UserInterface {
     LoginInfo login = new LoginInfo();
 
     try {
-      System.out.println("Enter username: ");
+      System.out.print("Enter username: ");
       login.username = br.readLine();
-      System.out.println("Enter password: ");
+      System.out.print("Enter password: ");
       login.password = br.readLine();
     } catch (IOException e) {
       System.out.println("Error reading username or password - something " +
@@ -48,10 +48,13 @@ public class UserInterface {
   public void close() {}
 
   private void display(ArrayList<LoginInfo> data) {
-    System.out.println("Website:\t\tUsername:\t\tPassword:");
+    System.out.println();
+    System.out.println(String.format("%-20s %-20s %-20s", "Website:",
+                                     "Username:", "Password:"));
     for (LoginInfo l : data) {
-      System.out.println(l.website + "\t\t" + l.username + "\t\t" + l.password);
+      System.out.println(l);
     }
+    System.out.println();
   }
 
   public ArrayList<LoginInfo> getChanges(ArrayList<LoginInfo> data) {
@@ -61,11 +64,12 @@ public class UserInterface {
     Collections.sort(data);
 
     System.out.println("Type \"exit\" to save changes and close, or \"add\" " +
-                       "to add or modify an existing password.");
+                       "to add or modify an existing password.\n");
 
     try {
       display(data);
 
+      System.out.print("Enter command: ");
       String command = br.readLine();
 
       while (!command.equals("exit")) {
@@ -85,7 +89,7 @@ public class UserInterface {
           if (l.website.contains("\n") || l.username.contains("\n") ||
               l.password.contains("\n")) {
             System.out.println("You are not allowed to have newlines in your " +
-                               "data.");
+                               "data.\n");
           } else if (index != -1) {
             // replace the existing element with a new one
             data.set(index, l);
@@ -102,9 +106,10 @@ public class UserInterface {
         } else {
           System.out.println("Unrecognized command. Use \"exit\" to save " +
                              "changes and close, and \"add\" to add to or " +
-                             "modify the password list.");
+                             "modify the password list.\n");
         }
 
+        System.out.print("Enter command: ");
         command = br.readLine();
       }
     } catch (IOException e) {
