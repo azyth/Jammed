@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 
@@ -33,6 +34,7 @@ public class UserData {
 	
 	//instance variables 
 	private String SECKEYFILE = "userAESkey.txt";//local file path key will be stored at
+	private String IVFILE = "userIV.txt";
 	private SecretKey dataSecKey;
 	private byte[] iv;
 	private String userdata;
@@ -41,16 +43,21 @@ public class UserData {
 	public UserData(String username) throws NoSuchAlgorithmException,
                                           IOException {
 		this.SECKEYFILE = username+"AESkey.txt";
+		this.IVFILE = username+"IV.txt";
     enroll();
 	}
 
 	// Load Key and decrypt/encrypt Constructor
 	public UserData(byte[] cypherText, String username)
-         throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+         throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, 
+         InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException, 
+         IllegalBlockSizeException, BadPaddingException {
 		//Load SecretKey and IV
 		this.SECKEYFILE = username+"AESkey.txt";
-		//TODO IV what do we wan tto use? does it change?
-    loadKey();
+		this.IVFILE = username+"IV.txt";
+	    loadKey();
+	    loadIV();
+	    decData(cypherText); //automatically decode? or wait and manually call it later?
 	}
 	
 	
@@ -75,9 +82,10 @@ public class UserData {
 		byte[] text = aes.doFinal(data);
 		this.userdata = new String(text, "UTF8");	//stores userdata to instance
 		
+		
 		//TODO String -> Hashtable
 		//return this.userdata;						//returns userdata string
-    return null;
+		return null;							//DO you want to actually return and array list here?
 	}
 	
 	/*
@@ -88,8 +96,10 @@ public class UserData {
          throws NoSuchAlgorithmException, NoSuchPaddingException,
                 InvalidKeyException, InvalidAlgorithmParameterException,
                 IllegalBlockSizeException, BadPaddingException,
-                UnsupportedEncodingException {
+                IOException {
 		Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
+		generateIV();
+		storeIV();
 		IvParameterSpec ips = new IvParameterSpec(iv);
 		aes.init(Cipher.ENCRYPT_MODE, this.dataSecKey, ips);
 		//TODO hashtable->String/byte[]
@@ -97,6 +107,7 @@ public class UserData {
 		byte[] textbyte = text.getBytes("UTF8");
 		
 		byte[] block = aes.doFinal(textbyte);
+		
 		//TODO any encoding or just plain bytes?s
 		return block;
 	}
@@ -113,6 +124,8 @@ public class UserData {
 	public void enroll() throws NoSuchAlgorithmException, IOException{
 			generateKey();
 			storeKey();
+			generateIV();
+			storeIV();
 	}
 	
 	//generates a new AES-256 secret key stores in dataSecKey
@@ -120,6 +133,20 @@ public class UserData {
 	    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
 	    keyGenerator.init(256); 
 	    dataSecKey =  keyGenerator.generateKey();
+	}
+	private void generateIV(){
+						
+				iv = SecureRandom.getSeed(16);
+	}
+	private void loadIV() throws IOException{
+		FileInputStream ivInput = new FileInputStream(this.IVFILE);
+		ivInput.read(iv);
+		ivInput.close();
+	}
+	private void storeIV() throws IOException{
+		FileOutputStream ivout = new FileOutputStream(this.IVFILE);
+		ivout.write(iv);
+		ivout.close();
 	}
 
 	//loads secret key from a local file and stores it to dataSecKey
