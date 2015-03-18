@@ -7,7 +7,6 @@
     2) Enums used to differentiate files.
  */
 
-import com.sun.org.apache.xerces.internal.impl.io.UTF8Reader;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -25,7 +24,7 @@ public class DB {
         USER_DATA, USER_PWD_FILE, USER_LOG
     }
 
-    /* Testing NOTE: Do not use this main function needs to be updated */
+    /* Testing */
     /*public static void main(String[] args) {
         // Init db
         boolean res = initialize();
@@ -50,17 +49,17 @@ public class DB {
         String passwordUpdated = "Password Updated";
         String login = "username: example, password: exampleP, salt: 123";
 
-        boolean udRes = writeFile("test001", DBFileTypes.USER_DATA, samplePassword);
-        boolean pwdRes = writeFile("test001", DBFileTypes.USER_PWD_FILE, login);
-        boolean logRes = writeFile("test001", DBFileTypes.USER_LOG, passwordUpdated);
+        boolean udRes = writeEncodedFile("test001", DBFileTypes.USER_DATA, samplePassword.getBytes());
+        boolean pwdRes = writeEncodedFile("test001", DBFileTypes.USER_PWD_FILE, login.getBytes());
+        boolean logRes = writeUserLog("test001", DBFileTypes.USER_LOG, passwordUpdated);
 
         // read that data
-        String userData = readFile("test001", DBFileTypes.USER_DATA);
-        String userLogin = readFile("test001", DBFileTypes.USER_PWD_FILE);
-        String userLog = readFile("test001", DBFileTypes.USER_LOG);
+        byte[] userData = readEncodedFile("test001", DBFileTypes.USER_DATA);
+        byte[] userLogin = readEncodedFile("test001", DBFileTypes.USER_PWD_FILE);
+        String userLog = readUserLog("test001", DBFileTypes.USER_LOG);
 
-        System.out.println("User data: " + userData);
-        System.out.println("User login: " + userLogin);
+        System.out.println("User data: " + userData.toString());
+        System.out.println("User login: " + userLogin.toString());
         System.out.println("User Log: " + userLog);
 
     } */
