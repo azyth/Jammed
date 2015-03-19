@@ -190,8 +190,8 @@ public class DB {
      *  Output: None.
      *  Return: The data of the file (As a string).
      * */
-    public static String readUserLog(String uid, DBFileTypes fileType) { // TODO determine output type
-        // To do
+    public static String readUserLog(String uid, DBFileTypes fileType) {
+        // TODO: Maybe return a zero length string
         if(!searchUser(uid)) {
             return null;
         }
@@ -229,7 +229,6 @@ public class DB {
      *  Return: Boolean, true if operation successful.
      * */
     public static boolean writeUserLog(String uid, DBFileTypes fileType, String fileData) { // TODO: Determine fileData input type
-        // To do
         if(!searchUser(uid)) {
             return false;
         }
@@ -269,8 +268,8 @@ public class DB {
      *  Output: None.
      *  Return: The data of the file (As a byte[]).
      * */
-    public static byte[] readEncodedFile(String uid, DBFileTypes fileType) { // TODO determine output type
-        // To do
+    public static byte[] readEncodedFile(String uid, DBFileTypes fileType) {
+        // TODO: Maybe return a zero length array
         if(!searchUser(uid)) {
             return null;
         }
