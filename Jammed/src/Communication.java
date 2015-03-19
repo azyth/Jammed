@@ -2,6 +2,8 @@
  * @Author Daniel Etter
  */
 
+// Wrapper for Socket things
+
 // TODO: Fix all of the exceptions!
 
 import java.io.ObjectInputStream;
@@ -19,7 +21,7 @@ public class Communication {
 
     // Hard Coded for now
     private String hostname = "localHost";
-    private int port = 5430;
+    private int port = 54309;
 
     private Communication.Type type = null;
     private ServerSocket serverSocket = null;
@@ -37,19 +39,21 @@ public class Communication {
                 this.serverSocket = serverSocketFactory.createServerSocket(port);
 
                 // Waits for new connection
-                this.socket = this.serverSocket.accept();
+                // this.socket = this.serverSocket.accept(); // Moving so we can block in Jelly
             }
             if (this.type == Type.CLIENT) {
                 // Create a Client
                 SocketFactory ClientSocketFactory = SSLSocketFactory.getDefault();
+                System.out.println("He");
                 Socket socket = ClientSocketFactory.createSocket(hostname, port);
-
+                System.out.println("Does it!");
                 this.tx = new ObjectOutputStream(socket.getOutputStream());
                 this.rx = new ObjectInputStream(socket.getInputStream());
             }
         }
         catch(Exception e){
-            throw new SocketException("Error!");
+        	e.printStackTrace();
+            throw new SocketException("Error!");   
         }
     }
 
@@ -83,6 +87,21 @@ public class Communication {
       catch(Exception e){
           throw new SocketException("Error!");
       }
+  }
+  
+  public void accept() throws SocketException{
+	  try{
+		  if(this.type == Type.SERVER){
+			  this.serverSocket.accept();
+		  }
+		  else{
+			  throw new SocketException("Clients can't accept()!");
+		  }
+	  }
+	  catch(Exception e){
+		  e.printStackTrace();
+		  throw new SocketException("Error!");
+	  }
   }
 
 }
