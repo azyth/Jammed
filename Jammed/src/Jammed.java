@@ -1,4 +1,5 @@
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketException;
 import java.nio.file.Paths;
@@ -23,7 +24,14 @@ public class Jammed {
   public static void main(String[] args) {
     // (1) display a user interface
     UserInterface ui = new UserInterface();
-    Communication server = new Communication(Communication.Type.CLIENT);
+
+    Communication server = null;
+    try {
+      server = new Communication(Communication.Type.CLIENT);
+    } catch (SocketException e) {
+      // should never happen: does not throw exception in client case
+      return;
+    }
 
     try {
       server.connect();
@@ -91,6 +99,8 @@ public class Jammed {
                "made to your data may be unsaved.");
     } catch (UserDataException e) {
       ui.error(Request.errToString(e.error));
+    } catch (IOException e) {
+      ui.error("Something bad happened with IO. Exiting.");
     }
 
     // (9) close the connection with the server
