@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -12,7 +13,7 @@ import java.util.Collections;
 public class UserInterface {
 
   // test test test
-  public static void main(String[] args) {
+  public static void main(String[] args) throws UnsupportedEncodingException {
     ArrayList<LoginInfo> data = new ArrayList<LoginInfo>();
     UserInterface ui = new UserInterface();
     ui.error("hihi error");
@@ -36,8 +37,9 @@ public class UserInterface {
     System.out.println();
   }
 
-  public LoginInfo getLoginInfo() {
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+  public LoginInfo getLoginInfo() throws UnsupportedEncodingException {
+    BufferedReader br =
+      new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
 
     LoginInfo login = new LoginInfo();
 
@@ -71,8 +73,10 @@ public class UserInterface {
     System.out.println();
   }
 
-  public ArrayList<LoginInfo> getChanges(ArrayList<LoginInfo> data) {
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+  public ArrayList<LoginInfo> getChanges(ArrayList<LoginInfo> data)
+        throws UnsupportedEncodingException {
+    BufferedReader br =
+      new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
     boolean changes = false;
 
     Collections.sort(data);
