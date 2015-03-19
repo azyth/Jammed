@@ -107,7 +107,13 @@ public class Jelly {
             			case userDataUpload:
             				UserDataReq uploadReq = (UserDataReq)req;
             				UserDataReq uploadResponse = null;
-            				
+            				if(DB.writeEncodedFile(SESSION_USERNAME, DB.DBFileTypes.USER_DATA, uploadReq.getData())){
+            					uploadResponse = new UserDataReq(true, UserDataReq.ReqType.upload, Request.ErrorMessage.none);
+            				}
+            				else{
+            					uploadResponse = new UserDataReq(true, UserDataReq.ReqType.upload, Request.ErrorMessage.somethingBad);
+            				}
+            				comm.send(uploadResponse);
             				break;
             			case termination:
             				TerminationReq terminate = new TerminationReq(true, Request.ErrorMessage.none);
@@ -118,6 +124,11 @@ public class Jelly {
             			continue;
             	}
             }
+        }
+        catch(java.net.SocketException se){
+        	// Socket closed
+        	// Handle me
+        	se.printStackTrace();
         }
         catch(Exception e){
             e.printStackTrace();
