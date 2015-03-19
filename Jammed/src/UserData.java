@@ -58,8 +58,8 @@ public class UserData {
 				
 		byte[] text = aes.doFinal(data);
 		String userdata = new String(text, "UTF8");	
-		System.out.println("data decrypted");
-		System.out.println(userdata);
+		//System.out.println("data decrypted");
+		//System.out.println(userdata);
 
 
 		return stringToList(userdata);
@@ -80,8 +80,8 @@ public class UserData {
 		byte[] textbyte = text.getBytes("UTF8");
 		
 		byte[] block = aes.doFinal(textbyte);
-		System.out.println("data encrypted");
-		System.out.println(block);
+		//System.out.println("data encrypted");
+		//System.out.println(block);
 
 		return block;
 	}
