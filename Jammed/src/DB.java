@@ -19,6 +19,7 @@ public class DB {
 
     private static final String serverPath = "root/server/";
     private static final String usersPath = "root/users/";
+    private static final Charset charsetUTF8 = Charset.forName("UTF-8");
 
     public enum DBFileTypes {
         USER_DATA, USER_PWD_FILE, USER_LOG, USER_IV
@@ -102,7 +103,7 @@ public class DB {
             try {
                 String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
                 String initialCreation = "Database initialization time: " + timeStamp + "\n";
-                byte[] iCBytes = initialCreation.getBytes();
+                byte[] iCBytes = initialCreation.getBytes(charsetUTF8);
                 initLog.write(iCBytes);
             } finally {
                 initLog.close();
@@ -166,7 +167,7 @@ public class DB {
         }
 
         try {
-            FileWriter appendLog = new FileWriter(serverPath + "log.txt", true);
+            OutputStreamWriter appendLog = new OutputStreamWriter(new FileOutputStream(serverPath + "log.txt", true), "UTF-8");
             BufferedWriter bw = new BufferedWriter(appendLog);
             try {
                 String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
@@ -195,8 +196,8 @@ public class DB {
             return null;
         }
 
-        String fname = "";
-        String fileAsString = "";
+        String fname;
+        String fileAsString;
         switch (fileType) {
             case USER_LOG:
                 fname = "LOG.txt";
@@ -210,8 +211,7 @@ public class DB {
             byte[] fileArray;
             try {
                 fileArray = Files.readAllBytes(fileToRead);
-                Charset charset=Charset.forName("UTF-8");
-                fileAsString = new String(fileArray, charset);
+                fileAsString = new String(fileArray, charsetUTF8);
             } catch (Exception e) {
                 //System.out.println("Could not read User Data");
                 return null;
@@ -243,9 +243,9 @@ public class DB {
                 return false;
         }
 
-        String dataToWrite = fileData;
+        String dataToWrite;
         try {
-            FileWriter writer = new FileWriter(usersPath + uid + "/" + uid + fname);
+            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(usersPath + uid + "/" + uid + fname, true), "UTF-8");
             BufferedWriter bw = new BufferedWriter(writer);
             try {
                 String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
@@ -275,7 +275,7 @@ public class DB {
             return null;
         }
 
-        String fname = "";
+        String fname;
         switch (fileType) {
             case USER_DATA:
                 fname = "USERDATA.bin";
@@ -315,8 +315,7 @@ public class DB {
             return false;
         }
 
-        String fname = "";
-        String fileAsString = "";
+        String fname;
         switch (fileType) {
             case USER_DATA:
                 fname = "USERDATA.bin";
