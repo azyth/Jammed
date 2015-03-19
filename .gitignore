@@ -18,3 +18,5 @@ hs_err_pid*
 *.iml
 
 Jammed/root/server/log.txt
+Enc.java
+*-AESkey.txt
