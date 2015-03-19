@@ -1,5 +1,5 @@
 /**
- * @Author Daniel Etter
+ * @Author Daniel Etter (dje67)
  */
 
 // Wrapper for Socket things
@@ -41,19 +41,20 @@ public class Communication {
                 // Waits for new connection
                 // this.socket = this.serverSocket.accept(); // Moving so we can block in Jelly
             }
-            if (this.type == Type.CLIENT) {
+            else if (this.type == Type.CLIENT) {
                 // Create a Client
                 SocketFactory ClientSocketFactory = SSLSocketFactory.getDefault();
-                System.out.println("He");
                 Socket socket = ClientSocketFactory.createSocket(hostname, port);
-                System.out.println("Does it!");
                 this.tx = new ObjectOutputStream(socket.getOutputStream());
                 this.rx = new ObjectInputStream(socket.getInputStream());
+            }
+            else{
+            	throw new SocketException("Invalid type!");
             }
         }
         catch(Exception e){
         	e.printStackTrace();
-            throw new SocketException("Error!");   
+            throw new SocketException("Failure in Communicaiton constructor!");   
         }
     }
 
@@ -62,7 +63,7 @@ public class Communication {
           this.tx.writeObject(thing);
       }
       catch(Exception e){
-          throw new SocketException("Error!");
+          throw new SocketException("Error in Communication.send!");
       }
   }
 
@@ -71,21 +72,24 @@ public class Communication {
           return (Request) this.rx.readObject();
       }
       catch(Exception e){
-            throw new SocketException("Error!");
+            throw new SocketException("Error in Communication.receive!");
       }
   }
 
   public void close() throws SocketException{
       try{
           if(this.type == Type.SERVER){
-              this.socket.close();
+              this.serverSocket.close();
           }
-          if(this.type == Type.CLIENT){
-              send(new TerminationReq(TerminationReq.Term.userReq));
+          else if(this.type == Type.CLIENT){
+              send(new TerminationReq(TerminationReq.Term.userReq)); // May or may not use? @DetterVT
+          }
+          else{
+        	  throw new SocketException("Invalid type!"); // This should never be reached. _Ever_.
           }
       }
       catch(Exception e){
-          throw new SocketException("Error!");
+          throw new SocketException("Error in Communication.close!");
       }
   }
   
@@ -94,13 +98,34 @@ public class Communication {
 		  if(this.type == Type.SERVER){
 			  this.serverSocket.accept();
 		  }
-		  else{
+		  else if (this.type == Type.CLIENT){
 			  throw new SocketException("Clients can't accept()!");
+		  }
+		  else{
+			  throw new SocketException("Invalid type in accept!"); // Should never see the light of day
 		  }
 	  }
 	  catch(Exception e){
 		  e.printStackTrace();
-		  throw new SocketException("Error!");
+		  throw new SocketException("Error in accept!!");
+	  }
+  }
+  
+  public int getPort() throws SocketException{
+	  try{
+		  if(this.type == Type.SERVER){
+			  return this.serverSocket.getLocalPort();
+		  }
+		  if(this.type == Type.CLIENT){
+			  return this.socket.getLocalPort();
+		  }
+		  else{
+			  throw new SocketException("Invalid type!");  // Still shouldn't ever be used
+		  }
+	  }
+	  catch(Exception e){
+		  e.printStackTrace();
+		  throw new SocketException("Error in getPort()!");
 	  }
   }
 
