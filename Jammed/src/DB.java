@@ -21,7 +21,7 @@ public class DB {
     private static final String usersPath = "root/users/";
 
     public enum DBFileTypes {
-        USER_DATA, USER_PWD_FILE, USER_LOG
+        USER_DATA, USER_PWD_FILE, USER_LOG, USER_IV
     }
 
     /* Testing */
@@ -283,6 +283,8 @@ public class DB {
             case USER_PWD_FILE:
                 fname = "PWD.bin";
                 break;
+            case USER_IV:
+                fname = "_IV.bin";
             default:
                 return null;
         }
@@ -322,6 +324,8 @@ public class DB {
             case USER_PWD_FILE:
                 fname = "PWD.bin";
                 break;
+            case USER_IV:
+                fname = "_IV.bin";
             default:
                 return false;
         }
