@@ -84,6 +84,26 @@ public class Jelly {
             		// If Log Request
             		// state = ServerState.LOG;
             	}
+            	
+            	if(state == ServerState.DATA_DOWN){
+            		
+            	}
+            	
+            	if(state == ServerState.DATA_UP){
+            		
+            	}
+            	
+            	if(state == ServerState.DATA_DOWN){
+            		
+            	}
+            	
+            	if(state == ServerState.LOG){
+            		
+            	}
+            	
+            	if(state == ServerState.LOG){
+            		
+            	}
             }
         }
         catch(Exception e){
