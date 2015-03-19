@@ -30,7 +30,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class UserData {
 
     // local file name key will be stored at
-	private final String SECKEYFILE = "-AESkey.txt";
+	private final static String SECKEYFILE = "-AESkey.txt";
  	private String keyfile;
 	private SecretKey dataSecKey;
 
@@ -40,7 +40,7 @@ public class UserData {
 	 		IOException, InvalidKeyException {
 		//Load SecretKey and IV
 		this.keyfile = username+SECKEYFILE;
-		loadKey();
+		loadKey(this.keyfile);
 	}
 	
 	
@@ -90,14 +90,14 @@ public class UserData {
 	/* used to initiate secret key and store it to users machine, 
 	 * either to replace a compromised key or for a new user
 	 */
-	public void enroll(String username) throws IOException, 
+	public static void enroll(String username) throws IOException, 
 			GeneralSecurityException {
-		generateKey();
-		storeKey();
+		
+		storeKey(generateKey(),username+SECKEYFILE);
 	}
 	
 	//generates a new AES-256 secret key stores in dataSecKey
-	private SecretKey generateKey() throws GeneralSecurityException {
+	private static SecretKey generateKey() throws GeneralSecurityException {
 	    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
 	    keyGenerator.init(256); 
 	    return keyGenerator.generateKey();
@@ -108,16 +108,16 @@ public class UserData {
 	}
 
 	//loads secret key from a local file and stores it to dataSecKey
-	private void loadKey() throws IOException, GeneralSecurityException {
-		byte[] encoded = Files.readAllBytes(Paths.get(this.keyfile));
+	private void loadKey(String file) throws IOException, GeneralSecurityException {
+		byte[] encoded = Files.readAllBytes(Paths.get(file));
 		SecretKeyFactory skf = SecretKeyFactory.getInstance("AES");
 		dataSecKey = skf.generateSecret(new SecretKeySpec(encoded,"AES"));
 	}
 	
 	//writes secret key to a file on local machine for storage 
-	private void storeKey() throws IOException {
-		FileOutputStream fout = new FileOutputStream(this.keyfile);
-		fout.write(this.dataSecKey.getEncoded());
+	private static void storeKey(SecretKey key, String file) throws IOException {
+		FileOutputStream fout = new FileOutputStream(file);
+		fout.write(key.getEncoded());
 		fout.close();
 	}
 
