@@ -58,7 +58,10 @@ public class UserData {
 				
 		byte[] text = aes.doFinal(data);
 		String userdata = new String(text, "UTF8");	
-		
+		System.out.println("data decrypted");
+		System.out.println(userdata);
+
+
 		return stringToList(userdata);
 	}
 	
@@ -77,7 +80,9 @@ public class UserData {
 		byte[] textbyte = text.getBytes("UTF8");
 		
 		byte[] block = aes.doFinal(textbyte);
-		
+		System.out.println("data encrypted");
+		System.out.println(block);
+
 		return block;
 	}
 	
@@ -100,6 +105,7 @@ public class UserData {
 	private static SecretKey generateKey() throws GeneralSecurityException {
 	    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
 	    keyGenerator.init(256); 
+		System.out.println("key created");
 	    return keyGenerator.generateKey();
 	}
 	//generates a random string of bytes for a new IV
@@ -112,6 +118,7 @@ public class UserData {
 		byte[] encoded = Files.readAllBytes(Paths.get(file));
 		SecretKeyFactory skf = SecretKeyFactory.getInstance("AES");
 		dataSecKey = skf.generateSecret(new SecretKeySpec(encoded,"AES"));
+		System.out.println("key loaded");
 	}
 	
 	//writes secret key to a file on local machine for storage 
@@ -119,6 +126,7 @@ public class UserData {
 		FileOutputStream fout = new FileOutputStream(file);
 		fout.write(key.getEncoded());
 		fout.close();
+		System.out.println("key stored");
 	}
 
 //	These functions would only be used if we are not passing in the IV with userdata
@@ -177,7 +185,7 @@ public class UserData {
                        equals("wone\nuone\npone\nwtwo\nutwo\nptwo"));
   }
 
-  private static String listToString(ArrayList<LoginInfo> lst) {
+  public static String listToString(ArrayList<LoginInfo> lst) {
     String str = "";
 
     for (LoginInfo l : lst) {
@@ -190,7 +198,7 @@ public class UserData {
     return str;
   }
 
-  private static ArrayList<LoginInfo> stringToList(String str) {
+  public static ArrayList<LoginInfo> stringToList(String str) {
     // handle zero-length string specially TODO any other edge cases?
     if (str.equals("")) {
       return new ArrayList<LoginInfo>();
