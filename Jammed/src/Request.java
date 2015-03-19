@@ -37,11 +37,25 @@ public abstract class Request {
 	public void setError(ErrorMessage e){this.error=e;}
 	public void setEvent(EventType e){this.event=e;}
 
-	public abstract String toString();
-
-  public static Request fromString(String req) {
-    // TODO
-    return null;
+  public static String errToString(ErrorMessage e) {
+    String message;
+    switch (e) {
+      case badArgument:
+        message = "Incorrect argument to function.";
+        break;
+      case validationFailed:
+        message = "Could not validate credentials.";
+        break;
+      case somethingBad:
+        message = "Some unknown but terrible thing happened.";
+        break;
+      case none:
+        message = "No error.";
+        break;
+      default:
+        message = "Some other error occurred - update errToString!";
+    }
+    return message;
   } 
 
 }

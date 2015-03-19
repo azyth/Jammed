@@ -1,5 +1,6 @@
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketException;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -22,9 +23,10 @@ public class Jammed {
   public static void main(String[] args) {
     // (1) display a user interface
     UserInterface ui = new UserInterface();
+    Communication server = new Communication(Communication.Type.CLIENT);
 
     try {
-      Communication server = new Communication(Communication.Type.CLIENT);
+      server.connect();
 
       LoginReq verified = null;
       UserData data = null;
@@ -46,45 +48,35 @@ public class Jammed {
       }
 
       // (5) get the data
-      server.send(new UserDataReq());							//send a download request
-      UserDataReq datareq = (UserDataReq) server.receive(); 	//receive a download response with success and userdata or an error message
-      if (datareq.getSuccess()){
-    	  //proceeed
-    	  byte[] iv = datareq.getIV();
-    	  byte[] udata = datareq.getData();
-    	  //TODO UserData.decData(udata,iv,
-      }else{
-    	  //no data will be there
-    	  Request.ErrorMessage err = datareq.getError();
-    	  //find out why, retry?
+      // send a download request
+      server.send(new UserDataReq());
+      // receive a download response with success and userdata or an error
+      // message
+      UserDataReq datareq = (UserDataReq) server.receive();
+
+      if (!datareq.getSuccess()){
+        throw new UserDataException(datareq.getError());
       }
+
       // (6) display the data
-      
-      
       // (7) track any changes that were made
-      ArrayList<LoginInfo> plaindata = data.decData(datareq.getData(), datareq.getIV());
+      ArrayList<LoginInfo> plaindata = data.decData(datareq.getData(),
+                                                    datareq.getIV());
       ArrayList<LoginInfo> newdata = ui.getChanges(plaindata);
 
       if (newdata != null) {
         // (8) if changes were made, send updated data to server for storage
-    	byte[] iv = data.generateIV();
+        byte[] iv = data.generateIV();
         byte[] encdata = data.encData(newdata, iv); 
         server.send(new UserDataReq(encdata,iv));					//send upload request
 
-        UserDataReq uploadresp = (UserDataReq) server.receive();//receive upload resonse with success of error message
-        if (uploadresp.getSuccess()){
-        	//break out, everythign was good.
-        }else{
-        	//problem here, retry?
-        	 
+        //receive upload resonse with success of error message
+        UserDataReq uploadresp = (UserDataReq) server.receive();
+        if (!uploadresp.getSuccess()){
+          // something terrible happened
+          throw new UserDataException(uploadresp.getError());
         }
-        
       }
-      server.close();
-
-      // (9) close the connection with the server
-      
-     //TODO TerminationReq is there if we want to use it for this step.
 
     } catch (FileNotFoundException e) {
       ui.error("No key files found - have you enrolled yet?");
@@ -94,12 +86,25 @@ public class Jammed {
       ui.error("Does your system not support UTF8? That's dumb.");
     } catch (ClassCastException e) {
       ui.error("Bad response from server - exiting...");
-    } catch (Exception e) {   // TODO make specific to communication
+    } catch (SocketException e) {   // TODO make specific to communication
       ui.error("Server suffered fatal DNE error - exiting. Any changes you " +
                "made to your data may be unsaved.");
+    } catch (UserDataException e) {
+      ui.error(Request.errToString(e.error));
     }
 
+    // (9) close the connection with the server
+    //TODO TerminationReq is there if we want to use it for this step.
+    server.close();
     ui.close();
+  }
+
+  private static class UserDataException extends Exception {
+    Request.ErrorMessage error;
+
+    UserDataException(Request.ErrorMessage e) {
+      error = e;
+    }
   }
 
 }

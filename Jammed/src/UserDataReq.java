@@ -46,9 +46,5 @@ public class UserDataReq extends Request {
 	public byte[] getData(){return this.userdata;}
 	public byte[] getIV(){return this.iv;}
 
-  public String toString() {
-    // TODO
-    return "";
-  }
 }
 

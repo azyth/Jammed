@@ -186,16 +186,16 @@ public class UserData {
   }
 
   public static String listToString(ArrayList<LoginInfo> lst) {
-    String str = "";
+    StringBuffer str = new StringBuffer();
 
     for (LoginInfo l : lst) {
       if (str.length() > 0) {
-        str += "\n";
+        str.append("\n");
       }
-      str += l.website + "\n" + l.username + "\n" + l.password;
+      str.append(l.website + "\n" + l.username + "\n" + l.password);
     }
 
-    return str;
+    return str.toString();
   }
 
   public static ArrayList<LoginInfo> stringToList(String str) {

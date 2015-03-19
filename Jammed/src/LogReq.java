@@ -43,9 +43,4 @@ public class LogReq extends Request{
 	public String getLog(){return this.userLog;}
 	public String getUsername(){return this.username;}
 
-  public String toString() {
-    return "";
-    // TODO
-  }
-
 }

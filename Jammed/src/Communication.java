@@ -28,6 +28,7 @@ public class Communication {
     private Socket socket = null;
     private ObjectInputStream rx = null;
     private ObjectOutputStream tx = null;
+    private boolean dummy = true;
 
     public Communication(Communication.Type type) throws SocketException{
         try {
@@ -37,16 +38,13 @@ public class Communication {
                 // Create a Server
                 ServerSocketFactory serverSocketFactory = SSLServerSocketFactory.getDefault();
                 this.serverSocket = serverSocketFactory.createServerSocket(port);
-
+                this.dummy = false;
                 // Waits for new connection
                 // this.socket = this.serverSocket.accept(); // Moving so we can block in Jelly
             }
             else if (this.type == Type.CLIENT) {
                 // Create a Client
-                SocketFactory ClientSocketFactory = SSLSocketFactory.getDefault();
-                Socket socket = ClientSocketFactory.createSocket(hostname, port);
-                this.tx = new ObjectOutputStream(socket.getOutputStream());
-                this.rx = new ObjectInputStream(socket.getInputStream());
+            	// Dummy
             }
             else{
             	throw new SocketException("Invalid type!");
@@ -57,6 +55,23 @@ public class Communication {
             throw new SocketException("Failure in Communicaiton constructor!");   
         }
     }
+    
+  public void connect() throws SocketException{
+	  if(this.type != Type.CLIENT){
+		  throw new SocketException("Can't connect from a server!");
+	  }
+	  try{
+		  SocketFactory ClientSocketFactory = SSLSocketFactory.getDefault();
+          Socket socket = ClientSocketFactory.createSocket(hostname, port);
+          this.tx = new ObjectOutputStream(socket.getOutputStream());
+          this.rx = new ObjectInputStream(socket.getInputStream());
+          this.dummy = false;
+	  }
+	  catch(Exception e){
+		  e.printStackTrace();
+		  throw new SocketException("Failure in client construtor!");
+	  }
+  }
 
   public void send(Request thing) throws SocketException{
       try{
@@ -76,20 +91,28 @@ public class Communication {
       }
   }
 
-  public void close() throws SocketException{
+  public void close(){
       try{
-          if(this.type == Type.SERVER){
+    	  if(this.dummy == false){
+    		  return; // Can't close a dummy
+    	  }
+    	  else if(this.type == Type.SERVER){
+        	  this.tx.close();
+        	  this.rx.close();
               this.serverSocket.close();
           }
           else if(this.type == Type.CLIENT){
-              send(new TerminationReq(TerminationReq.Term.userReq)); // May or may not use? @DetterVT
+              this.tx.close();
+              this.rx.close();
+              this.socket.close();
           }
           else{
-        	  throw new SocketException("Invalid type!"); // This should never be reached. _Ever_.
+        	  //throw new SocketException("Invalid type!"); // This should never be reached. _Ever_.
           }
       }
       catch(Exception e){
-          throw new SocketException("Error in Communication.close!");
+    	  e.printStackTrace();
+          System.out.println("Error in Communication.close!");
       }
   }
   
