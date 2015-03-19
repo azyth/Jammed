@@ -30,8 +30,4 @@ public class TerminationReq extends Request {
 	
 	public Term getReason(){return this.reason;}
 
-  public String toString() {
-    // TODO
-    return "";
-  }
 }

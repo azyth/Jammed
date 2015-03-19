@@ -30,9 +30,4 @@ public class LoginReq extends Request {
 	public String getUsername(){return this.username;}
 	public String getPassword(){return this.password;}
 
-  public String toString() {
-    return "";
-    // TODO
-  }
-
 }
