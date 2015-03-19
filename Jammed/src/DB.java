@@ -196,8 +196,8 @@ public class DB {
             return null;
         }
 
-        String fname = "";
-        String fileAsString = "";
+        String fname;
+        String fileAsString;
         switch (fileType) {
             case USER_LOG:
                 fname = "LOG.txt";
@@ -243,7 +243,7 @@ public class DB {
                 return false;
         }
 
-        String dataToWrite = fileData;
+        String dataToWrite;
         try {
             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(usersPath + uid + "/" + uid + fname, true), "UTF-8");
             BufferedWriter bw = new BufferedWriter(writer);
@@ -275,7 +275,7 @@ public class DB {
             return null;
         }
 
-        String fname = "";
+        String fname;
         switch (fileType) {
             case USER_DATA:
                 fname = "USERDATA.bin";
@@ -315,8 +315,7 @@ public class DB {
             return false;
         }
 
-        String fname = "";
-        String fileAsString = "";
+        String fname;
         switch (fileType) {
             case USER_DATA:
                 fname = "USERDATA.bin";
