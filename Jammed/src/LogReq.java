@@ -1,6 +1,8 @@
 
 
 
+
+
 /*
  * LogReq handles the requests for the users log file so that they might 
  * manually audit their account activity.
@@ -16,6 +18,8 @@ public class LogReq extends Request{
 	public LogReq(String username){
 		this.username = username;
 		this.setType(MessageType.request);
+		this.setEvent(EventType.log);
+
 	}
 	//Response constructors
 	//failure 
@@ -24,6 +28,7 @@ public class LogReq extends Request{
 		this.setError(err);
 		this.setType(MessageType.response);
 		this.setSuccess(false);
+		this.setEvent(EventType.log);
 	}
 	//succeed
 	public LogReq(String username, String log){
@@ -31,6 +36,7 @@ public class LogReq extends Request{
 		this.userLog=log;
 		this.setSuccess(true);
 		this.setType(MessageType.response);
+		this.setEvent(EventType.log);
 	}
 	
 //	public void setLog(String l){this.userLog=l;}

@@ -16,11 +16,13 @@ public class LoginReq extends Request {
 		this.username=username;
 		this.setSuccess(success);
 		this.setError(err);
+		this.setEvent(EventType.login);
 	}
 	//Request constructor
 	public LoginReq(LoginInfo l){
 		this.username=l.username;
 		this.password=l.password;
+		this.setEvent(EventType.login);
 
 	}
 	

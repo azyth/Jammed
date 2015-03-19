@@ -1,5 +1,7 @@
 
 
+
+
 /*
  * UserDataReq subclass of Requests that handles the transfer of 
  * the User's  Data between client and server
@@ -16,12 +18,14 @@ public class UserDataReq extends Request {
 	//Request download
 	public UserDataReq(){
 		this.direction = ReqType.download;
+		this.setEvent(EventType.userDataDownload);
 	}
 	//Request upload
 	public UserDataReq(byte[] cyphertext, byte[] iv){
 		this.direction = ReqType.upload;
 		this.userdata=cyphertext;
 		this.iv=iv;
+		this.setEvent(EventType.userDataUpload);
 	}
 	//Response w/o data
 	public UserDataReq(boolean success, ReqType dir, ErrorMessage err){

@@ -15,9 +15,11 @@
  */
 public abstract class Request {
 	
+	public enum EventType{login,log,userDataDownload,userDataUpload,termination}
 	public enum MessageType{request,response}
 	public enum ErrorMessage{badArgument,validationFailed,somethingBad,none}//etc
 	
+	private EventType event;
 	private MessageType type;
 	private boolean success = false;
 	private ErrorMessage error=ErrorMessage.none;
@@ -28,10 +30,12 @@ public abstract class Request {
 	public boolean getSuccess(){return this.success;}
 	public ErrorMessage getError(){return this.error;}
 	public String getMessage(){return this.message;}
+	public EventType getEvent(){return this.event;}
 	
 	public void setType(MessageType t){this.type=t;}
 	public void setSuccess(boolean s){this.success=s;}
 	public void setError(ErrorMessage e){this.error=e;}
+	public void setEvent(EventType e){this.event=e;}
 
 	public abstract String toString();
 
