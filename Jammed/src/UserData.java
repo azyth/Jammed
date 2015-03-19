@@ -30,7 +30,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class UserData {
 
     // local file name key will be stored at
-	private final String SECKEYFILE = "-AESkey.txt";
+	private final static String SECKEYFILE = "-AESkey.txt";
  	private String keyfile;
 	private SecretKey dataSecKey;
 
@@ -40,7 +40,7 @@ public class UserData {
 	 		IOException, InvalidKeyException {
 		//Load SecretKey and IV
 		this.keyfile = username+SECKEYFILE;
-		loadKey();
+		loadKey(this.keyfile);
 	}
 	
 	
@@ -58,7 +58,10 @@ public class UserData {
 				
 		byte[] text = aes.doFinal(data);
 		String userdata = new String(text, "UTF8");	
-		
+		System.out.println("data decrypted");
+		System.out.println(userdata);
+
+
 		return stringToList(userdata);
 	}
 	
@@ -77,7 +80,9 @@ public class UserData {
 		byte[] textbyte = text.getBytes("UTF8");
 		
 		byte[] block = aes.doFinal(textbyte);
-		
+		System.out.println("data encrypted");
+		System.out.println(block);
+
 		return block;
 	}
 	
@@ -90,16 +95,17 @@ public class UserData {
 	/* used to initiate secret key and store it to users machine, 
 	 * either to replace a compromised key or for a new user
 	 */
-	public void enroll(String username) throws IOException, 
+	public static void enroll(String username) throws IOException, 
 			GeneralSecurityException {
-		generateKey();
-		storeKey();
+		
+		storeKey(generateKey(),username+SECKEYFILE);
 	}
 	
 	//generates a new AES-256 secret key stores in dataSecKey
-	private SecretKey generateKey() throws GeneralSecurityException {
+	private static SecretKey generateKey() throws GeneralSecurityException {
 	    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
 	    keyGenerator.init(256); 
+		System.out.println("key created");
 	    return keyGenerator.generateKey();
 	}
 	//generates a random string of bytes for a new IV
@@ -108,17 +114,19 @@ public class UserData {
 	}
 
 	//loads secret key from a local file and stores it to dataSecKey
-	private void loadKey() throws IOException, GeneralSecurityException {
-		byte[] encoded = Files.readAllBytes(Paths.get(this.keyfile));
+	private void loadKey(String file) throws IOException, GeneralSecurityException {
+		byte[] encoded = Files.readAllBytes(Paths.get(file));
 		SecretKeyFactory skf = SecretKeyFactory.getInstance("AES");
 		dataSecKey = skf.generateSecret(new SecretKeySpec(encoded,"AES"));
+		System.out.println("key loaded");
 	}
 	
 	//writes secret key to a file on local machine for storage 
-	private void storeKey() throws IOException {
-		FileOutputStream fout = new FileOutputStream(this.keyfile);
-		fout.write(this.dataSecKey.getEncoded());
+	private static void storeKey(SecretKey key, String file) throws IOException {
+		FileOutputStream fout = new FileOutputStream(file);
+		fout.write(key.getEncoded());
 		fout.close();
+		System.out.println("key stored");
 	}
 
 //	These functions would only be used if we are not passing in the IV with userdata
@@ -177,7 +185,7 @@ public class UserData {
                        equals("wone\nuone\npone\nwtwo\nutwo\nptwo"));
   }
 
-  private static String listToString(ArrayList<LoginInfo> lst) {
+  public static String listToString(ArrayList<LoginInfo> lst) {
     String str = "";
 
     for (LoginInfo l : lst) {
@@ -190,7 +198,7 @@ public class UserData {
     return str;
   }
 
-  private static ArrayList<LoginInfo> stringToList(String str) {
+  public static ArrayList<LoginInfo> stringToList(String str) {
     // handle zero-length string specially TODO any other edge cases?
     if (str.equals("")) {
       return new ArrayList<LoginInfo>();
