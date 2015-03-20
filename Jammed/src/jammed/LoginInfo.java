@@ -1,3 +1,4 @@
+package jammed;
 
 /** Wrapper for two strings. Seems moderately useful. */
 public class LoginInfo implements Comparable<LoginInfo> {

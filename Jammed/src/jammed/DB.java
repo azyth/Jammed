@@ -1,3 +1,5 @@
+package jammed;
+
 /* Marcos Pedreiro - mvp34
    3/16/15
    Class to perform file management for the server
@@ -122,12 +124,12 @@ public class DB {
      *  Output: A new user folder with name uid: root/users/uid/
      *  Return: Boolean, true if creation was successful.
      * */
-    public static boolean newUser(String uid) {
+    public static boolean newUser(String uid) { // TODO: Create user log
         Path newUser = Paths.get(usersPath + uid + "/");
 
         if(Files.exists(newUser)) {
             //System.out.println("User already exists");
-            return false;
+            return true;
         }
         // Create root and server folder
         try {
@@ -185,13 +187,35 @@ public class DB {
 
     }
 
+    /** Purpose: Reads the server log.
+     *  Input: None.
+     *  Output: None.
+     *  Return: String of the server log data.
+     * */
+    public static String readLog() {
+        Path lgname = Paths.get(serverPath + "log.txt");
+        if(!Files.exists(lgname)) {
+            return null;
+        }
+
+        byte[] fileArray;
+        try {
+            fileArray = Files.readAllBytes(lgname);
+            return new String(fileArray, charsetUTF8);
+        } catch (Exception e) {
+            //System.out.println("Could not read User Data");
+            return null;
+        }
+
+    }
+
     /** Purpose: Reads the log from a specific user.
      *  Input: User id uid of user who's data is needed, fileType of which file to read.
      *  Output: None.
      *  Return: The data of the file (As a string).
      * */
-    public static String readUserLog(String uid, DBFileTypes fileType) { // TODO determine output type
-        // To do
+    public static String readUserLog(String uid, DBFileTypes fileType) {
+        // TODO: Maybe return a zero length string
         if(!searchUser(uid)) {
             return null;
         }
@@ -228,8 +252,7 @@ public class DB {
      *  Output: Updated version of the file in the specified uid folder.
      *  Return: Boolean, true if operation successful.
      * */
-    public static boolean writeUserLog(String uid, DBFileTypes fileType, String fileData) { // TODO: Determine fileData input type
-        // To do
+    public static boolean writeUserLog(String uid, DBFileTypes fileType, String fileData) {
         if(!searchUser(uid)) {
             return false;
         }
@@ -249,7 +272,7 @@ public class DB {
             BufferedWriter bw = new BufferedWriter(writer);
             try {
                 String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
-                dataToWrite = "Entry: " + fileData + " | time written" + timeStamp;
+                dataToWrite = "Entry: " + fileData + " | time written: " + timeStamp;
                 bw.write(dataToWrite);
                 bw.newLine();
                 bw.flush();
@@ -260,7 +283,7 @@ public class DB {
             //System.out.println("Could not write data to file!");
             return false;
         }
-        return false;
+        return true;
 
     }
 
@@ -269,8 +292,8 @@ public class DB {
      *  Output: None.
      *  Return: The data of the file (As a byte[]).
      * */
-    public static byte[] readEncodedFile(String uid, DBFileTypes fileType) { // TODO determine output type
-        // To do
+    public static byte[] readEncodedFile(String uid, DBFileTypes fileType) {
+        // TODO: Maybe return a zero length array
         if(!searchUser(uid)) {
             return null;
         }
@@ -285,6 +308,7 @@ public class DB {
                 break;
             case USER_IV:
                 fname = "_IV.bin";
+                break;
             default:
                 return null;
         }
@@ -325,6 +349,7 @@ public class DB {
                 break;
             case USER_IV:
                 fname = "_IV.bin";
+                break;
             default:
                 return false;
         }

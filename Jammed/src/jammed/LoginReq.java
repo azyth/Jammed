@@ -1,4 +1,4 @@
-
+package jammed;
 
 /*
  * LoginReq handles the Authentication of a user with the server by transmitting 
@@ -8,6 +8,8 @@
  */
 public class LoginReq extends Request {
 
+	private static final long serialVersionUID = 5L; // For Serialization - @Dettervt
+	
 	private String username;
 	private String password;
 	

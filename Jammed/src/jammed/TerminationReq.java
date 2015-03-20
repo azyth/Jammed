@@ -1,5 +1,4 @@
-
-
+package jammed;
 
 
 /*
@@ -9,6 +8,8 @@
  * once instantiated the data contained within the object cannot be changed or modified
  */
 public class TerminationReq extends Request {
+	
+	private static final long serialVersionUID = 3L; // For Serialization - @Dettervt
 	
 	//reason for close? timeout, user request, server goign to explode
 	public enum Term{timeout,userReq,armageddon,none}

@@ -1,3 +1,5 @@
+package jammed;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,6 +14,7 @@ import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.*;
 
 public class Jelly {
 	private enum ServerState{INIT, ACCEPTING, AUTHENTICATING, AUTHORIZING, SESSION}
@@ -21,7 +24,7 @@ public class Jelly {
 	
 	// TODO: Add multi threading class Toast(Server)/Crumb(Connection Handler)
 	// TODO: Add actual authentication
-	// TODO: Add system logging
+	// TODO: Add proper system logging
 
 	public static void main(String[] args){
 		if(DB.initialize() == false){
@@ -35,6 +38,7 @@ public class Jelly {
         	Request.EventType event;
         	Request response = null;
         	state = ServerState.INIT;
+        	
             Communication comm = new Communication(Communication.Type.SERVER);
             System.out.println("Jelly Server Created on port "+comm.getPort());
             
@@ -70,6 +74,7 @@ public class Jelly {
         				// Do nothing for all other types of request
         				break;
             		}
+            		DB.writeLog(SESSION_USERNAME+" logged in");
             		continue;
             	}
             	
@@ -90,10 +95,10 @@ public class Jelly {
             				else{
             					 logResponse = new LogReq(logreq.getUsername(), Request.ErrorMessage.badArgument); //TODO: Adjust error messages
             				}
-            				comm.send(response);
+            				comm.send(logResponse);
+            				DB.writeLog(SESSION_USERNAME+" log request");
             				break;
             			case userDataDownload:
-            				UserDataReq downloadReq = (UserDataReq)req;
             				UserDataReq downloadResponse = null;
             				byte[] userData = DB.readEncodedFile(SESSION_USERNAME, DB.DBFileTypes.USER_DATA);
             				if(userData != null){
@@ -103,6 +108,7 @@ public class Jelly {
             					downloadResponse = new UserDataReq(false, UserDataReq.ReqType.download, Request.ErrorMessage.somethingBad);
             				}
             				comm.send(downloadResponse);
+            				DB.writeLog(SESSION_USERNAME+" data downloaded: "+downloadResponse.getSuccess());
             				break;
             			case userDataUpload:
             				UserDataReq uploadReq = (UserDataReq)req;
@@ -111,14 +117,16 @@ public class Jelly {
             					uploadResponse = new UserDataReq(true, UserDataReq.ReqType.upload, Request.ErrorMessage.none);
             				}
             				else{
-            					uploadResponse = new UserDataReq(true, UserDataReq.ReqType.upload, Request.ErrorMessage.somethingBad);
+            					uploadResponse = new UserDataReq(false, UserDataReq.ReqType.upload, Request.ErrorMessage.somethingBad);
             				}
             				comm.send(uploadResponse);
+            				DB.writeLog(SESSION_USERNAME+" data uploaded: "+uploadResponse.getSuccess());
             				break;
             			case termination:
             				TerminationReq terminate = new TerminationReq(true, Request.ErrorMessage.none);
             				comm.send(terminate);
             				comm.close();
+            				DB.writeLog(SESSION_USERNAME+" session terminated");
             				break;
             			}
             			continue;
