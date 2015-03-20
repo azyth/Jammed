@@ -145,13 +145,23 @@ public class UserData {
 //		ivout.close();
 //	}
 
-	/************************  ARRAYLIST SECTION  *************************/
+	/************************  ARRAYLIST SECTION  
+	 * @throws IOException 
+	 * @throws GeneralSecurityException 
+	 * @throws InvalidKeyException *************************/
   // Note that, for these methods to work, no piece of user data can contain a
   // newline. This is probably OK. The UI ensures this.
 
   // test test test
-  public static void main(String[] args) {
-    String good = "this\nis\na\ngood\nstring\nthing";
+  public static void main(String[] args) throws IOException, InvalidKeyException, GeneralSecurityException {
+	  byte[] cryptodata = Files.readAllBytes(Paths.get("guestud.txt"));
+	  ArrayList<LoginInfo> udata;
+		byte[] iv = Files.readAllBytes(Paths.get("guestiv.txt"));
+		UserData ud = new UserData("guest");
+		udata = ud.decData(cryptodata, iv);
+		System.out.println("un-encrypted");
+		System.out.println(UserData.listToString(udata));
+    /*String good = "this\nis\na\ngood\nstring\nthing";
     String bad = "this\none\nis\nnot";
     String none = "";
 
@@ -187,7 +197,7 @@ public class UserData {
 
     System.out.print("Two: ");
     System.out.println(listToString(twoentries).
-                       equals("wone\nuone\npone\nwtwo\nutwo\nptwo"));
+                       equals("wone\nuone\npone\nwtwo\nutwo\nptwo"));*/
   }
 
   public static String listToString(ArrayList<LoginInfo> lst) {
