@@ -1,9 +1,7 @@
 package jammed;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
@@ -107,7 +105,7 @@ public class UserData {
 	private static SecretKey generateKey() throws GeneralSecurityException {
 	    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
 	    keyGenerator.init(256); 
-		System.out.println("key created");
+//		System.out.println("key created");
 	    return keyGenerator.generateKey();
 	}
 	//generates a random string of bytes for a new IV
@@ -120,15 +118,20 @@ public class UserData {
 		byte[] encoded = Files.readAllBytes(Paths.get(file));
 		SecretKeyFactory skf = SecretKeyFactory.getInstance("AES");
 		dataSecKey = skf.generateSecret(new SecretKeySpec(encoded,"AES"));
-		System.out.println("key loaded");
+//		System.out.println("key loaded");
 	}
 	
 	//writes secret key to a file on local machine for storage 
 	private static void storeKey(SecretKey key, String file) throws IOException {
 		FileOutputStream fout = new FileOutputStream(file);
-		fout.write(key.getEncoded());
-		fout.close();
-		System.out.println("key stored");
+		try {
+			fout.write(key.getEncoded());
+//			System.out.println("key stored");
+		} catch (Exception e) {
+			throw e;
+		}finally {
+			fout.close();
+		}
 	}
 
 //	These functions would only be used if we are not passing in the IV with userdata

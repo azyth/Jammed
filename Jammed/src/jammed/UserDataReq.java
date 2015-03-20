@@ -7,7 +7,7 @@ package jammed;
  * 
  * once instantiated the data contained within the object cannot be changed or modified
  */
-public class UserDataReq extends Request {
+public class UserDataReq extends Request implements Cloneable {
 	
 	private static final long serialVersionUID = 2L; // For Serialization - @Dettervt
 	public enum ReqType{upload,download}
@@ -23,8 +23,8 @@ public class UserDataReq extends Request {
 	//Request upload
 	public UserDataReq(byte[] cyphertext, byte[] iv){
 		this.direction = ReqType.upload;
-		this.userdata=cyphertext;
-		this.iv=iv;
+		this.userdata=cyphertext.clone();
+		this.iv=iv.clone();
 		this.setEvent(EventType.userDataUpload);
 	}
 	//Response w/o data
@@ -38,13 +38,19 @@ public class UserDataReq extends Request {
 		this.direction = dir;
 		this.setSuccess(success);
 		this.setError(err);
-		this.userdata=cyphertext;
-		this.iv=iv;
+		this.userdata=cyphertext.clone();
+		this.iv=iv.clone();
 	}
 		
 	public ReqType getDirection(){return this.direction;}
-	public byte[] getData(){return this.userdata;}
-	public byte[] getIV(){return this.iv;}
+	public byte[] getData(){return this.userdata.clone();}
+	public byte[] getIV(){return this.iv.clone();}
 
+//	@Override
+//	public byte[] clone() throws CloneNotSupportedException{
+//		return (byte[])super.clone();
+//		
+//	}
+	
 }
 
