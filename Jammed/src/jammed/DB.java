@@ -272,7 +272,7 @@ public class DB {
             BufferedWriter bw = new BufferedWriter(writer);
             try {
                 String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
-                dataToWrite = "Entry: " + fileData + " | time written" + timeStamp;
+                dataToWrite = "Entry: " + fileData + " | time written: " + timeStamp;
                 bw.write(dataToWrite);
                 bw.newLine();
                 bw.flush();
