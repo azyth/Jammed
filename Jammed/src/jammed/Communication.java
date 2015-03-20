@@ -29,10 +29,10 @@ public class Communication {
     private int port = 54309;
 
     private Communication.Type type = null;
-    private ServerSocket serverSocket;// = null;
-    private Socket socket;// = null;
-    private ObjectInputStream rx;// = null;
-    private ObjectOutputStream tx;// = null;
+    private ServerSocket serverSocket; // = null;
+    private Socket socket; // = null;
+    private ObjectInputStream rx; // = null;
+    private ObjectOutputStream tx; // = null;
     private boolean dummy = true;
 
     public Communication(Communication.Type type) throws SocketException{

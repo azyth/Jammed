@@ -122,6 +122,7 @@ public class DB {
     /** Purpose: Adds a new user to be managed by the server.
      *  Input: A unique user id: uid.
      *  Output: A new user folder with name uid: root/users/uid/
+     *          Writes that the user was created to the user and server log.
      *  Return: Boolean, true if creation was successful.
      * */
     public static boolean newUser(String uid) { // TODO: Create user log
@@ -134,6 +135,14 @@ public class DB {
         // Create root and server folder
         try {
             Files.createDirectories(newUser);
+
+            // initialize log
+            String userInit = "User " + uid + " Created";
+            boolean initUserLog = writeUserLog(uid, DBFileTypes.USER_LOG, userInit);
+            boolean recordOnServerLog = writeLog(userInit);
+            if(!initUserLog || !recordOnServerLog) {
+                return false;
+            }
         } catch(Exception e) {
             //System.out.println("Could not create new user: " + uid);
             return false;
