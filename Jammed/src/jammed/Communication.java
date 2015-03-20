@@ -1,11 +1,9 @@
 package jammed;
-/**
- * @Author Daniel Etter (dje67)
- */
 
-// Wrapper for Socket things
 
 // TODO: Fix all of the exceptions!
+// TODO: Certificates
+// TODO: Soft code host name and port
 
 import java.io.EOFException;
 import java.io.ObjectInputStream;
@@ -20,12 +18,15 @@ import java.net.SocketException;
 import javax.net.ssl.*;
 import java.security.cert.*;
 
-// Todo: Certs?
-
+/**
+ * Provides a wrapper class abstraction for socket communications.
+ * 
+ * @Author Daniel Etter (dje67)
+ * @version Alpha (1.0) 3.20.15
+ */
 public class Communication {
   public enum Type{SERVER, CLIENT}
 
-  // Hard Coded for now
   private String hostname = "localHost";
   private int port = 54309;
 
@@ -36,29 +37,28 @@ public class Communication {
   private ObjectOutputStream tx; // = null;
   private boolean dummy = true;
 
+  /**
+   * Class Constructor given <code>type</code>, either SERVER or CLIENT
+   * 
+   * @param type
+   * @throws SocketException
+   */
   public Communication(Communication.Type type) throws SocketException{
     try {
-      this.type = type;
-
+      
       if (this.type == Type.SERVER) {
-        // Key store  [Work in Progress]
-
-
-
-        // Create a Server
         ServerSocketFactory serverSocketFactory = SSLServerSocketFactory.getDefault();
         this.serverSocket = serverSocketFactory.createServerSocket(port);
         this.dummy = false;
-        // Waits for new connection
-        // this.socket = this.serverSocket.accept(); // Moving so we can block in Jelly
       }
       else if (this.type == Type.CLIENT) {
         // Create a Client
-        // Dummy
+        // Dummy object, call .connect() method to use
       }
       else{
         throw new SocketException("Invalid type!");
       }
+      this.type = type;
     }
     catch(RuntimeException re){
       throw re;
@@ -66,19 +66,6 @@ public class Communication {
     catch(Exception e){
       e.printStackTrace();
       throw new SocketException("Failure in Communicaiton constructor!");   
-    }
-  }
-
-  public Communication(SSLContext context) throws SocketException{
-    try{
-      // Remove me eventually
-    }
-    catch(RuntimeException re){
-      throw re;
-    }
-    catch(Exception e){
-      e.printStackTrace();
-      throw new SocketException("Failure in Communication Server Constructor!");
     }
   }
 
@@ -123,7 +110,7 @@ public class Communication {
         return got;
       }
       catch (EOFException e) {
-        // !!Hackfix: ignore
+        //FIXME: Determine if this is a hack fix or properly ignoring this exception.
         continue;
       }
       catch(RuntimeException re){
@@ -139,7 +126,7 @@ public class Communication {
 
   public void close(){
     try{
-      if(this.dummy == false){
+      if(this.dummy == true){
         return; // Can't close a dummy
       }
       else if(this.type == Type.SERVER){
@@ -153,7 +140,8 @@ public class Communication {
         this.socket.close();
       }
       else{
-        //throw new SocketException("Invalid type!"); // This should never be reached. _Ever_.
+          //throw new SocketException("Invalid type!"); 
+    	  //Impossible to reach
       }
     }
     catch(RuntimeException re){
@@ -176,7 +164,8 @@ public class Communication {
         throw new SocketException("Clients can't accept()!");
       }
       else{
-        throw new SocketException("Invalid type in accept!"); // Should never see the light of day
+        throw new SocketException("Invalid type in accept!");
+        // Impossible to reach
       }
     }
     catch(RuntimeException re){
@@ -197,7 +186,8 @@ public class Communication {
         return this.socket.getLocalPort();
       }
       else{
-        throw new SocketException("Invalid type!");  // Still shouldn't ever be used
+        throw new SocketException("Invalid type!");
+        // Impossible to reach
       }
     }
     catch(Exception e){
