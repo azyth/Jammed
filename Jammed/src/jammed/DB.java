@@ -277,13 +277,13 @@ public class DB {
         String fname;
         switch (fileType) {
             case USER_DATA:
-                fname = "USERDATA.bin";
+                fname = "USERDATA.txt";
                 break;
             case USER_PWD_FILE:
-                fname = "PWD.bin";
+                fname = "PWD.txt";
                 break;
             case USER_IV:
-                fname = "_IV.bin";
+                fname = "_IV.txt";
                 break;
             default:
                 return null;
@@ -318,13 +318,13 @@ public class DB {
         String fname;
         switch (fileType) {
             case USER_DATA:
-                fname = "USERDATA.bin";
+                fname = "USERDATA.txt";
                 break;
             case USER_PWD_FILE:
-                fname = "PWD.bin";
+                fname = "PWD.txt";
                 break;
             case USER_IV:
-                fname = "_IV.bin";
+                fname = "_IV.txt";
                 break;
             default:
                 return false;
