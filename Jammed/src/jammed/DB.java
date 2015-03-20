@@ -92,7 +92,7 @@ public class DB {
      *          Writes that the user was created to the user and server log.
      *  Return: Boolean, true if creation was successful.
      * */
-    public static boolean newUser(String uid) { 
+    public static boolean newUser(String uid) {
         Path newUser = Paths.get(usersPath + uid + "/");
 
         if(Files.exists(newUser)) {
@@ -277,13 +277,13 @@ public class DB {
         String fname;
         switch (fileType) {
             case USER_DATA:
-                fname = "USERDATA.bin";
+                fname = "USERDATA.txt";
                 break;
             case USER_PWD_FILE:
-                fname = "PWD.bin";
+                fname = "PWD.txt";
                 break;
             case USER_IV:
-                fname = "_IV.bin";
+                fname = "_IV.txt";
                 break;
             default:
                 return null;
@@ -318,13 +318,13 @@ public class DB {
         String fname;
         switch (fileType) {
             case USER_DATA:
-                fname = "USERDATA.bin";
+                fname = "USERDATA.txt";
                 break;
             case USER_PWD_FILE:
-                fname = "PWD.bin";
+                fname = "PWD.txt";
                 break;
             case USER_IV:
-                fname = "_IV.bin";
+                fname = "_IV.txt";
                 break;
             default:
                 return false;
