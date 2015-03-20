@@ -1,4 +1,4 @@
-
+package jammed;
 
 /*
  * LoginReq handles the Authentication of a user with the server by transmitting 

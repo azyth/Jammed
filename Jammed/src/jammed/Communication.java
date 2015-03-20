@@ -1,3 +1,4 @@
+package jammed;
 /**
  * @Author Daniel Etter (dje67)
  */
