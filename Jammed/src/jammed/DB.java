@@ -102,14 +102,11 @@ public class DB {
             Path lgPath = Paths.get(serverPath + "log.txt");
             Files.createFile(lgPath);
             FileOutputStream initLog = new FileOutputStream(serverPath + "log.txt");
-            try {
-                String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
-                String initialCreation = "Database initialization time: " + timeStamp + "\n";
-                byte[] iCBytes = initialCreation.getBytes(charsetUTF8);
-                initLog.write(iCBytes);
-            } finally {
-                initLog.close();
-            }
+            String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
+            String initialCreation = "Database initialization time: " + timeStamp + "\n";
+            byte[] iCBytes = initialCreation.getBytes(charsetUTF8);
+            initLog.write(iCBytes);
+            initLog.close();
         } catch(Exception e) {
             //System.out.println("Could not create server log file!");
             return false;
@@ -180,14 +177,11 @@ public class DB {
         try {
             OutputStreamWriter appendLog = new OutputStreamWriter(new FileOutputStream(serverPath + "log.txt", true), "UTF-8");
             BufferedWriter bw = new BufferedWriter(appendLog);
-            try {
-                String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
-                bw.write("Entry: " + dataToLog + " | time written: " + timeStamp);
-                bw.newLine();
-                bw.flush();
-            } finally {
-                bw.close();
-            }
+            String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
+            bw.write("Entry: " + dataToLog + " | time written: " + timeStamp);
+            bw.newLine();
+            bw.flush();
+            bw.close();
         } catch(Exception e) {
             //System.out.println("Could not append data to log!");
             return false;
@@ -279,15 +273,12 @@ public class DB {
         try {
             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(usersPath + uid + "/" + uid + fname, true), "UTF-8");
             BufferedWriter bw = new BufferedWriter(writer);
-            try {
-                String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
-                dataToWrite = "Entry: " + fileData + " | time written: " + timeStamp;
-                bw.write(dataToWrite);
-                bw.newLine();
-                bw.flush();
-            } finally {
-                bw.close();
-            }
+            String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
+            dataToWrite = "Entry: " + fileData + " | time written: " + timeStamp;
+            bw.write(dataToWrite);
+            bw.newLine();
+            bw.flush();
+            bw.close();
         } catch(Exception e) {
             //System.out.println("Could not write data to file!");
             return false;
