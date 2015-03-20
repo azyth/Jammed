@@ -15,7 +15,8 @@ import java.util.Collections;
 public class UserInterface {
 
   // test test test
-  public static void main(String[] args) throws UnsupportedEncodingException {
+  public static void main(String[] args) throws UnsupportedEncodingException,
+        IOException {
     ArrayList<LoginInfo> data = new ArrayList<LoginInfo>();
     UserInterface ui = new UserInterface();
     ui.error("hihi error");

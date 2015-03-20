@@ -23,7 +23,7 @@ public class LoginInfo implements Comparable<LoginInfo> {
 
   @Override
   public boolean equals(Object obj) {
-    if (!obj.instanceOf(LoginInfo)) {
+    if (!(obj instanceof LoginInfo)) {
       return false;
     } else {
       LoginInfo l = (LoginInfo) obj;
