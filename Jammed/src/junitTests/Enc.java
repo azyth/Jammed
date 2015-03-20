@@ -29,6 +29,15 @@ public class Enc {
 			UserData.enroll("guest");
 			UserData ud = new UserData("guest");
 			byte[] iv = ud.generateIV();
+			FileOutputStream iout = new FileOutputStream("guestiv.txt");
+			try {
+				iout.write(iv);
+//				System.out.println("key stored");
+			} catch (Exception e) {
+				throw e;
+			}finally {
+				iout.close();
+			}
 			cryptodata = ud.encData(UserData.stringToList(plaintext), iv);
 			FileOutputStream fout = new FileOutputStream("guestud.txt");
 			try {
