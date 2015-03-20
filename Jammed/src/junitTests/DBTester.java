@@ -13,7 +13,9 @@ public class DBTester {
     private final Charset charsetUTF8 = Charset.forName("UTF-8");
 
         @Test
-        public void test() {
+        public void testDB() {
+            /* Note: Reading of Data written to log has to be done manually due to time stamps and formatting */
+
             /* Init DB */
             assertEquals(true, DB.initialize());
 
@@ -86,6 +88,7 @@ public class DBTester {
                 //assertEquals(user003LogRead.equals(user002Log), false);
             } catch(Exception e) {
                 assertEquals(true, true); // This is good, should arrive here
+                // null pointer exception expected.
             }
 
             /* Server log stuff */
