@@ -331,6 +331,7 @@ public class DB {
         }
 
         String filePath = usersPath + uid + "/" + uid + fname;
+        // Try writing the way John does
         try {
             FileOutputStream fout = new FileOutputStream(filePath);
             try {
@@ -338,12 +339,11 @@ public class DB {
             } finally {
                 fout.close();
             }
-
         } catch (Exception e) {
             return false;
         }
         return true;
-        /*
+        /* // original
         try {
             Files.write(Paths.get(filePath), fileData);
         } catch(Exception e) {
