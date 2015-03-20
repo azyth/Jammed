@@ -50,6 +50,9 @@ public class Communication {
             	throw new SocketException("Invalid type!");
             }
         }
+        catch(RuntimeException re){
+        	throw re;
+        }
         catch(Exception e){
         	e.printStackTrace();
             throw new SocketException("Failure in Communicaiton constructor!");   
@@ -67,6 +70,9 @@ public class Communication {
           this.rx = new ObjectInputStream(socket.getInputStream());
           this.dummy = false;
 	  }
+	  catch(RuntimeException re){
+      	throw re;
+      }
 	  catch(Exception e){
 		  e.printStackTrace();
 		  throw new SocketException("Failure in client construtor!");
@@ -77,6 +83,9 @@ public class Communication {
       try{
           this.tx.writeObject(thing);
       }
+      catch(RuntimeException re){
+      	throw re;
+      }
       catch(Exception e){
           throw new SocketException("Error in Communication.send!");
       }
@@ -85,6 +94,9 @@ public class Communication {
   public Request receive() throws SocketException{
       try{
           return (Request) this.rx.readObject();
+      }
+      catch(RuntimeException re){
+      	throw re;
       }
       catch(Exception e){
             throw new SocketException("Error in Communication.receive!");
@@ -110,6 +122,9 @@ public class Communication {
         	  //throw new SocketException("Invalid type!"); // This should never be reached. _Ever_.
           }
       }
+      catch(RuntimeException re){
+      	throw re;
+      }
       catch(Exception e){
     	  e.printStackTrace();
           System.out.println("Error in Communication.close!");
@@ -128,6 +143,9 @@ public class Communication {
 			  throw new SocketException("Invalid type in accept!"); // Should never see the light of day
 		  }
 	  }
+	  catch(RuntimeException re){
+      	throw re;
+      }
 	  catch(Exception e){
 		  e.printStackTrace();
 		  throw new SocketException("Error in accept!!");
