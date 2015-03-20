@@ -134,6 +134,13 @@ public class DB {
         // Create root and server folder
         try {
             Files.createDirectories(newUser);
+
+            // initialize log
+            String userInit = "User " + uid + " Created";
+            boolean initUserLog = writeUserLog(uid, DBFileTypes.USER_LOG, userInit);
+            if(!initUserLog) {
+                return false;
+            }
         } catch(Exception e) {
             //System.out.println("Could not create new user: " + uid);
             return false;
