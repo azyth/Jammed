@@ -1,0 +1,756 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<BugCollection version="3.0.1-rc2" sequence="10" timestamp="1426864130000" analysisTimestamp="1426864136770" release="">
+  <Project projectName="jammed">
+    <Jar>/home/azyth/Documents/Code/Java/CS5430/Jammed</Jar>
+    <SuppressionFilter>
+      <LastVersion value="-1" relOp="NEQ"/>
+    </SuppressionFilter>
+    <Cloud id="edu.umd.cs.findbugs.cloud.appengine.findbugs-cloud" online="true" detailsUrl="http://findbugs-cloud.appspot.com/issues/%s?embed"></Cloud>
+  </Project>
+  <BugInstance type="DMI_NONSERIALIZABLE_OBJECT_WRITTEN" priority="2" rank="17" abbrev="DMI" category="STYLE" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="Communication">
+      <SourceLine classname="Communication" sourcefile="Communication.java" sourcepath="Communication.java"/>
+    </Class>
+    <Method classname="Communication" name="send" signature="(LRequest;)V" isStatic="false">
+      <SourceLine classname="Communication" start="62" end="67" startBytecode="0" endBytecode="11" sourcefile="Communication.java" sourcepath="Communication.java"/>
+    </Method>
+    <Type descriptor="LRequest;" role="TYPE_FOUND">
+      <SourceLine classname="Request" start="16" end="44" sourcefile="Request.java" sourcepath="Request.java"/>
+    </Type>
+    <SourceLine classname="Communication" start="62" end="62" startBytecode="5" endBytecode="5" sourcefile="Communication.java" sourcepath="Communication.java"/>
+  </BugInstance>
+  <BugInstance type="NP_UNWRITTEN_FIELD" priority="2" rank="8" abbrev="NP" category="CORRECTNESS" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="Communication">
+      <SourceLine classname="Communication" sourcefile="Communication.java" sourcepath="Communication.java"/>
+    </Class>
+    <Method classname="Communication" name="close" signature="()V" isStatic="false">
+      <SourceLine classname="Communication" start="80" end="90" startBytecode="0" endBytecode="158" sourcefile="Communication.java" sourcepath="Communication.java"/>
+    </Method>
+    <Field classname="Communication" name="socket" signature="Ljava/net/Socket;" isStatic="false">
+      <SourceLine classname="Communication" sourcefile="Communication.java" sourcepath="Communication.java"/>
+    </Field>
+    <SourceLine classname="Communication" start="81" end="81" startBytecode="14" endBytecode="14" sourcefile="Communication.java" sourcepath="Communication.java"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="2" rank="17" abbrev="REC" category="STYLE" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="Communication">
+      <SourceLine classname="Communication" sourcefile="Communication.java" sourcepath="Communication.java"/>
+    </Class>
+    <Method classname="Communication" name="close" signature="()V" isStatic="false">
+      <SourceLine classname="Communication" start="80" end="90" startBytecode="0" endBytecode="158" sourcefile="Communication.java" sourcepath="Communication.java"/>
+    </Method>
+    <SourceLine classname="Communication" start="87" end="87" startBytecode="44" endBytecode="44" sourcefile="Communication.java" sourcepath="Communication.java"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="3" rank="20" abbrev="REC" category="STYLE" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="Communication">
+      <SourceLine classname="Communication" sourcefile="Communication.java" sourcepath="Communication.java"/>
+    </Class>
+    <Method classname="Communication" name="&lt;init&gt;" signature="(LCommunication$Type;)V" isStatic="false">
+      <SourceLine classname="Communication" start="32" end="58" startBytecode="0" endBytecode="384" sourcefile="Communication.java" sourcepath="Communication.java"/>
+    </Method>
+    <SourceLine classname="Communication" start="54" end="54" startBytecode="148" endBytecode="148" sourcefile="Communication.java" sourcepath="Communication.java"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="3" rank="20" abbrev="REC" category="STYLE" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="Communication">
+      <SourceLine classname="Communication" sourcefile="Communication.java" sourcepath="Communication.java"/>
+    </Class>
+    <Method classname="Communication" name="accept" signature="()V" isStatic="false">
+      <SourceLine classname="Communication" start="94" end="105" startBytecode="0" endBytecode="148" sourcefile="Communication.java" sourcepath="Communication.java"/>
+    </Method>
+    <SourceLine classname="Communication" start="101" end="101" startBytecode="31" endBytecode="31" sourcefile="Communication.java" sourcepath="Communication.java"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="3" rank="20" abbrev="REC" category="STYLE" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="Communication">
+      <SourceLine classname="Communication" sourcefile="Communication.java" sourcepath="Communication.java"/>
+    </Class>
+    <Method classname="Communication" name="receive" signature="()LRequest;" isStatic="false">
+      <SourceLine classname="Communication" start="71" end="74" startBytecode="0" endBytecode="101" sourcefile="Communication.java" sourcepath="Communication.java"/>
+    </Method>
+    <SourceLine classname="Communication" start="73" end="73" startBytecode="11" endBytecode="11" sourcefile="Communication.java" sourcepath="Communication.java"/>
+  </BugInstance>
+  <BugInstance type="UWF_NULL_FIELD" priority="1" rank="10" abbrev="UwF" category="CORRECTNESS" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <UserAnnotation designation="NOT_A_BUG" timestamp="1426797787552"/>
+    <Class classname="Communication">
+      <SourceLine classname="Communication" sourcefile="Communication.java" sourcepath="Communication.java"/>
+    </Class>
+    <Field classname="Communication" name="socket" signature="Ljava/net/Socket;" isStatic="false">
+      <SourceLine classname="Communication" sourcefile="Communication.java" sourcepath="Communication.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="3" rank="20" abbrev="DLS" category="STYLE" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="DB">
+      <SourceLine classname="DB" sourcefile="DB.java" sourcepath="DB.java"/>
+    </Class>
+    <Method classname="DB" name="writeUserLog" signature="(Ljava/lang/String;LDB$DBFileTypes;Ljava/lang/String;)Z" isStatic="true">
+      <SourceLine classname="DB" start="233" end="263" startBytecode="0" endBytecode="79" sourcefile="DB.java" sourcepath="DB.java"/>
+    </Method>
+    <LocalVariable name="dataToWrite" register="4" pc="47" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="DB" start="246" end="246" startBytecode="45" endBytecode="45" sourcefile="DB.java" sourcepath="DB.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.BASE_VALUE" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.COPY_VALUE" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.KILLED_BY_SUBSEQUENT_STORE" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="dataToWrite"/>
+  </BugInstance>
+  <BugInstance type="DM_DEFAULT_ENCODING" priority="1" rank="19" abbrev="Dm" category="I18N" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <UserAnnotation designation="MOSTLY_HARMLESS" timestamp="1426797590840"/>
+    <Class classname="DB">
+      <SourceLine classname="DB" sourcefile="DB.java" sourcepath="DB.java"/>
+    </Class>
+    <Method classname="DB" name="initialize" signature="()Z" isStatic="true">
+      <SourceLine classname="DB" start="75" end="115" startBytecode="0" endBytecode="506" sourcefile="DB.java" sourcepath="DB.java"/>
+    </Method>
+    <Method classname="java.lang.String" name="getBytes" signature="()[B" isStatic="false" role="METHOD_CALLED">
+      <SourceLine classname="java.lang.String" start="956" end="956" startBytecode="0" endBytecode="55" sourcefile="String.java" sourcepath="java/lang/String.java"/>
+    </Method>
+    <SourceLine classname="DB" start="105" end="105" startBytecode="149" endBytecode="149" sourcefile="DB.java" sourcepath="DB.java"/>
+  </BugInstance>
+  <BugInstance type="DM_DEFAULT_ENCODING" priority="1" rank="19" abbrev="Dm" category="I18N" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="DB">
+      <SourceLine classname="DB" sourcefile="DB.java" sourcepath="DB.java"/>
+    </Class>
+    <Method classname="DB" name="writeLog" signature="(Ljava/lang/String;)Z" isStatic="true">
+      <SourceLine classname="DB" start="158" end="183" startBytecode="0" endBytecode="396" sourcefile="DB.java" sourcepath="DB.java"/>
+    </Method>
+    <Method classname="java.io.FileWriter" name="&lt;init&gt;" signature="(Ljava/lang/String;Z)V" isStatic="false" role="METHOD_CALLED">
+      <SourceLine classname="java.io.FileWriter" start="78" end="79" startBytecode="0" endBytecode="79" sourcefile="FileWriter.java" sourcepath="java/io/FileWriter.java"/>
+    </Method>
+    <SourceLine classname="DB" start="169" end="169" startBytecode="43" endBytecode="43" sourcefile="DB.java" sourcepath="DB.java"/>
+  </BugInstance>
+  <BugInstance type="DM_DEFAULT_ENCODING" priority="1" rank="19" abbrev="Dm" category="I18N" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="DB">
+      <SourceLine classname="DB" sourcefile="DB.java" sourcepath="DB.java"/>
+    </Class>
+    <Method classname="DB" name="writeUserLog" signature="(Ljava/lang/String;LDB$DBFileTypes;Ljava/lang/String;)Z" isStatic="true">
+      <SourceLine classname="DB" start="233" end="263" startBytecode="0" endBytecode="494" sourcefile="DB.java" sourcepath="DB.java"/>
+    </Method>
+    <Method classname="java.io.FileWriter" name="&lt;init&gt;" signature="(Ljava/lang/String;)V" isStatic="false" role="METHOD_CALLED">
+      <SourceLine classname="java.io.FileWriter" start="63" end="64" startBytecode="0" endBytecode="68" sourcefile="FileWriter.java" sourcepath="java/io/FileWriter.java"/>
+    </Method>
+    <SourceLine classname="DB" start="248" end="248" startBytecode="80" endBytecode="80" sourcefile="DB.java" sourcepath="DB.java"/>
+  </BugInstance>
+  <BugInstance type="PZLA_PREFER_ZERO_LENGTH_ARRAYS" priority="3" rank="20" abbrev="PZLA" category="STYLE" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false" reviews="1" consensus="MOSTLY_HARMLESS">
+    <UserAnnotation designation="NOT_A_BUG" timestamp="1426800076512"/>
+    <Class classname="DB">
+      <SourceLine classname="DB" sourcefile="DB.java" sourcepath="DB.java"/>
+    </Class>
+    <Method classname="DB" name="readEncodedFile" signature="(Ljava/lang/String;LDB$DBFileTypes;)[B" isStatic="true">
+      <SourceLine classname="DB" start="274" end="303" startBytecode="0" endBytecode="362" sourcefile="DB.java" sourcepath="DB.java"/>
+    </Method>
+    <SourceLine classname="DB" start="275" end="275" startBytecode="8" endBytecode="8" sourcefile="DB.java" sourcepath="DB.java"/>
+    <SourceLine classname="DB" start="289" end="289" startBytecode="68" endBytecode="68" sourcefile="DB.java" sourcepath="DB.java"/>
+    <SourceLine classname="DB" start="299" end="299" startBytecode="129" endBytecode="129" sourcefile="DB.java" sourcepath="DB.java"/>
+    <SourceLine classname="DB" start="303" end="303" startBytecode="134" endBytecode="134" sourcefile="DB.java" sourcepath="DB.java"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="2" rank="17" abbrev="REC" category="STYLE" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="DB">
+      <SourceLine classname="DB" sourcefile="DB.java" sourcepath="DB.java"/>
+    </Class>
+    <Method classname="DB" name="writeUserLog" signature="(Ljava/lang/String;LDB$DBFileTypes;Ljava/lang/String;)Z" isStatic="true">
+      <SourceLine classname="DB" start="233" end="263" startBytecode="0" endBytecode="494" sourcefile="DB.java" sourcepath="DB.java"/>
+    </Method>
+    <SourceLine classname="DB" start="259" end="259" startBytecode="182" endBytecode="182" sourcefile="DB.java" sourcepath="DB.java"/>
+  </BugInstance>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="3" rank="20" abbrev="DLS" category="STYLE" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="Jammed">
+      <SourceLine classname="Jammed" sourcefile="Jammed.java" sourcepath="Jammed.java"/>
+    </Class>
+    <Method classname="Jammed" name="main" signature="([Ljava/lang/String;)V" isStatic="true">
+      <SourceLine classname="Jammed" start="24" end="103" startBytecode="0" endBytecode="133" sourcefile="Jammed.java" sourcepath="Jammed.java"/>
+    </Method>
+    <LocalVariable name="newdata" register="7" pc="139" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="Jammed" start="54" end="54" startBytecode="139" endBytecode="139" sourcefile="Jammed.java" sourcepath="Jammed.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.KILLED_BY_SUBSEQUENT_STORE" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="newdata"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.METHOD_RESULT" value="true"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="3" rank="20" abbrev="REC" category="STYLE" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="Jammed">
+      <SourceLine classname="Jammed" sourcefile="Jammed.java" sourcepath="Jammed.java"/>
+    </Class>
+    <Method classname="Jammed" name="main" signature="([Ljava/lang/String;)V" isStatic="true">
+      <SourceLine classname="Jammed" start="24" end="103" startBytecode="0" endBytecode="832" sourcefile="Jammed.java" sourcepath="Jammed.java"/>
+    </Method>
+    <SourceLine classname="Jammed" start="97" end="97" startBytecode="276" endBytecode="276" sourcefile="Jammed.java" sourcepath="Jammed.java"/>
+  </BugInstance>
+  <BugInstance type="RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT" priority="2" rank="17" abbrev="RV" category="STYLE" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="Jammed">
+      <SourceLine classname="Jammed" sourcefile="Jammed.java" sourcepath="Jammed.java"/>
+    </Class>
+    <Method classname="Jammed" name="main" signature="([Ljava/lang/String;)V" isStatic="true">
+      <SourceLine classname="Jammed" start="24" end="103" startBytecode="0" endBytecode="832" sourcefile="Jammed.java" sourcepath="Jammed.java"/>
+    </Method>
+    <Method classname="Request" name="getSuccess" signature="()Z" isStatic="false" role="METHOD_CALLED">
+      <SourceLine classname="Request" start="30" end="30" startBytecode="0" endBytecode="46" sourcefile="Request.java" sourcepath="Request.java"/>
+    </Method>
+    <SourceLine classname="Jammed" start="75" end="75" startBytecode="225" endBytecode="225" sourcefile="Jammed.java" sourcepath="Jammed.java"/>
+  </BugInstance>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="3" rank="20" abbrev="DLS" category="STYLE" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="Jelly">
+      <SourceLine classname="Jelly" sourcefile="Jelly.java" sourcepath="Jelly.java"/>
+    </Class>
+    <Method classname="Jelly" name="main" signature="([Ljava/lang/String;)V" isStatic="true">
+      <SourceLine classname="Jelly" start="26" end="112" startBytecode="0" endBytecode="53" sourcefile="Jelly.java" sourcepath="Jelly.java"/>
+    </Method>
+    <LocalVariable name="req" register="1" pc="73" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="Jelly" start="51" end="51" startBytecode="72" endBytecode="72" sourcefile="Jelly.java" sourcepath="Jelly.java"/>
+    <SourceLine classname="Jelly" start="67" end="67" startBytecode="95" endBytecode="95" sourcefile="Jelly.java" sourcepath="Jelly.java" role="SOURCE_LINE_ANOTHER_INSTANCE"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.KILLED_BY_SUBSEQUENT_STORE" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="req"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.METHOD_RESULT" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
+  </BugInstance>
+  <BugInstance type="DMI_INVOKING_TOSTRING_ON_ARRAY" priority="2" rank="10" abbrev="USELESS_STRING" category="CORRECTNESS" last="0" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="UserData">
+      <SourceLine classname="UserData" sourcefile="UserData.java" sourcepath="UserData.java"/>
+    </Class>
+    <Method classname="UserData" name="encData" signature="(Ljava/util/ArrayList;[B)[B" isStatic="false">
+      <SourceLine classname="UserData" start="74" end="86" startBytecode="0" endBytecode="230" sourcefile="UserData.java" sourcepath="UserData.java"/>
+    </Method>
+    <LocalVariable name="block" register="7" pc="63" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="UserData" start="84" end="84" startBytecode="63" endBytecode="63" sourcefile="UserData.java" sourcepath="UserData.java"/>
+  </BugInstance>
+  <BugInstance type="SBSC_USE_STRINGBUFFER_CONCATENATION" priority="2" rank="18" abbrev="SBSC" category="PERFORMANCE" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="UserData">
+      <SourceLine classname="UserData" sourcefile="UserData.java" sourcepath="UserData.java"/>
+    </Class>
+    <Method classname="UserData" name="listToString" signature="(Ljava/util/ArrayList;)Ljava/lang/String;" isStatic="true">
+      <SourceLine classname="UserData" start="189" end="198" startBytecode="0" endBytecode="272" sourcefile="UserData.java" sourcepath="UserData.java"/>
+    </Method>
+    <SourceLine classname="UserData" start="195" end="195" startBytecode="49" endBytecode="49" sourcefile="UserData.java" sourcepath="UserData.java"/>
+  </BugInstance>
+  <BugInstance type="EI_EXPOSE_REP2" priority="2" rank="18" abbrev="EI2" category="MALICIOUS_CODE" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="UserDataReq">
+      <SourceLine classname="UserDataReq" sourcefile="UserDataReq.java" sourcepath="UserDataReq.java"/>
+    </Class>
+    <Method classname="UserDataReq" name="&lt;init&gt;" signature="(ZLUserDataReq$ReqType;LRequest$ErrorMessage;[B[B)V" isStatic="false">
+      <SourceLine classname="UserDataReq" start="37" end="43" startBytecode="0" endBytecode="147" sourcefile="UserDataReq.java" sourcepath="UserDataReq.java"/>
+    </Method>
+    <Field classname="UserDataReq" name="iv" signature="[B" isStatic="false">
+      <SourceLine classname="UserDataReq" sourcefile="UserDataReq.java" sourcepath="UserDataReq.java"/>
+    </Field>
+    <LocalVariable name="iv" register="5" pc="28" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="UserDataReq" start="42" end="42" startBytecode="28" endBytecode="28" sourcefile="UserDataReq.java" sourcepath="UserDataReq.java"/>
+  </BugInstance>
+  <BugInstance type="EI_EXPOSE_REP2" priority="2" rank="18" abbrev="EI2" category="MALICIOUS_CODE" last="1" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="UserDataReq">
+      <SourceLine classname="UserDataReq" sourcefile="UserDataReq.java" sourcepath="UserDataReq.java"/>
+    </Class>
+    <Method classname="UserDataReq" name="&lt;init&gt;" signature="(ZLUserDataReq$ReqType;LRequest$ErrorMessage;[B[B)V" isStatic="false">
+      <SourceLine classname="UserDataReq" start="37" end="43" startBytecode="0" endBytecode="147" sourcefile="UserDataReq.java" sourcepath="UserDataReq.java"/>
+    </Method>
+    <Field classname="UserDataReq" name="userdata" signature="[B" isStatic="false">
+      <SourceLine classname="UserDataReq" sourcefile="UserDataReq.java" sourcepath="UserDataReq.java"/>
+    </Field>
+    <LocalVariable name="cyphertext" register="4" pc="22" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="UserDataReq" start="41" end="41" startBytecode="22" endBytecode="22" sourcefile="UserDataReq.java" sourcepath="UserDataReq.java"/>
+  </BugInstance>
+  <BugInstance type="BC_UNCONFIRMED_CAST_OF_RETURN_VALUE" priority="3" rank="20" abbrev="BC" category="STYLE" first="3" firstSeen="3/20/15 7:50 AM" isInCloud="false">
+    <Class classname="jammed.Communication">
+      <SourceLine classname="jammed.Communication" sourcefile="Communication.java" sourcepath="jammed/Communication.java"/>
+    </Class>
+    <Method classname="jammed.Communication" name="connect" signature="()V" isStatic="false">
+      <SourceLine classname="jammed.Communication" start="85" end="127" startBytecode="0" endBytecode="50" sourcefile="Communication.java" sourcepath="jammed/Communication.java"/>
+    </Method>
+    <Type descriptor="Ljava/net/Socket;" role="TYPE_FOUND">
+      <SourceLine classname="java.net.Socket" start="59" end="1674" sourcefile="Socket.java" sourcepath="java/net/Socket.java"/>
+    </Type>
+    <Type descriptor="Ljavax/net/ssl/SSLSocket;" role="TYPE_EXPECTED">
+      <SourceLine classname="javax.net.ssl.SSLSocket" start="148" end="662" sourcefile="SSLSocket.java" sourcepath="javax/net/ssl/SSLSocket.java"/>
+    </Type>
+    <SourceLine classname="jammed.Communication" start="114" end="114" startBytecode="36" endBytecode="36" sourcefile="Communication.java" sourcepath="jammed/Communication.java"/>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" rank="20" abbrev="UwF" category="STYLE" first="2" last="2" removedByChange="true" firstSeen="3/19/15 10:19 PM" isInCloud="false">
+    <Class classname="jammed.Communication">
+      <SourceLine classname="jammed.Communication" sourcefile="Communication.java" sourcepath="jammed/Communication.java"/>
+    </Class>
+    <Field classname="jammed.Communication" name="socket" signature="Ljava/net/Socket;" isStatic="false">
+      <SourceLine classname="jammed.Communication" sourcefile="Communication.java" sourcepath="jammed/Communication.java"/>
+    </Field>
+    <Method classname="jammed.Communication" name="close" signature="()V" isStatic="false">
+      <SourceLine classname="jammed.Communication" start="109" end="133" startBytecode="0" endBytecode="274" sourcefile="Communication.java" sourcepath="jammed/Communication.java"/>
+    </Method>
+    <SourceLine classname="jammed.Communication" start="120" end="120" startBytecode="70" endBytecode="70" sourcefile="Communication.java" sourcepath="jammed/Communication.java"/>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" rank="20" abbrev="UwF" category="STYLE" first="2" last="2" removedByChange="true" firstSeen="3/19/15 10:19 PM" isInCloud="false">
+    <Class classname="jammed.Communication">
+      <SourceLine classname="jammed.Communication" sourcefile="Communication.java" sourcepath="jammed/Communication.java"/>
+    </Class>
+    <Field classname="jammed.Communication" name="socket" signature="Ljava/net/Socket;" isStatic="false">
+      <SourceLine classname="jammed.Communication" sourcefile="Communication.java" sourcepath="jammed/Communication.java"/>
+    </Field>
+    <Method classname="jammed.Communication" name="getPort" signature="()I" isStatic="false">
+      <SourceLine classname="jammed.Communication" start="158" end="170" startBytecode="0" endBytecode="178" sourcefile="Communication.java" sourcepath="jammed/Communication.java"/>
+    </Method>
+    <SourceLine classname="jammed.Communication" start="162" end="162" startBytecode="32" endBytecode="32" sourcefile="Communication.java" sourcepath="jammed/Communication.java"/>
+  </BugInstance>
+  <BugInstance type="OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE" priority="2" rank="20" abbrev="OBL" category="EXPERIMENTAL" first="9" last="9" removedByChange="true" firstSeen="3/20/15 10:45 AM" isInCloud="false">
+    <Class classname="jammed.DB">
+      <SourceLine classname="jammed.DB" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Class>
+    <Method classname="jammed.DB" name="initialize" signature="()Z" isStatic="true">
+      <SourceLine classname="jammed.DB" start="78" end="115" startBytecode="0" endBytecode="444" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Method>
+    <Class classname="java.io.OutputStream" role="CLASS_REFTYPE">
+      <SourceLine classname="java.io.OutputStream" sourcefile="OutputStream.java" sourcepath="java/io/OutputStream.java"/>
+    </Class>
+    <Int value="1" role="INT_OBLIGATIONS_REMAINING"/>
+    <SourceLine classname="jammed.DB" start="104" end="104" startBytecode="99" endBytecode="99" sourcefile="DB.java" sourcepath="jammed/DB.java" role="SOURCE_LINE_OBLIGATION_CREATED"/>
+    <SourceLine classname="jammed.DB" start="105" end="105" startBytecode="103" endBytecode="103" sourcefile="DB.java" sourcepath="jammed/DB.java" role="SOURCE_LINE_PATH_CONTINUES"/>
+    <SourceLine classname="jammed.DB" start="106" end="106" startBytecode="123" endBytecode="123" sourcefile="DB.java" sourcepath="jammed/DB.java" role="SOURCE_LINE_PATH_CONTINUES"/>
+    <SourceLine classname="jammed.DB" start="107" end="107" startBytecode="147" endBytecode="147" sourcefile="DB.java" sourcepath="jammed/DB.java" role="SOURCE_LINE_PATH_CONTINUES"/>
+    <SourceLine classname="jammed.DB" start="108" end="108" startBytecode="157" endBytecode="157" sourcefile="DB.java" sourcepath="jammed/DB.java" role="SOURCE_LINE_PATH_CONTINUES"/>
+    <SourceLine classname="jammed.DB" start="110" end="110" startBytecode="170" endBytecode="170" sourcefile="DB.java" sourcepath="jammed/DB.java" role="SOURCE_LINE_PATH_CONTINUES"/>
+    <SourceLine classname="jammed.DB" start="112" end="112" startBytecode="171" endBytecode="171" sourcefile="DB.java" sourcepath="jammed/DB.java" role="SOURCE_LINE_PATH_CONTINUES"/>
+    <String value="{OutputStream x 1}" role="STRING_REMAINING_OBLIGATIONS"/>
+  </BugInstance>
+  <BugInstance type="OS_OPEN_STREAM_EXCEPTION_PATH" priority="3" rank="19" abbrev="OS" category="BAD_PRACTICE" first="9" last="9" removedByChange="true" firstSeen="3/20/15 10:45 AM" isInCloud="false">
+    <Class classname="jammed.DB">
+      <SourceLine classname="jammed.DB" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Class>
+    <Method classname="jammed.DB" name="initialize" signature="()Z" isStatic="true">
+      <SourceLine classname="jammed.DB" start="78" end="115" startBytecode="0" endBytecode="87" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Method>
+    <Type descriptor="Ljava/io/OutputStream;" role="TYPE_CLOSEIT">
+      <SourceLine classname="java.io.OutputStream" start="46" end="152" sourcefile="OutputStream.java" sourcepath="java/io/OutputStream.java"/>
+    </Type>
+    <SourceLine classname="jammed.DB" start="104" end="104" startBytecode="93" endBytecode="93" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+  </BugInstance>
+  <BugInstance type="OS_OPEN_STREAM_EXCEPTION_PATH" priority="3" rank="19" abbrev="OS" category="BAD_PRACTICE" first="9" last="9" removedByChange="true" firstSeen="3/20/15 10:45 AM" isInCloud="false">
+    <Class classname="jammed.DB">
+      <SourceLine classname="jammed.DB" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Class>
+    <Method classname="jammed.DB" name="writeLog" signature="(Ljava/lang/String;)Z" isStatic="true">
+      <SourceLine classname="jammed.DB" start="167" end="189" startBytecode="0" endBytecode="66" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Method>
+    <Type descriptor="Ljava/io/Writer;" role="TYPE_CLOSEIT">
+      <SourceLine classname="java.io.Writer" start="50" end="294" sourcefile="Writer.java" sourcepath="java/io/Writer.java"/>
+    </Type>
+    <SourceLine classname="jammed.DB" start="179" end="179" startBytecode="56" endBytecode="56" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+  </BugInstance>
+  <BugInstance type="OS_OPEN_STREAM_EXCEPTION_PATH" priority="3" rank="19" abbrev="OS" category="BAD_PRACTICE" first="9" last="9" removedByChange="true" firstSeen="3/20/15 10:45 AM" isInCloud="false">
+    <Class classname="jammed.DB">
+      <SourceLine classname="jammed.DB" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Class>
+    <Method classname="jammed.DB" name="writeUserLog" signature="(Ljava/lang/String;Ljammed/DB$DBFileTypes;Ljava/lang/String;)Z" isStatic="true">
+      <SourceLine classname="jammed.DB" start="259" end="286" startBytecode="0" endBytecode="76" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Method>
+    <Type descriptor="Ljava/io/Writer;" role="TYPE_CLOSEIT">
+      <SourceLine classname="java.io.Writer" start="50" end="294" sourcefile="Writer.java" sourcepath="java/io/Writer.java"/>
+    </Type>
+    <SourceLine classname="jammed.DB" start="275" end="275" startBytecode="92" endBytecode="92" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+  </BugInstance>
+  <BugInstance type="PZLA_PREFER_ZERO_LENGTH_ARRAYS" priority="3" rank="20" abbrev="PZLA" category="STYLE" first="2" firstSeen="3/19/15 10:19 PM" isInCloud="false">
+    <UserAnnotation designation="NOT_A_BUG" timestamp="1426854705773"/>
+    <Class classname="jammed.DB">
+      <SourceLine classname="jammed.DB" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Class>
+    <Method classname="jammed.DB" name="readEncodedFile" signature="(Ljava/lang/String;Ljammed/DB$DBFileTypes;)[B" isStatic="true">
+      <SourceLine classname="jammed.DB" start="273" end="303" startBytecode="0" endBytecode="391" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Method>
+    <SourceLine classname="jammed.DB" start="274" end="274" startBytecode="8" endBytecode="8" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    <SourceLine classname="jammed.DB" start="289" end="289" startBytecode="67" endBytecode="67" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    <SourceLine classname="jammed.DB" start="299" end="299" startBytecode="128" endBytecode="128" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    <SourceLine classname="jammed.DB" start="303" end="303" startBytecode="133" endBytecode="133" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="2" rank="17" abbrev="REC" category="STYLE" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="jammed.DB">
+      <SourceLine classname="jammed.DB" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Class>
+    <Method classname="jammed.DB" name="initialize" signature="()Z" isStatic="true">
+      <SourceLine classname="jammed.DB" start="45" end="85" startBytecode="0" endBytecode="509" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Method>
+    <SourceLine classname="jammed.DB" start="80" end="80" startBytecode="182" endBytecode="182" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="2" rank="17" abbrev="REC" category="STYLE" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="jammed.DB">
+      <SourceLine classname="jammed.DB" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Class>
+    <Method classname="jammed.DB" name="writeLog" signature="(Ljava/lang/String;)Z" isStatic="true">
+      <SourceLine classname="jammed.DB" start="137" end="162" startBytecode="0" endBytecode="405" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Method>
+    <SourceLine classname="jammed.DB" start="158" end="158" startBytecode="142" endBytecode="142" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="2" rank="17" abbrev="REC" category="STYLE" first="2" firstSeen="3/19/15 10:19 PM" isInCloud="false">
+    <Class classname="jammed.DB">
+      <SourceLine classname="jammed.DB" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Class>
+    <Method classname="jammed.DB" name="writeUserLog" signature="(Ljava/lang/String;Ljammed/DB$DBFileTypes;Ljava/lang/String;)Z" isStatic="true">
+      <SourceLine classname="jammed.DB" start="232" end="262" startBytecode="0" endBytecode="544" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Method>
+    <SourceLine classname="jammed.DB" start="258" end="258" startBytecode="189" endBytecode="189" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="3" rank="20" abbrev="REC" category="STYLE" first="9" firstSeen="3/20/15 10:45 AM" isInCloud="false">
+    <Class classname="jammed.DB">
+      <SourceLine classname="jammed.DB" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Class>
+    <Method classname="jammed.DB" name="newUser" signature="(Ljava/lang/String;)Z" isStatic="true">
+      <SourceLine classname="jammed.DB" start="96" end="117" startBytecode="0" endBytecode="286" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Method>
+    <SourceLine classname="jammed.DB" start="113" end="113" startBytecode="99" endBytecode="99" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+  </BugInstance>
+  <BugInstance type="EQ_COMPARETO_USE_OBJECT_EQUALS" priority="2" rank="16" abbrev="Eq" category="BAD_PRACTICE" last="2" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="jammed.LoginInfo">
+      <SourceLine classname="jammed.LoginInfo" sourcefile="LoginInfo.java" sourcepath="jammed/LoginInfo.java"/>
+    </Class>
+    <Method classname="jammed.LoginInfo" name="compareTo" signature="(Ljammed/LoginInfo;)I" isStatic="false">
+      <SourceLine classname="jammed.LoginInfo" start="15" end="19" startBytecode="0" endBytecode="115" sourcefile="LoginInfo.java" sourcepath="jammed/LoginInfo.java"/>
+    </Method>
+  </BugInstance>
+  <BugInstance type="HE_EQUALS_USE_HASHCODE" priority="1" rank="14" abbrev="HE" category="BAD_PRACTICE" first="3" last="4" removedByChange="true" firstSeen="3/20/15 7:50 AM" isInCloud="false">
+    <Class classname="jammed.LoginInfo">
+      <SourceLine classname="jammed.LoginInfo" sourcefile="LoginInfo.java" sourcepath="jammed/LoginInfo.java"/>
+    </Class>
+    <Method classname="jammed.LoginInfo" name="equals" signature="(Ljava/lang/Object;)Z" isStatic="false">
+      <SourceLine classname="jammed.LoginInfo" start="26" end="30" startBytecode="0" endBytecode="134" sourcefile="LoginInfo.java" sourcepath="jammed/LoginInfo.java"/>
+    </Method>
+  </BugInstance>
+  <BugInstance type="OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE" priority="2" rank="20" abbrev="OBL" category="EXPERIMENTAL" last="3" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="jammed.UserData">
+      <SourceLine classname="jammed.UserData" sourcefile="UserData.java" sourcepath="jammed/UserData.java"/>
+    </Class>
+    <Method classname="jammed.UserData" name="storeKey" signature="(Ljavax/crypto/SecretKey;Ljava/lang/String;)V" isStatic="true">
+      <SourceLine classname="jammed.UserData" start="128" end="132" startBytecode="0" endBytecode="109" sourcefile="UserData.java" sourcepath="jammed/UserData.java"/>
+    </Method>
+    <Class classname="java.io.OutputStream" role="CLASS_REFTYPE">
+      <SourceLine classname="java.io.OutputStream" sourcefile="OutputStream.java" sourcepath="java/io/OutputStream.java"/>
+    </Class>
+    <Int value="1" role="INT_OBLIGATIONS_REMAINING"/>
+    <SourceLine classname="jammed.UserData" start="128" end="128" startBytecode="5" endBytecode="5" sourcefile="UserData.java" sourcepath="jammed/UserData.java" role="SOURCE_LINE_OBLIGATION_CREATED"/>
+    <SourceLine classname="jammed.UserData" start="129" end="129" startBytecode="9" endBytecode="9" sourcefile="UserData.java" sourcepath="jammed/UserData.java" role="SOURCE_LINE_PATH_CONTINUES"/>
+    <String value="{OutputStream x 1}" role="STRING_REMAINING_OBLIGATIONS"/>
+  </BugInstance>
+  <BugInstance type="OS_OPEN_STREAM_EXCEPTION_PATH" priority="3" rank="19" abbrev="OS" category="BAD_PRACTICE" last="3" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="jammed.UserData">
+      <SourceLine classname="jammed.UserData" sourcefile="UserData.java" sourcepath="jammed/UserData.java"/>
+    </Class>
+    <Method classname="jammed.UserData" name="storeKey" signature="(Ljavax/crypto/SecretKey;Ljava/lang/String;)V" isStatic="true">
+      <SourceLine classname="jammed.UserData" start="128" end="132" startBytecode="0" endBytecode="14" sourcefile="UserData.java" sourcepath="jammed/UserData.java"/>
+    </Method>
+    <Type descriptor="Ljava/io/OutputStream;" role="TYPE_CLOSEIT">
+      <SourceLine classname="java.io.OutputStream" start="46" end="152" sourcefile="OutputStream.java" sourcepath="java/io/OutputStream.java"/>
+    </Type>
+    <SourceLine classname="jammed.UserData" start="128" end="128" startBytecode="0" endBytecode="0" sourcefile="UserData.java" sourcepath="jammed/UserData.java"/>
+  </BugInstance>
+  <BugInstance type="EI_EXPOSE_REP" priority="2" rank="18" abbrev="EI" category="MALICIOUS_CODE" last="5" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="jammed.UserDataReq">
+      <SourceLine classname="jammed.UserDataReq" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Class>
+    <Method classname="jammed.UserDataReq" name="getData" signature="()[B" isStatic="false">
+      <SourceLine classname="jammed.UserDataReq" start="46" end="46" startBytecode="0" endBytecode="46" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Method>
+    <Field classname="jammed.UserDataReq" name="userdata" signature="[B" isStatic="false">
+      <SourceLine classname="jammed.UserDataReq" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Field>
+    <SourceLine classname="jammed.UserDataReq" start="46" end="46" startBytecode="4" endBytecode="4" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+  </BugInstance>
+  <BugInstance type="EI_EXPOSE_REP" priority="2" rank="18" abbrev="EI" category="MALICIOUS_CODE" last="5" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="jammed.UserDataReq">
+      <SourceLine classname="jammed.UserDataReq" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Class>
+    <Method classname="jammed.UserDataReq" name="getIV" signature="()[B" isStatic="false">
+      <SourceLine classname="jammed.UserDataReq" start="47" end="47" startBytecode="0" endBytecode="46" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Method>
+    <Field classname="jammed.UserDataReq" name="iv" signature="[B" isStatic="false">
+      <SourceLine classname="jammed.UserDataReq" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Field>
+    <SourceLine classname="jammed.UserDataReq" start="47" end="47" startBytecode="4" endBytecode="4" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+  </BugInstance>
+  <BugInstance type="EI_EXPOSE_REP2" priority="2" rank="18" abbrev="EI2" category="MALICIOUS_CODE" first="2" last="5" removedByChange="true" firstSeen="3/19/15 10:19 PM" isInCloud="false">
+    <Class classname="jammed.UserDataReq">
+      <SourceLine classname="jammed.UserDataReq" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Class>
+    <Method classname="jammed.UserDataReq" name="&lt;init&gt;" signature="(ZLjammed/UserDataReq$ReqType;Ljammed/Request$ErrorMessage;[B[B)V" isStatic="false">
+      <SourceLine classname="jammed.UserDataReq" start="37" end="43" startBytecode="0" endBytecode="147" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Method>
+    <Field classname="jammed.UserDataReq" name="iv" signature="[B" isStatic="false">
+      <SourceLine classname="jammed.UserDataReq" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Field>
+    <LocalVariable name="iv" register="5" pc="28" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="jammed.UserDataReq" start="42" end="42" startBytecode="28" endBytecode="28" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+  </BugInstance>
+  <BugInstance type="EI_EXPOSE_REP2" priority="2" rank="18" abbrev="EI2" category="MALICIOUS_CODE" first="2" last="5" removedByChange="true" firstSeen="3/19/15 10:19 PM" isInCloud="false">
+    <Class classname="jammed.UserDataReq">
+      <SourceLine classname="jammed.UserDataReq" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Class>
+    <Method classname="jammed.UserDataReq" name="&lt;init&gt;" signature="(ZLjammed/UserDataReq$ReqType;Ljammed/Request$ErrorMessage;[B[B)V" isStatic="false">
+      <SourceLine classname="jammed.UserDataReq" start="37" end="43" startBytecode="0" endBytecode="147" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Method>
+    <Field classname="jammed.UserDataReq" name="userdata" signature="[B" isStatic="false">
+      <SourceLine classname="jammed.UserDataReq" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Field>
+    <LocalVariable name="cyphertext" register="4" pc="22" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="jammed.UserDataReq" start="41" end="41" startBytecode="22" endBytecode="22" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+  </BugInstance>
+  <BugInstance type="EI_EXPOSE_REP2" priority="2" rank="18" abbrev="EI2" category="MALICIOUS_CODE" last="5" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="jammed.UserDataReq">
+      <SourceLine classname="jammed.UserDataReq" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Class>
+    <Method classname="jammed.UserDataReq" name="&lt;init&gt;" signature="([B[B)V" isStatic="false">
+      <SourceLine classname="jammed.UserDataReq" start="24" end="29" startBytecode="0" endBytecode="110" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Method>
+    <Field classname="jammed.UserDataReq" name="iv" signature="[B" isStatic="false">
+      <SourceLine classname="jammed.UserDataReq" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Field>
+    <LocalVariable name="iv" register="2" pc="18" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="jammed.UserDataReq" start="27" end="27" startBytecode="18" endBytecode="18" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+  </BugInstance>
+  <BugInstance type="EI_EXPOSE_REP2" priority="2" rank="18" abbrev="EI2" category="MALICIOUS_CODE" last="5" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="jammed.UserDataReq">
+      <SourceLine classname="jammed.UserDataReq" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Class>
+    <Method classname="jammed.UserDataReq" name="&lt;init&gt;" signature="([B[B)V" isStatic="false">
+      <SourceLine classname="jammed.UserDataReq" start="24" end="29" startBytecode="0" endBytecode="110" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Method>
+    <Field classname="jammed.UserDataReq" name="userdata" signature="[B" isStatic="false">
+      <SourceLine classname="jammed.UserDataReq" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+    </Field>
+    <LocalVariable name="cyphertext" register="1" pc="13" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="jammed.UserDataReq" start="26" end="26" startBytecode="13" endBytecode="13" sourcefile="UserDataReq.java" sourcepath="jammed/UserDataReq.java"/>
+  </BugInstance>
+  <BugInstance type="DM_EXIT" priority="2" rank="16" abbrev="Dm" category="BAD_PRACTICE" last="2" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="jammed.UserInterface">
+      <SourceLine classname="jammed.UserInterface" sourcefile="UserInterface.java" sourcepath="jammed/UserInterface.java"/>
+    </Class>
+    <Method classname="jammed.UserInterface" name="getLoginInfo" signature="()Ljammed/LoginInfo;" isStatic="false">
+      <SourceLine classname="jammed.UserInterface" start="44" end="59" startBytecode="0" endBytecode="225" sourcefile="UserInterface.java" sourcepath="jammed/UserInterface.java"/>
+    </Method>
+    <SourceLine classname="jammed.UserInterface" start="56" end="56" startBytecode="73" endBytecode="73" sourcefile="UserInterface.java" sourcepath="jammed/UserInterface.java"/>
+  </BugInstance>
+  <BugInstance type="NP_DEREFERENCE_OF_READLINE_VALUE" priority="2" rank="15" abbrev="NP" category="STYLE" last="8" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="jammed.UserInterface">
+      <SourceLine classname="jammed.UserInterface" sourcefile="UserInterface.java" sourcepath="jammed/UserInterface.java"/>
+    </Class>
+    <Method classname="jammed.UserInterface" name="getChanges" signature="(Ljava/util/ArrayList;)Ljava/util/ArrayList;" isStatic="false">
+      <SourceLine classname="jammed.UserInterface" start="77" end="138" startBytecode="0" endBytecode="631" sourcefile="UserInterface.java" sourcepath="jammed/UserInterface.java"/>
+    </Method>
+    <Field classname="jammed.LoginInfo" name="website" signature="Ljava/lang/String;" isStatic="false" role="FIELD_CONTAINS_VALUE">
+      <SourceLine classname="jammed.LoginInfo" sourcefile="LoginInfo.java" sourcepath="jammed/LoginInfo.java"/>
+    </Field>
+    <SourceLine classname="jammed.UserInterface" start="105" end="105" startBytecode="141" endBytecode="141" sourcefile="UserInterface.java" sourcepath="jammed/UserInterface.java"/>
+  </BugInstance>
+  <BugInstance type="NP_DEREFERENCE_OF_READLINE_VALUE" priority="2" rank="15" abbrev="NP" category="STYLE" last="8" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="jammed.UserInterface">
+      <SourceLine classname="jammed.UserInterface" sourcefile="UserInterface.java" sourcepath="jammed/UserInterface.java"/>
+    </Class>
+    <Method classname="jammed.UserInterface" name="getChanges" signature="(Ljava/util/ArrayList;)Ljava/util/ArrayList;" isStatic="false">
+      <SourceLine classname="jammed.UserInterface" start="77" end="138" startBytecode="0" endBytecode="631" sourcefile="UserInterface.java" sourcepath="jammed/UserInterface.java"/>
+    </Method>
+    <LocalVariable name="?" register="-1" pc="256" role="LOCAL_VARIABLE_UNKNOWN"/>
+    <SourceLine classname="jammed.UserInterface" start="91" end="91" startBytecode="256" endBytecode="256" sourcefile="UserInterface.java" sourcepath="jammed/UserInterface.java"/>
+  </BugInstance>
+  <BugInstance type="NP_DEREFERENCE_OF_READLINE_VALUE" priority="2" rank="15" abbrev="NP" category="STYLE" last="8" removedByChange="true" firstSeen="3/19/15 4:11 PM" isInCloud="false">
+    <Class classname="jammed.UserInterface">
+      <SourceLine classname="jammed.UserInterface" sourcefile="UserInterface.java" sourcepath="jammed/UserInterface.java"/>
+    </Class>
+    <Method classname="jammed.UserInterface" name="getChanges" signature="(Ljava/util/ArrayList;)Ljava/util/ArrayList;" isStatic="false">
+      <SourceLine classname="jammed.UserInterface" start="77" end="138" startBytecode="0" endBytecode="631" sourcefile="UserInterface.java" sourcepath="jammed/UserInterface.java"/>
+    </Method>
+    <LocalVariable name="command" register="4" pc="53" role="LOCAL_VARIABLE_VALUE_OF"/>
+    <SourceLine classname="jammed.UserInterface" start="91" end="91" startBytecode="256" endBytecode="256" sourcefile="UserInterface.java" sourcepath="jammed/UserInterface.java"/>
+  </BugInstance>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" rank="17" abbrev="DLS" category="STYLE" first="2" last="2" removedByChange="true" firstSeen="3/19/15 10:19 PM" isInCloud="false">
+    <Class classname="junitTests.DBTester">
+      <SourceLine classname="junitTests.DBTester" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Class>
+    <Method classname="junitTests.DBTester" name="test" signature="()V" isStatic="true">
+      <SourceLine classname="junitTests.DBTester" start="15" end="49" startBytecode="0" endBytecode="101" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Method>
+    <LocalVariable name="logRes" register="10" pc="137" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="junitTests.DBTester" start="39" end="39" startBytecode="135" endBytecode="135" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.BASE_VALUE" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="logRes"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.METHOD_RESULT" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
+  </BugInstance>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" rank="17" abbrev="DLS" category="STYLE" first="2" last="2" removedByChange="true" firstSeen="3/19/15 10:19 PM" isInCloud="false">
+    <Class classname="junitTests.DBTester">
+      <SourceLine classname="junitTests.DBTester" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Class>
+    <Method classname="junitTests.DBTester" name="test" signature="()V" isStatic="true">
+      <SourceLine classname="junitTests.DBTester" start="15" end="49" startBytecode="0" endBytecode="101" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Method>
+    <LocalVariable name="mkUsr" register="1" pc="10" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="junitTests.DBTester" start="17" end="17" startBytecode="9" endBytecode="9" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.BASE_VALUE" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="mkUsr"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.METHOD_RESULT" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
+  </BugInstance>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" rank="17" abbrev="DLS" category="STYLE" first="2" last="2" removedByChange="true" firstSeen="3/19/15 10:19 PM" isInCloud="false">
+    <Class classname="junitTests.DBTester">
+      <SourceLine classname="junitTests.DBTester" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Class>
+    <Method classname="junitTests.DBTester" name="test" signature="()V" isStatic="true">
+      <SourceLine classname="junitTests.DBTester" start="15" end="49" startBytecode="0" endBytecode="101" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Method>
+    <LocalVariable name="pwdRes" register="9" pc="125" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="junitTests.DBTester" start="38" end="38" startBytecode="123" endBytecode="123" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.BASE_VALUE" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="pwdRes"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.METHOD_RESULT" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
+  </BugInstance>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" rank="17" abbrev="DLS" category="STYLE" first="2" last="2" removedByChange="true" firstSeen="3/19/15 10:19 PM" isInCloud="false">
+    <Class classname="junitTests.DBTester">
+      <SourceLine classname="junitTests.DBTester" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Class>
+    <Method classname="junitTests.DBTester" name="test" signature="()V" isStatic="true">
+      <SourceLine classname="junitTests.DBTester" start="15" end="49" startBytecode="0" endBytecode="101" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Method>
+    <LocalVariable name="res" register="0" pc="4" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="junitTests.DBTester" start="15" end="15" startBytecode="3" endBytecode="3" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.BASE_VALUE" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="res"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.METHOD_RESULT" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
+  </BugInstance>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="2" rank="17" abbrev="DLS" category="STYLE" first="2" last="2" removedByChange="true" firstSeen="3/19/15 10:19 PM" isInCloud="false">
+    <Class classname="junitTests.DBTester">
+      <SourceLine classname="junitTests.DBTester" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Class>
+    <Method classname="junitTests.DBTester" name="test" signature="()V" isStatic="true">
+      <SourceLine classname="junitTests.DBTester" start="15" end="49" startBytecode="0" endBytecode="101" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Method>
+    <LocalVariable name="udRes" register="8" pc="110" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="junitTests.DBTester" start="37" end="37" startBytecode="108" endBytecode="108" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.BASE_VALUE" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="udRes"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.METHOD_RESULT" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
+  </BugInstance>
+  <BugInstance type="DLS_DEAD_LOCAL_STORE" priority="3" rank="20" abbrev="DLS" category="STYLE" first="2" last="2" removedByChange="true" firstSeen="3/19/15 10:19 PM" isInCloud="false">
+    <Class classname="junitTests.DBTester">
+      <SourceLine classname="junitTests.DBTester" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Class>
+    <Method classname="junitTests.DBTester" name="test" signature="()V" isStatic="true">
+      <SourceLine classname="junitTests.DBTester" start="15" end="49" startBytecode="0" endBytecode="101" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Method>
+    <LocalVariable name="login" register="7" pc="70" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="junitTests.DBTester" start="29" end="29" startBytecode="70" endBytecode="70" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.BASE_VALUE" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.KILLED_BY_SUBSEQUENT_STORE" value="true"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="login"/>
+    <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.METHOD_RESULT" value="true"/>
+  </BugInstance>
+  <BugInstance type="DMI_INVOKING_TOSTRING_ON_ARRAY" priority="2" rank="10" abbrev="USELESS_STRING" category="CORRECTNESS" first="2" last="2" removedByChange="true" firstSeen="3/19/15 10:19 PM" isInCloud="false">
+    <Class classname="junitTests.DBTester">
+      <SourceLine classname="junitTests.DBTester" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Class>
+    <Method classname="junitTests.DBTester" name="test" signature="()V" isStatic="true">
+      <SourceLine classname="junitTests.DBTester" start="15" end="49" startBytecode="0" endBytecode="550" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Method>
+    <LocalVariable name="userData" register="11" pc="181" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="junitTests.DBTester" start="46" end="46" startBytecode="181" endBytecode="181" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+  </BugInstance>
+  <BugInstance type="DMI_INVOKING_TOSTRING_ON_ARRAY" priority="2" rank="10" abbrev="USELESS_STRING" category="CORRECTNESS" first="2" last="2" removedByChange="true" firstSeen="3/19/15 10:19 PM" isInCloud="false">
+    <Class classname="junitTests.DBTester">
+      <SourceLine classname="junitTests.DBTester" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Class>
+    <Method classname="junitTests.DBTester" name="test" signature="()V" isStatic="true">
+      <SourceLine classname="junitTests.DBTester" start="15" end="49" startBytecode="0" endBytecode="550" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Method>
+    <LocalVariable name="userLogin" register="12" pc="207" role="LOCAL_VARIABLE_NAMED"/>
+    <SourceLine classname="junitTests.DBTester" start="47" end="47" startBytecode="207" endBytecode="207" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+  </BugInstance>
+  <BugInstance type="DM_DEFAULT_ENCODING" priority="1" rank="19" abbrev="Dm" category="I18N" first="2" last="2" removedByChange="true" firstSeen="3/19/15 10:19 PM" isInCloud="false">
+    <Class classname="junitTests.DBTester">
+      <SourceLine classname="junitTests.DBTester" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Class>
+    <Method classname="junitTests.DBTester" name="test" signature="()V" isStatic="true">
+      <SourceLine classname="junitTests.DBTester" start="15" end="49" startBytecode="0" endBytecode="550" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Method>
+    <Method classname="java.lang.String" name="getBytes" signature="()[B" isStatic="false" role="METHOD_CALLED">
+      <SourceLine classname="java.lang.String" start="956" end="956" startBytecode="0" endBytecode="55" sourcefile="String.java" sourcepath="java/lang/String.java"/>
+    </Method>
+    <SourceLine classname="junitTests.DBTester" start="37" end="37" startBytecode="102" endBytecode="102" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    <SourceLine classname="junitTests.DBTester" start="38" end="38" startBytecode="117" endBytecode="117" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java" role="SOURCE_LINE_ANOTHER_INSTANCE"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="3" rank="20" abbrev="REC" category="STYLE" first="3" last="8" removedByChange="true" firstSeen="3/20/15 7:50 AM" isInCloud="false">
+    <Class classname="junitTests.DBTester">
+      <SourceLine classname="junitTests.DBTester" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Class>
+    <Method classname="junitTests.DBTester" name="test" signature="()V" isStatic="false">
+      <SourceLine classname="junitTests.DBTester" start="18" end="107" startBytecode="0" endBytecode="1208" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Method>
+    <SourceLine classname="junitTests.DBTester" start="87" end="87" startBytecode="594" endBytecode="594" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="3" rank="20" abbrev="REC" category="STYLE" first="9" firstSeen="3/20/15 10:45 AM" isInCloud="false">
+    <Class classname="junitTests.DBTester">
+      <SourceLine classname="junitTests.DBTester" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Class>
+    <Method classname="junitTests.DBTester" name="testDB" signature="()V" isStatic="false">
+      <SourceLine classname="junitTests.DBTester" start="20" end="115" startBytecode="0" endBytecode="1337" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Method>
+    <SourceLine classname="junitTests.DBTester" start="89" end="89" startBytecode="594" endBytecode="594" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+  </BugInstance>
+  <Errors errors="0" missingClasses="1">
+    <MissingClass>junit.framework.Assert</MissingClass>
+  </Errors>
+  <FindBugsSummary timestamp="Fri, 20 Mar 2015 11:08:50 -0400" total_classes="24" referenced_classes="110" total_bugs="7" total_size="923" num_packages="2" java_version="1.7.0_75" vm_version="24.75-b04" cpu_seconds="8.00" clock_seconds="1334.64" peak_mbytes="425.43" alloc_mbytes="1756.50" gc_seconds="0.02" priority_3="4" priority_2="3">
+    <PackageStats package="jammed" total_bugs="6" total_types="22" total_size="843" priority_3="3" priority_2="3">
+      <ClassStats class="jammed.Communication" sourceFile="Communication.java" interface="false" size="105" bugs="1" priority_3="1"/>
+      <ClassStats class="jammed.Communication$Type" sourceFile="Communication.java" interface="false" size="10" bugs="0"/>
+      <ClassStats class="jammed.DB" sourceFile="DB.java" interface="false" size="145" bugs="5" priority_3="2" priority_2="3"/>
+      <ClassStats class="jammed.DB$DBFileTypes" sourceFile="DB.java" interface="false" size="13" bugs="0"/>
+      <ClassStats class="jammed.Jammed" sourceFile="Jammed.java" interface="false" size="52" bugs="0"/>
+      <ClassStats class="jammed.Jammed$UserDataException" sourceFile="Jammed.java" interface="false" size="6" bugs="0"/>
+      <ClassStats class="jammed.Jelly" sourceFile="Jelly.java" interface="false" size="75" bugs="0"/>
+      <ClassStats class="jammed.Jelly$ServerState" sourceFile="Jelly.java" interface="false" size="13" bugs="0"/>
+      <ClassStats class="jammed.LogReq" sourceFile="LogReq.java" interface="false" size="30" bugs="0"/>
+      <ClassStats class="jammed.Login" sourceFile="Login.java" interface="false" size="3" bugs="0"/>
+      <ClassStats class="jammed.LoginInfo" sourceFile="LoginInfo.java" interface="false" size="28" bugs="0"/>
+      <ClassStats class="jammed.LoginReq" sourceFile="LoginReq.java" interface="false" size="21" bugs="0"/>
+      <ClassStats class="jammed.Request" sourceFile="Request.java" interface="false" size="44" bugs="0"/>
+      <ClassStats class="jammed.Request$ErrorMessage" sourceFile="Request.java" interface="false" size="12" bugs="0"/>
+      <ClassStats class="jammed.Request$EventType" sourceFile="Request.java" interface="false" size="13" bugs="0"/>
+      <ClassStats class="jammed.Request$MessageType" sourceFile="Request.java" interface="false" size="10" bugs="0"/>
+      <ClassStats class="jammed.TerminationReq" sourceFile="TerminationReq.java" interface="false" size="16" bugs="0"/>
+      <ClassStats class="jammed.TerminationReq$Term" sourceFile="TerminationReq.java" interface="false" size="12" bugs="0"/>
+      <ClassStats class="jammed.UserData" sourceFile="UserData.java" interface="false" size="97" bugs="0"/>
+      <ClassStats class="jammed.UserDataReq" sourceFile="UserDataReq.java" interface="false" size="37" bugs="0"/>
+      <ClassStats class="jammed.UserDataReq$ReqType" sourceFile="UserDataReq.java" interface="false" size="10" bugs="0"/>
+      <ClassStats class="jammed.UserInterface" sourceFile="UserInterface.java" interface="false" size="91" bugs="0"/>
+    </PackageStats>
+    <PackageStats package="junitTests" total_bugs="1" total_types="2" total_size="80" priority_3="1">
+      <ClassStats class="junitTests.DBTester" sourceFile="DBTester.java" interface="false" size="63" bugs="1" priority_3="1"/>
+      <ClassStats class="junitTests.Enc" sourceFile="Enc.java" interface="false" size="17" bugs="0"/>
+    </PackageStats>
+    <FindBugsProfile>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.ClassInfoAnalysisEngine" totalMilliseconds="191" invocations="666" avgMicrosecondsPerInvocation="286" maxMicrosecondsPerInvocation="4759" standardDeviationMircosecondsPerInvocation="521"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.ClassDataAnalysisEngine" totalMilliseconds="110" invocations="672" avgMicrosecondsPerInvocation="164" maxMicrosecondsPerInvocation="3111" standardDeviationMircosecondsPerInvocation="140"/>
+      <ClassProfile name="edu.umd.cs.findbugs.FindBugs2" totalMilliseconds="65" invocations="2" avgMicrosecondsPerInvocation="32793" maxMicrosecondsPerInvocation="42157" standardDeviationMircosecondsPerInvocation="9365"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.TypeDataflowFactory" totalMilliseconds="64" invocations="129" avgMicrosecondsPerInvocation="500" maxMicrosecondsPerInvocation="11506" standardDeviationMircosecondsPerInvocation="1551"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.ValueNumberDataflowFactory" totalMilliseconds="53" invocations="129" avgMicrosecondsPerInvocation="413" maxMicrosecondsPerInvocation="9421" standardDeviationMircosecondsPerInvocation="1258"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.FieldItemSummary" totalMilliseconds="50" invocations="110" avgMicrosecondsPerInvocation="457" maxMicrosecondsPerInvocation="4289" standardDeviationMircosecondsPerInvocation="804"/>
+      <ClassProfile name="edu.umd.cs.findbugs.OpcodeStack$JumpInfoFactory" totalMilliseconds="49" invocations="309" avgMicrosecondsPerInvocation="158" maxMicrosecondsPerInvocation="4650" standardDeviationMircosecondsPerInvocation="332"/>
+      <ClassProfile name="edu.umd.cs.findbugs.ba.npe.NullDerefAndRedundantComparisonFinder" totalMilliseconds="47" invocations="118" avgMicrosecondsPerInvocation="399" maxMicrosecondsPerInvocation="4937" standardDeviationMircosecondsPerInvocation="685"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.FindNoSideEffectMethods" totalMilliseconds="45" invocations="110" avgMicrosecondsPerInvocation="409" maxMicrosecondsPerInvocation="3681" standardDeviationMircosecondsPerInvocation="714"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.IsNullValueDataflowFactory" totalMilliseconds="43" invocations="119" avgMicrosecondsPerInvocation="362" maxMicrosecondsPerInvocation="8320" standardDeviationMircosecondsPerInvocation="923"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.UnconditionalValueDerefDataflowFactory" totalMilliseconds="38" invocations="119" avgMicrosecondsPerInvocation="321" maxMicrosecondsPerInvocation="6313" standardDeviationMircosecondsPerInvocation="710"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.FindRefComparison$SpecialTypeAnalysis" totalMilliseconds="35" invocations="103" avgMicrosecondsPerInvocation="348" maxMicrosecondsPerInvocation="7406" standardDeviationMircosecondsPerInvocation="1027"/>
+      <ClassProfile name="edu.umd.cs.findbugs.util.TopologicalSort" totalMilliseconds="27" invocations="615" avgMicrosecondsPerInvocation="45" maxMicrosecondsPerInvocation="658" standardDeviationMircosecondsPerInvocation="71"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.CFGFactory" totalMilliseconds="25" invocations="119" avgMicrosecondsPerInvocation="217" maxMicrosecondsPerInvocation="2785" standardDeviationMircosecondsPerInvocation="376"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.OptionalReturnNull" totalMilliseconds="23" invocations="24" avgMicrosecondsPerInvocation="977" maxMicrosecondsPerInvocation="23123" standardDeviationMircosecondsPerInvocation="4617"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.StreamResourceTracker" totalMilliseconds="21" invocations="74" avgMicrosecondsPerInvocation="285" maxMicrosecondsPerInvocation="1319" standardDeviationMircosecondsPerInvocation="273"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.NoteDirectlyRelevantTypeQualifiers" totalMilliseconds="18" invocations="110" avgMicrosecondsPerInvocation="164" maxMicrosecondsPerInvocation="1166" standardDeviationMircosecondsPerInvocation="245"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.JavaClassAnalysisEngine" totalMilliseconds="16" invocations="149" avgMicrosecondsPerInvocation="109" maxMicrosecondsPerInvocation="874" standardDeviationMircosecondsPerInvocation="139"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.CalledMethods" totalMilliseconds="12" invocations="110" avgMicrosecondsPerInvocation="117" maxMicrosecondsPerInvocation="887" standardDeviationMircosecondsPerInvocation="192"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.FunctionsThatMightBeMistakenForProcedures" totalMilliseconds="11" invocations="110" avgMicrosecondsPerInvocation="104" maxMicrosecondsPerInvocation="914" standardDeviationMircosecondsPerInvocation="171"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.ConstantDataflowFactory" totalMilliseconds="11" invocations="119" avgMicrosecondsPerInvocation="94" maxMicrosecondsPerInvocation="2071" standardDeviationMircosecondsPerInvocation="242"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.BuildStringPassthruGraph" totalMilliseconds="11" invocations="110" avgMicrosecondsPerInvocation="100" maxMicrosecondsPerInvocation="1837" standardDeviationMircosecondsPerInvocation="222"/>
+    </FindBugsProfile>
+  </FindBugsSummary>
+  <ClassFeatures></ClassFeatures>
+  <History>
+    <AppVersion sequence="0" timestamp="1426795864000" release="" codeSize="732" numClasses="22"/>
+    <AppVersion sequence="1" timestamp="1426797671000" release="" codeSize="728" numClasses="22"/>
+    <AppVersion sequence="2" timestamp="1426817974000" release="" codeSize="848" numClasses="24"/>
+    <AppVersion sequence="3" timestamp="1426852238000" release="" codeSize="902" numClasses="24"/>
+    <AppVersion sequence="4" timestamp="1426852551000" release="" codeSize="903" numClasses="24"/>
+    <AppVersion sequence="5" timestamp="1426852845000" release="" codeSize="908" numClasses="24"/>
+    <AppVersion sequence="6" timestamp="1426853501000" release="" codeSize="908" numClasses="24"/>
+    <AppVersion sequence="7" timestamp="1426862653000" release="" codeSize="908" numClasses="24"/>
+    <AppVersion sequence="8" timestamp="1426862653000" release="" codeSize="908" numClasses="24"/>
+    <AppVersion sequence="9" timestamp="1426862745000" release="" codeSize="913" numClasses="24"/>
+  </History>
+</BugCollection>

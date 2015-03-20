@@ -24,6 +24,8 @@ public class Jammed {
    *  (9) Close the connection with the server
    */
   public static void main(String[] args) {
+	  //System.setProperty("javax.net.ssl.trustStore","serverkeystore.jks");
+	  //System.setProperty("java.net.ssl.trustStorePassword", "cs5430");
     // (1) display a user interface
     UserInterface ui = new UserInterface();
 
@@ -95,6 +97,7 @@ public class Jammed {
     } catch (FileNotFoundException e) {
       ui.error("No key files found - have you enrolled yet?");
     } catch (GeneralSecurityException e) {
+    	e.printStackTrace();
       ui.error("Something went wrong with the cryptography - exiting...");
     } catch (UnsupportedEncodingException e) {
       ui.error("Does your system not support UTF8? That's dumb.");
@@ -106,6 +109,7 @@ public class Jammed {
     } catch (UserDataException e) {
       ui.error(Request.errToString(e.error));
     } catch (IOException e) {
+    	e.printStackTrace();
       ui.error("Something bad happened with IO. Exiting.");
       e.printStackTrace();
     }

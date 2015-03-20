@@ -19,17 +19,26 @@ public class LoginReq extends Request {
 		this.setSuccess(success);
 		this.setError(err);
 		this.setEvent(EventType.login);
+		super.setType(Request.MessageType.response);
 	}
 	//Request constructor
 	public LoginReq(LoginInfo l){
 		this.username=l.username;
 		this.password=l.password;
 		this.setEvent(EventType.login);
-
+		super.setType(Request.MessageType.request);
 	}
 	
 	
 	public String getUsername(){return this.username;}
 	public String getPassword(){return this.password;}
+	
+	public String toString(){
+		String a = "Login: "+this.username;
+		String b = "\nPassword: "+this.password;
+		String c = "\nType: "+super.getType();
+		String d = "\nSucc: "+super.getSuccess();
+		return(a+b+c+d+"\n");
+	}
 
 }
