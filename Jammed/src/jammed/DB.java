@@ -332,12 +332,25 @@ public class DB {
 
         String filePath = usersPath + uid + "/" + uid + fname;
         try {
+            FileOutputStream fout = new FileOutputStream(filePath);
+            try {
+                fout.write(fileData);
+            } finally {
+                fout.close();
+            }
+
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+        /*
+        try {
             Files.write(Paths.get(filePath), fileData);
         } catch(Exception e) {
             //System.out.println("Could not write data to file!");
             return false;
         }
-        return true;
+        return true; */
 
     }
 
