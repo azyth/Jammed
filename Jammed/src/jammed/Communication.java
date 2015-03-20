@@ -87,30 +87,6 @@ public class Communication {
       throw new SocketException("Can't connect from a server!");
     }
     try{
-      /*
-      // Code adapted from nakov.com/blog
-      // Create a trust manager that does not validate certificate chains
-      TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
-      public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-      return null;
-      }
-      public void checkClientTrusted(X509Certificate[] certs, String authType) {
-      }
-      public void checkServerTrusted(X509Certificate[] certs, String authType) {
-      }
-      }
-      };
-      // Install the all-trusting trust manager
-      SSLContext sc = SSLContext.getInstance("SSL");
-      sc.init(null, trustAllCerts, new java.security.SecureRandom());
-
-      // Create all-trusting host name verifier
-      HostnameVerifier allHostsValid = new HostnameVerifier() {
-      public boolean verify(String hostname, SSLSession session) {
-      return true;
-      }
-      };
-      */
       SocketFactory ClientSocketFactory = SSLSocketFactory.getDefault();
       SSLSocket socket = (SSLSocket) ClientSocketFactory.createSocket(hostname, port);
       socket.startHandshake(); //May not need?
@@ -144,11 +120,10 @@ public class Communication {
     while (true) {
       try{
         Request got = (Request) this.rx.readObject();
-        System.out.println(got);
         return got;
       }
       catch (EOFException e) {
-        // wtfever fuckit
+        // !!Hackfix: ignore
         continue;
       }
       catch(RuntimeException re){
