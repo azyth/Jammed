@@ -122,7 +122,7 @@ public class DB {
      *  Output: A new user folder with name uid: root/users/uid/
      *  Return: Boolean, true if creation was successful.
      * */
-    public static boolean newUser(String uid) {
+    public static boolean newUser(String uid) { // TODO: Create user log
         Path newUser = Paths.get(usersPath + uid + "/");
 
         if(Files.exists(newUser)) {
@@ -228,7 +228,7 @@ public class DB {
      *  Output: Updated version of the file in the specified uid folder.
      *  Return: Boolean, true if operation successful.
      * */
-    public static boolean writeUserLog(String uid, DBFileTypes fileType, String fileData) { // TODO: Determine fileData input type
+    public static boolean writeUserLog(String uid, DBFileTypes fileType, String fileData) {
         if(!searchUser(uid)) {
             return false;
         }
