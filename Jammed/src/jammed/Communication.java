@@ -46,12 +46,12 @@ public class Communication {
   public Communication(Communication.Type type) throws SocketException{
     try {
       
-      if (this.type == Type.SERVER) {
+      if (type == Type.SERVER) {
         ServerSocketFactory serverSocketFactory = SSLServerSocketFactory.getDefault();
         this.serverSocket = serverSocketFactory.createServerSocket(port);
         this.dummy = false;
       }
-      else if (this.type == Type.CLIENT) {
+      else if (type == Type.CLIENT) {
         // Create a Client
         // Dummy object, call .connect() method to use
       }
