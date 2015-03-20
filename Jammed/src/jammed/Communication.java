@@ -25,8 +25,8 @@ public class Communication {
     private int port = 54309;
 
     private Communication.Type type = null;
-    private ServerSocket serverSocket = null;
-    private Socket socket = null;
+    private ServerSocket serverSocket;// = null;
+    private Socket socket;// = null;
     private ObjectInputStream rx = null;
     private ObjectOutputStream tx = null;
     private boolean dummy = true;
@@ -135,7 +135,7 @@ public class Communication {
   public void accept() throws SocketException{
 	  try{
 		  if(this.type == Type.SERVER){
-			  this.serverSocket.accept();
+			  this.socket = this.serverSocket.accept();
 		  }
 		  else if (this.type == Type.CLIENT){
 			  throw new SocketException("Clients can't accept()!");
