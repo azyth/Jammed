@@ -78,7 +78,6 @@ public class Jelly {
         				break;
             		}
             		DB.writeLog(SESSION_USERNAME+" logged in");
-            		System.out.println(SESSION_USERNAME+" logged in");
             		continue;
             	}
             	
@@ -107,8 +106,9 @@ public class Jelly {
             			case userDataDownload:
             				UserDataReq downloadResponse = null;
             				byte[] userData = DB.readEncodedFile(SESSION_USERNAME, DB.DBFileTypes.USER_DATA);
+            				byte[] iv = DB.readEncodedFile(SESSION_USERNAME, DB.DBFileTypes.USER_IV);
             				if(userData != null){
-            					downloadResponse = new UserDataReq(true, UserDataReq.ReqType.download, Request.ErrorMessage.none, userData, null); //TODO: !!
+            					downloadResponse = new UserDataReq(true, UserDataReq.ReqType.download, Request.ErrorMessage.none, userData, iv);
             				}
             				else{
             					downloadResponse = new UserDataReq(false, UserDataReq.ReqType.download, Request.ErrorMessage.somethingBad);
