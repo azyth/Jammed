@@ -140,13 +140,16 @@ public class Communication {
 
   public Request receive() throws SocketException{
       try{
-          return (Request) this.rx.readObject();
+    	  Request got = (Request) this.rx.readObject();
+    	  System.out.println(got);
+          return got;
       }
       catch(RuntimeException re){
       	throw re;
       }
       catch(Exception e){
-            throw new SocketException("Error in Communication.receive!");
+    	  e.printStackTrace();
+          throw new SocketException("Error in Communication.receive!");
       }
   }
 
