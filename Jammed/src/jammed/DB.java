@@ -92,7 +92,7 @@ public class DB {
      *          Writes that the user was created to the user and server log.
      *  Return: Boolean, true if creation was successful.
      * */
-    public static boolean newUser(String uid) { 
+    public static boolean newUser(String uid) {
         Path newUser = Paths.get(usersPath + uid + "/");
 
         if(Files.exists(newUser)) {
