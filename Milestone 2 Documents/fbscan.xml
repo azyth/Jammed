@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<BugCollection version="3.0.1" sequence="0" timestamp="1426874889000" analysisTimestamp="1426874893941" release="">
+  <Project projectName="a">
+    <Jar>/Users/Dan/Documents/Java/git/CS5430/Jammed/bin</Jar>
+    <Cloud id="edu.umd.cs.findbugs.cloud.appengine.findbugs-cloud" online="true" detailsUrl="http://findbugs-cloud.appspot.com/issues/%s?embed"></Cloud>
+  </Project>
+  <BugInstance type="BC_UNCONFIRMED_CAST_OF_RETURN_VALUE" priority="3" rank="20" abbrev="BC" category="STYLE" firstSeen="3/20/15 2:08 PM" reviews="1" consensus="NOT_A_BUG">
+    <UserAnnotation designation="NOT_A_BUG" timestamp="1426875023890"><![CDATA[SSLSocketFactory is initialized to be specifically an SSLServerSocketFactory]]></UserAnnotation>
+    <Class classname="jammed.Communication">
+      <SourceLine classname="jammed.Communication" sourcefile="Communication.java" sourcepath="jammed/Communication.java"/>
+    </Class>
+    <Method classname="jammed.Communication" name="connect" signature="()V" isStatic="false">
+      <SourceLine classname="jammed.Communication" start="86" end="104" startBytecode="0" endBytecode="50" sourcefile="Communication.java" sourcepath="jammed/Communication.java"/>
+    </Method>
+    <Type descriptor="Ljava/net/Socket;" role="TYPE_FOUND">
+      <SourceLine classname="java.net.Socket" start="59" end="1674" sourcefile="Socket.java" sourcepath="java/net/Socket.java"/>
+    </Type>
+    <Type descriptor="Ljavax/net/ssl/SSLSocket;" role="TYPE_EXPECTED">
+      <SourceLine classname="javax.net.ssl.SSLSocket" start="148" end="662" sourcefile="SSLSocket.java" sourcepath="javax/net/ssl/SSLSocket.java"/>
+    </Type>
+    <SourceLine classname="jammed.Communication" start="91" end="91" startBytecode="36" endBytecode="36" sourcefile="Communication.java" sourcepath="jammed/Communication.java"/>
+  </BugInstance>
+  <BugInstance type="PZLA_PREFER_ZERO_LENGTH_ARRAYS" priority="3" rank="20" abbrev="PZLA" category="STYLE" firstSeen="3/20/15 2:08 PM" reviews="1" consensus="NOT_A_BUG">
+    <UserAnnotation designation="NOT_A_BUG" timestamp="1426875044485"><![CDATA[Purposefully returning null, system checks for null]]></UserAnnotation>
+    <Class classname="jammed.DB">
+      <SourceLine classname="jammed.DB" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Class>
+    <Method classname="jammed.DB" name="readEncodedFile" signature="(Ljava/lang/String;Ljammed/DB$DBFileTypes;)[B" isStatic="true">
+      <SourceLine classname="jammed.DB" start="273" end="303" startBytecode="0" endBytecode="391" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Method>
+    <SourceLine classname="jammed.DB" start="274" end="274" startBytecode="8" endBytecode="8" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    <SourceLine classname="jammed.DB" start="289" end="289" startBytecode="67" endBytecode="67" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    <SourceLine classname="jammed.DB" start="299" end="299" startBytecode="128" endBytecode="128" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    <SourceLine classname="jammed.DB" start="303" end="303" startBytecode="133" endBytecode="133" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="2" rank="17" abbrev="REC" category="STYLE" firstSeen="3/20/15 2:08 PM" reviews="1" consensus="BAD_ANALYSIS">
+    <UserAnnotation designation="BAD_ANALYSIS" timestamp="1426874972803"><![CDATA[If catch is removed, possible uncaught IOException]]></UserAnnotation>
+    <Class classname="jammed.DB">
+      <SourceLine classname="jammed.DB" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Class>
+    <Method classname="jammed.DB" name="initialize" signature="()Z" isStatic="true">
+      <SourceLine classname="jammed.DB" start="45" end="85" startBytecode="0" endBytecode="509" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Method>
+    <SourceLine classname="jammed.DB" start="80" end="80" startBytecode="182" endBytecode="182" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="2" rank="17" abbrev="REC" category="STYLE" firstSeen="3/20/15 2:08 PM" reviews="1" consensus="BAD_ANALYSIS">
+    <UserAnnotation designation="BAD_ANALYSIS" timestamp="1426874979060"><![CDATA[If catch is removed, possible uncaught IOException]]></UserAnnotation>
+    <Class classname="jammed.DB">
+      <SourceLine classname="jammed.DB" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Class>
+    <Method classname="jammed.DB" name="writeEncodedFile" signature="(Ljava/lang/String;Ljammed/DB$DBFileTypes;[B)Z" isStatic="true">
+      <SourceLine classname="jammed.DB" start="314" end="345" startBytecode="0" endBytecode="444" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Method>
+    <SourceLine classname="jammed.DB" start="342" end="342" startBytecode="137" endBytecode="137" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="2" rank="17" abbrev="REC" category="STYLE" firstSeen="3/20/15 2:08 PM" reviews="1" consensus="BAD_ANALYSIS">
+    <UserAnnotation designation="BAD_ANALYSIS" timestamp="1426874974019"><![CDATA[If catch is removed, possible uncaught IOException]]></UserAnnotation>
+    <Class classname="jammed.DB">
+      <SourceLine classname="jammed.DB" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Class>
+    <Method classname="jammed.DB" name="writeLog" signature="(Ljava/lang/String;)Z" isStatic="true">
+      <SourceLine classname="jammed.DB" start="137" end="162" startBytecode="0" endBytecode="405" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Method>
+    <SourceLine classname="jammed.DB" start="158" end="158" startBytecode="142" endBytecode="142" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="2" rank="17" abbrev="REC" category="STYLE" firstSeen="3/20/15 2:08 PM" reviews="1" consensus="BAD_ANALYSIS">
+    <UserAnnotation designation="BAD_ANALYSIS" timestamp="1426874977326"><![CDATA[If catch is removed, possible uncaught IOException]]></UserAnnotation>
+    <Class classname="jammed.DB">
+      <SourceLine classname="jammed.DB" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Class>
+    <Method classname="jammed.DB" name="writeUserLog" signature="(Ljava/lang/String;Ljammed/DB$DBFileTypes;Ljava/lang/String;)Z" isStatic="true">
+      <SourceLine classname="jammed.DB" start="232" end="262" startBytecode="0" endBytecode="544" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Method>
+    <SourceLine classname="jammed.DB" start="258" end="258" startBytecode="189" endBytecode="189" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="3" rank="20" abbrev="REC" category="STYLE" firstSeen="3/20/15 2:08 PM" reviews="1" consensus="BAD_ANALYSIS">
+    <UserAnnotation designation="BAD_ANALYSIS" timestamp="1426875054070"><![CDATA[If catch is removed, possible uncaught IOException]]></UserAnnotation>
+    <Class classname="jammed.DB">
+      <SourceLine classname="jammed.DB" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Class>
+    <Method classname="jammed.DB" name="newUser" signature="(Ljava/lang/String;)Z" isStatic="true">
+      <SourceLine classname="jammed.DB" start="96" end="117" startBytecode="0" endBytecode="286" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+    </Method>
+    <SourceLine classname="jammed.DB" start="113" end="113" startBytecode="99" endBytecode="99" sourcefile="DB.java" sourcepath="jammed/DB.java"/>
+  </BugInstance>
+  <BugInstance type="REC_CATCH_EXCEPTION" priority="3" rank="20" abbrev="REC" category="STYLE" firstSeen="3/20/15 2:08 PM" reviews="1" consensus="BAD_ANALYSIS">
+    <UserAnnotation designation="BAD_ANALYSIS" timestamp="1426875058554"><![CDATA[If catch is removed, possible uncaught IOException]]></UserAnnotation>
+    <Class classname="junitTests.DBTester">
+      <SourceLine classname="junitTests.DBTester" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Class>
+    <Method classname="junitTests.DBTester" name="testDB" signature="()V" isStatic="false">
+      <SourceLine classname="junitTests.DBTester" start="20" end="115" startBytecode="0" endBytecode="1337" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+    </Method>
+    <SourceLine classname="junitTests.DBTester" start="89" end="89" startBytecode="594" endBytecode="594" sourcefile="DBTester.java" sourcepath="junitTests/DBTester.java"/>
+  </BugInstance>
+  <Errors errors="0" missingClasses="1">
+    <MissingClass>junit.framework.Assert</MissingClass>
+  </Errors>
+  <FindBugsSummary timestamp="Fri, 20 Mar 2015 14:08:09 -0400" total_classes="29" referenced_classes="115" total_bugs="8" total_size="950" num_packages="2" java_version="1.7.0_75" vm_version="24.75-b04" cpu_seconds="29.85" clock_seconds="185.89" peak_mbytes="226.53" alloc_mbytes="683.00" gc_seconds="0.06" priority_3="4" priority_2="4">
+    <PackageStats package="jammed" total_bugs="7" total_types="27" total_size="863" priority_3="3" priority_2="4">
+      <ClassStats class="jammed.Communication" sourceFile="Communication.java" interface="false" size="111" bugs="1" priority_3="1"/>
+      <ClassStats class="jammed.Communication$Type" sourceFile="Communication.java" interface="false" size="10" bugs="0"/>
+      <ClassStats class="jammed.Crumb" sourceFile="Crumb.java" interface="false" size="3" bugs="0"/>
+      <ClassStats class="jammed.DB" sourceFile="DB.java" interface="false" size="149" bugs="6" priority_3="2" priority_2="4"/>
+      <ClassStats class="jammed.DB$1" sourceFile="DB.java" interface="false" size="4" bugs="0"/>
+      <ClassStats class="jammed.DB$DBFileTypes" sourceFile="DB.java" interface="false" size="13" bugs="0"/>
+      <ClassStats class="jammed.Jammed" sourceFile="Jammed.java" interface="false" size="57" bugs="0"/>
+      <ClassStats class="jammed.Jammed$UserDataException" sourceFile="Jammed.java" interface="false" size="6" bugs="0"/>
+      <ClassStats class="jammed.Jelly" sourceFile="Jelly.java" interface="false" size="78" bugs="0"/>
+      <ClassStats class="jammed.Jelly$1" sourceFile="Jelly.java" interface="false" size="4" bugs="0"/>
+      <ClassStats class="jammed.Jelly$ServerState" sourceFile="Jelly.java" interface="false" size="13" bugs="0"/>
+      <ClassStats class="jammed.LogReq" sourceFile="LogReq.java" interface="false" size="30" bugs="0"/>
+      <ClassStats class="jammed.Login" sourceFile="Login.java" interface="false" size="3" bugs="0"/>
+      <ClassStats class="jammed.LoginInfo" sourceFile="LoginInfo.java" interface="false" size="27" bugs="0"/>
+      <ClassStats class="jammed.LoginReq" sourceFile="LoginReq.java" interface="false" size="29" bugs="0"/>
+      <ClassStats class="jammed.Request" sourceFile="Request.java" interface="false" size="44" bugs="0"/>
+      <ClassStats class="jammed.Request$1" sourceFile="Request.java" interface="false" size="4" bugs="0"/>
+      <ClassStats class="jammed.Request$ErrorMessage" sourceFile="Request.java" interface="false" size="12" bugs="0"/>
+      <ClassStats class="jammed.Request$EventType" sourceFile="Request.java" interface="false" size="13" bugs="0"/>
+      <ClassStats class="jammed.Request$MessageType" sourceFile="Request.java" interface="false" size="10" bugs="0"/>
+      <ClassStats class="jammed.TerminationReq" sourceFile="TerminationReq.java" interface="false" size="16" bugs="0"/>
+      <ClassStats class="jammed.TerminationReq$Term" sourceFile="TerminationReq.java" interface="false" size="12" bugs="0"/>
+      <ClassStats class="jammed.Toast" sourceFile="Toast.java" interface="false" size="3" bugs="0"/>
+      <ClassStats class="jammed.UserData" sourceFile="UserData.java" interface="false" size="76" bugs="0"/>
+      <ClassStats class="jammed.UserDataReq" sourceFile="UserDataReq.java" interface="false" size="37" bugs="0"/>
+      <ClassStats class="jammed.UserDataReq$ReqType" sourceFile="UserDataReq.java" interface="false" size="10" bugs="0"/>
+      <ClassStats class="jammed.UserInterface" sourceFile="UserInterface.java" interface="false" size="89" bugs="0"/>
+    </PackageStats>
+    <PackageStats package="junitTests" total_bugs="1" total_types="2" total_size="87" priority_3="1">
+      <ClassStats class="junitTests.DBTester" sourceFile="DBTester.java" interface="false" size="63" bugs="1" priority_3="1"/>
+      <ClassStats class="junitTests.Enc" sourceFile="Enc.java" interface="false" size="24" bugs="0"/>
+    </PackageStats>
+    <FindBugsProfile>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.ClassInfoAnalysisEngine" totalMilliseconds="357" invocations="676" avgMicrosecondsPerInvocation="528" maxMicrosecondsPerInvocation="15862" standardDeviationMircosecondsPerInvocation="1171"/>
+      <ClassProfile name="edu.umd.cs.findbugs.FindBugs2" totalMilliseconds="136" invocations="2" avgMicrosecondsPerInvocation="68129" maxMicrosecondsPerInvocation="99242" standardDeviationMircosecondsPerInvocation="31113"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.ClassDataAnalysisEngine" totalMilliseconds="134" invocations="682" avgMicrosecondsPerInvocation="197" maxMicrosecondsPerInvocation="11276" standardDeviationMircosecondsPerInvocation="433"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.IsNullValueDataflowFactory" totalMilliseconds="102" invocations="125" avgMicrosecondsPerInvocation="822" maxMicrosecondsPerInvocation="25781" standardDeviationMircosecondsPerInvocation="2598"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.FindNoSideEffectMethods" totalMilliseconds="101" invocations="115" avgMicrosecondsPerInvocation="882" maxMicrosecondsPerInvocation="9201" standardDeviationMircosecondsPerInvocation="1560"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.ValueNumberDataflowFactory" totalMilliseconds="99" invocations="135" avgMicrosecondsPerInvocation="734" maxMicrosecondsPerInvocation="12182" standardDeviationMircosecondsPerInvocation="1815"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.TypeDataflowFactory" totalMilliseconds="92" invocations="135" avgMicrosecondsPerInvocation="681" maxMicrosecondsPerInvocation="11229" standardDeviationMircosecondsPerInvocation="1666"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.FieldItemSummary" totalMilliseconds="89" invocations="115" avgMicrosecondsPerInvocation="774" maxMicrosecondsPerInvocation="11547" standardDeviationMircosecondsPerInvocation="1553"/>
+      <ClassProfile name="edu.umd.cs.findbugs.ba.npe.NullDerefAndRedundantComparisonFinder" totalMilliseconds="72" invocations="124" avgMicrosecondsPerInvocation="583" maxMicrosecondsPerInvocation="8367" standardDeviationMircosecondsPerInvocation="1102"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.CFGFactory" totalMilliseconds="66" invocations="125" avgMicrosecondsPerInvocation="528" maxMicrosecondsPerInvocation="5173" standardDeviationMircosecondsPerInvocation="780"/>
+      <ClassProfile name="edu.umd.cs.findbugs.OpcodeStack$JumpInfoFactory" totalMilliseconds="58" invocations="316" avgMicrosecondsPerInvocation="183" maxMicrosecondsPerInvocation="3140" standardDeviationMircosecondsPerInvocation="309"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.FindRefComparison$SpecialTypeAnalysis" totalMilliseconds="54" invocations="109" avgMicrosecondsPerInvocation="497" maxMicrosecondsPerInvocation="9215" standardDeviationMircosecondsPerInvocation="1147"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.UnconditionalValueDerefDataflowFactory" totalMilliseconds="53" invocations="125" avgMicrosecondsPerInvocation="430" maxMicrosecondsPerInvocation="5742" standardDeviationMircosecondsPerInvocation="783"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.StreamResourceTracker" totalMilliseconds="45" invocations="67" avgMicrosecondsPerInvocation="671" maxMicrosecondsPerInvocation="2764" standardDeviationMircosecondsPerInvocation="719"/>
+      <ClassProfile name="edu.umd.cs.findbugs.util.TopologicalSort" totalMilliseconds="38" invocations="625" avgMicrosecondsPerInvocation="61" maxMicrosecondsPerInvocation="1354" standardDeviationMircosecondsPerInvocation="110"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.NoteDirectlyRelevantTypeQualifiers" totalMilliseconds="30" invocations="115" avgMicrosecondsPerInvocation="264" maxMicrosecondsPerInvocation="2023" standardDeviationMircosecondsPerInvocation="399"/>
+      <ClassProfile name="edu.umd.cs.findbugs.ba.obl.ObligationAnalysis" totalMilliseconds="24" invocations="40" avgMicrosecondsPerInvocation="613" maxMicrosecondsPerInvocation="3459" standardDeviationMircosecondsPerInvocation="590"/>
+      <ClassProfile name="edu.umd.cs.findbugs.detect.DumbMethods" totalMilliseconds="24" invocations="29" avgMicrosecondsPerInvocation="845" maxMicrosecondsPerInvocation="5226" standardDeviationMircosecondsPerInvocation="1072"/>
+      <ClassProfile name="edu.umd.cs.findbugs.classfile.engine.bcel.JavaClassAnalysisEngine" totalMilliseconds="22" invocations="155" avgMicrosecondsPerInvocation="148" maxMicrosecondsPerInvocation="1462" standardDeviationMircosecondsPerInvocation="240"/>
+    </FindBugsProfile>
+  </FindBugsSummary>
+  <ClassFeatures></ClassFeatures>
+  <History></History>
+</BugCollection>
