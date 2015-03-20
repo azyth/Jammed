@@ -135,13 +135,15 @@ public class Communication {
         this.serverSocket.close();
       }
       else if(this.type == Type.CLIENT){
-        this.tx.close();
-        this.rx.close();
-        this.socket.close();
+        //this.tx.close();
+        //this.rx.close();
+        //if(this.socket != null) this.socket.close();
+    	  this.socket.close();
       }
       else{
           //throw new SocketException("Invalid type!"); 
     	  //Impossible to reach
+    	  // Commented out to avoid having close() throw an exception
       }
     }
     catch(RuntimeException re){
