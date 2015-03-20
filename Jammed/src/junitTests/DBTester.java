@@ -5,7 +5,7 @@ import org.junit.Test;
 import static junit.framework.Assert.assertEquals;
 import java.nio.charset.Charset;
 
-/**
+/*
  * Created by Marcos on 3/19/15.
  */
 public class DBTester {
@@ -96,7 +96,12 @@ public class DBTester {
             String dataToLog = "Hello world";
             assertEquals(DB.writeLog(dataToLog), true);
             // read "Hello World"
-            //String serverLogRead = DB.readLog();
+            String serverLogRead = DB.readLog();
+            try {
+                assertEquals("".equals(serverLogRead), false);
+            } catch(Exception e) {
+                assertEquals(true, true); // null pointer exception expected.
+            }
             //assertEquals(serverLogRead.equals(dataToLog), true);
 
             // write a lot to the log
