@@ -16,6 +16,10 @@ import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocketFactory;
 import java.net.SocketException;
+import javax.net.ssl.*;
+import java.security.cert.*;
+
+// Todo: Certs?
 
 public class Communication {
     public enum Type{SERVER, CLIENT}
@@ -36,6 +40,10 @@ public class Communication {
             this.type = type;
 
             if (this.type == Type.SERVER) {
+            	// Key store  [Work in Progress]
+            	
+            	
+            	
                 // Create a Server
                 ServerSocketFactory serverSocketFactory = SSLServerSocketFactory.getDefault();
                 this.serverSocket = serverSocketFactory.createServerSocket(port);
@@ -60,13 +68,50 @@ public class Communication {
         }
     }
     
+    public Communication(SSLContext context) throws SocketException{
+    	try{
+    		// Remove me eventually
+    	}
+    	catch(RuntimeException re){
+    		throw re;
+    	}
+    	catch(Exception e){
+    		e.printStackTrace();
+    		throw new SocketException("Failure in Communication Server Constructor!");
+    	}
+    }
+    
   public void connect() throws SocketException{
 	  if(this.type != Type.CLIENT){
 		  throw new SocketException("Can't connect from a server!");
 	  }
 	  try{
+		  // Code adapted from nakov.com/blog
+		  // Create a trust manager that does not validate certificate chains
+	      TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
+	                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+	                    return null;
+	                }
+	                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+	                }
+	                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+	                }
+	            }
+	        };
+	        // Install the all-trusting trust manager
+	        SSLContext sc = SSLContext.getInstance("SSL");
+	        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+	        
+	        // Create all-trusting host name verifier
+	        HostnameVerifier allHostsValid = new HostnameVerifier() {
+	            public boolean verify(String hostname, SSLSession session) {
+	                return true;
+	            }
+	        };
+		  
 		  SocketFactory ClientSocketFactory = SSLSocketFactory.getDefault();
-          Socket socket = ClientSocketFactory.createSocket(hostname, port);
+          SSLSocket socket = (SSLSocket) ClientSocketFactory.createSocket(hostname, port);
+          //socket.startHandshake(); //May not need?
           this.tx = new ObjectOutputStream(socket.getOutputStream());
           this.rx = new ObjectInputStream(socket.getInputStream());
           this.dummy = false;
