@@ -130,15 +130,15 @@ public class Communication {
         return; // Can't close a dummy
       }
       else if(this.type == Type.SERVER){
-        this.tx.close();
-        this.rx.close();
-        this.serverSocket.close();
+        //this.tx.close();
+        //this.rx.close();
+        if (this.serverSocket != null) this.serverSocket.close();
       }
       else if(this.type == Type.CLIENT){
         //this.tx.close();
         //this.rx.close();
-        //if(this.socket != null) this.socket.close();
-    	  this.socket.close();
+        if(this.socket != null) this.socket.close();
+    	  //this.socket.close();
       }
       else{
           //throw new SocketException("Invalid type!"); 
