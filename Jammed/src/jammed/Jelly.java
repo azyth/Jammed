@@ -83,8 +83,8 @@ public class Jelly {
             	}
             	
             	if(state == ServerState.SESSION){
-            		System.out.println("SESSION ABOUT TO RX");
-            		Thread.sleep(5000);
+            		//System.out.println("SESSION ABOUT TO RX");
+            		Thread.sleep(500);
             		req = comm.receive();
             		event = req.getEvent();
             		switch(event){

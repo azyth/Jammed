@@ -55,7 +55,11 @@ public class Jammed {
         if (!verified.getSuccess()) {
           ui.error("Could not verifiy those credentials - please try again.");
         } else {
-          data = new UserData(login.username);
+          try {
+            data = new UserData(login.username);
+          } catch (IOException e) {
+            throw new FileNotFoundException();
+          }
         }
       }
 
@@ -107,6 +111,7 @@ public class Jammed {
     } catch (IOException e) {
     	e.printStackTrace();
       ui.error("Something bad happened with IO. Exiting.");
+      e.printStackTrace();
     }
 
     // (9) close the connection with the server
