@@ -104,7 +104,7 @@ public class Jelly {
             			case userDataDownload:
             				UserDataReq downloadResponse = null;
             				byte[] userData = DB.readEncodedFile(SESSION_USERNAME, DB.DBFileTypes.USER_DATA);
-                    byte[] iv = DB.readEncodedFile(SESSION_USERNAME, DB.DBFileTypes.USER_IV);
+            				byte[] iv = DB.readEncodedFile(SESSION_USERNAME, DB.DBFileTypes.USER_IV);
             				if(userData != null){
             					downloadResponse = new UserDataReq(true, UserDataReq.ReqType.download, Request.ErrorMessage.none, userData, iv);
             				}
@@ -117,7 +117,9 @@ public class Jelly {
             			case userDataUpload:
             				UserDataReq uploadReq = (UserDataReq)req;
             				UserDataReq uploadResponse = null;
-            				if(DB.writeEncodedFile(SESSION_USERNAME, DB.DBFileTypes.USER_DATA, uploadReq.getData())){
+            				boolean write_succ = DB.writeEncodedFile(SESSION_USERNAME, DB.DBFileTypes.USER_DATA, uploadReq.getData());
+            				boolean iv_succ = DB.writeEncodedFile(SESSION_USERNAME, DB.DBFileTypes.USER_IV, uploadReq.getIV());
+            				if(write_succ && iv_succ){
             					uploadResponse = new UserDataReq(true, UserDataReq.ReqType.upload, Request.ErrorMessage.none);
             				}
             				else{
