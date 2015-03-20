@@ -78,7 +78,6 @@ public class Jelly {
         				break;
             		}
             		DB.writeLog(SESSION_USERNAME+" logged in");
-            		System.out.println(SESSION_USERNAME+" logged in");
             		continue;
             	}
             	
