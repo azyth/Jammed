@@ -24,6 +24,8 @@ public class Jammed {
    *  (9) Close the connection with the server
    */
   public static void main(String[] args) {
+	  //System.setProperty("javax.net.ssl.trustStore","serverkeystore.jks");
+	  //System.setProperty("java.net.ssl.trustStorePassword", "cs5430");
     // (1) display a user interface
     UserInterface ui = new UserInterface();
 

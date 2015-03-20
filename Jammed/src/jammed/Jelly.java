@@ -27,6 +27,9 @@ public class Jelly {
 	// TODO: Add proper system logging
 
 	public static void main(String[] args){
+		//System.setProperty("javax.net.ssl.keyStore","\\serverkeystore.jks");
+    	//System.setProperty("java.net.ssl.keyStorePassword", "cs5430");
+    	
 		if(DB.initialize() == false){
 			System.err.println("DB Initialization Failure");
 			System.exit(1);
