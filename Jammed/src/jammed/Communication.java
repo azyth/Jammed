@@ -31,8 +31,8 @@ public class Communication {
     private Communication.Type type = null;
     private ServerSocket serverSocket;// = null;
     private Socket socket;// = null;
-    private ObjectInputStream rx = null;
-    private ObjectOutputStream tx = null;
+    private ObjectInputStream rx;// = null;
+    private ObjectOutputStream tx;// = null;
     private boolean dummy = true;
 
     public Communication(Communication.Type type) throws SocketException{
@@ -111,7 +111,7 @@ public class Communication {
 		  
 		  SocketFactory ClientSocketFactory = SSLSocketFactory.getDefault();
           SSLSocket socket = (SSLSocket) ClientSocketFactory.createSocket(hostname, port);
-          //socket.startHandshake(); //May not need?
+          socket.startHandshake(); //May not need?
           this.tx = new ObjectOutputStream(socket.getOutputStream());
           this.rx = new ObjectInputStream(socket.getInputStream());
           this.dummy = false;
@@ -181,6 +181,8 @@ public class Communication {
 	  try{
 		  if(this.type == Type.SERVER){
 			  this.socket = this.serverSocket.accept();
+              this.tx = new ObjectOutputStream(this.socket.getOutputStream());
+              this.rx = new ObjectInputStream(this.socket.getInputStream());
 		  }
 		  else if (this.type == Type.CLIENT){
 			  throw new SocketException("Clients can't accept()!");
