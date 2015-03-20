@@ -86,6 +86,7 @@ public class Communication {
 		  throw new SocketException("Can't connect from a server!");
 	  }
 	  try{
+		  /*
 		  // Code adapted from nakov.com/blog
 		  // Create a trust manager that does not validate certificate chains
 	      TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
@@ -108,7 +109,7 @@ public class Communication {
 	                return true;
 	            }
 	        };
-		  
+		  */
 		  SocketFactory ClientSocketFactory = SSLSocketFactory.getDefault();
           SSLSocket socket = (SSLSocket) ClientSocketFactory.createSocket(hostname, port);
           socket.startHandshake(); //May not need?
