@@ -75,10 +75,13 @@ public class Jelly {
         				break;
             		}
             		DB.writeLog(SESSION_USERNAME+" logged in");
+            		System.out.println(SESSION_USERNAME+" logged in");
             		continue;
             	}
             	
             	if(state == ServerState.SESSION){
+            		System.out.println("SESSION ABOUT TO RX");
+            		Thread.sleep(5000);
             		req = comm.receive();
             		event = req.getEvent();
             		switch(event){

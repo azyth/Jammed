@@ -41,9 +41,6 @@ public class Communication {
 
             if (this.type == Type.SERVER) {
             	// Key store  [Work in Progress]
-            	
-            	
-            	
                 // Create a Server
                 ServerSocketFactory serverSocketFactory = SSLServerSocketFactory.getDefault();
                 this.serverSocket = serverSocketFactory.createServerSocket(port);
@@ -68,6 +65,7 @@ public class Communication {
         }
     }
     
+    // Unused currently
     public Communication(SSLContext context) throws SocketException{
     	try{
     		// Remove me eventually
@@ -86,33 +84,9 @@ public class Communication {
 		  throw new SocketException("Can't connect from a server!");
 	  }
 	  try{
-		  /*
-		  // Code adapted from nakov.com/blog
-		  // Create a trust manager that does not validate certificate chains
-	      TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
-	                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-	                    return null;
-	                }
-	                public void checkClientTrusted(X509Certificate[] certs, String authType) {
-	                }
-	                public void checkServerTrusted(X509Certificate[] certs, String authType) {
-	                }
-	            }
-	        };
-	        // Install the all-trusting trust manager
-	        SSLContext sc = SSLContext.getInstance("SSL");
-	        sc.init(null, trustAllCerts, new java.security.SecureRandom());
-	        
-	        // Create all-trusting host name verifier
-	        HostnameVerifier allHostsValid = new HostnameVerifier() {
-	            public boolean verify(String hostname, SSLSession session) {
-	                return true;
-	            }
-	        };
-		  */
 		  SocketFactory ClientSocketFactory = SSLSocketFactory.getDefault();
           SSLSocket socket = (SSLSocket) ClientSocketFactory.createSocket(hostname, port);
-          socket.startHandshake(); //May not need?
+          socket.startHandshake();
           this.tx = new ObjectOutputStream(socket.getOutputStream());
           this.rx = new ObjectInputStream(socket.getInputStream());
           this.dummy = false;
@@ -134,13 +108,15 @@ public class Communication {
       	throw re;
       }
       catch(Exception e){
+    	  e.printStackTrace();
           throw new SocketException("Error in Communication.send!");
       }
   }
 
   public Request receive() throws SocketException{
       try{
-    	  Request got = (Request) this.rx.readObject();
+    	  Object raw = this.rx.readObject();
+    	  Request got = (Request)raw;
     	  System.out.println(got);
           return got;
       }
