@@ -122,7 +122,7 @@ public class DB {
      *  Output: A new user folder with name uid: root/users/uid/
      *  Return: Boolean, true if creation was successful.
      * */
-    public static boolean newUser(String uid) {
+    public static boolean newUser(String uid) { // TODO: Create user log
         Path newUser = Paths.get(usersPath + uid + "/");
 
         if(Files.exists(newUser)) {
@@ -190,8 +190,8 @@ public class DB {
      *  Output: None.
      *  Return: The data of the file (As a string).
      * */
-    public static String readUserLog(String uid, DBFileTypes fileType) { // TODO determine output type
-        // To do
+    public static String readUserLog(String uid, DBFileTypes fileType) {
+        // TODO: Maybe return a zero length string
         if(!searchUser(uid)) {
             return null;
         }
@@ -228,8 +228,7 @@ public class DB {
      *  Output: Updated version of the file in the specified uid folder.
      *  Return: Boolean, true if operation successful.
      * */
-    public static boolean writeUserLog(String uid, DBFileTypes fileType, String fileData) { // TODO: Determine fileData input type
-        // To do
+    public static boolean writeUserLog(String uid, DBFileTypes fileType, String fileData) {
         if(!searchUser(uid)) {
             return false;
         }
@@ -269,8 +268,8 @@ public class DB {
      *  Output: None.
      *  Return: The data of the file (As a byte[]).
      * */
-    public static byte[] readEncodedFile(String uid, DBFileTypes fileType) { // TODO determine output type
-        // To do
+    public static byte[] readEncodedFile(String uid, DBFileTypes fileType) {
+        // TODO: Maybe return a zero length array
         if(!searchUser(uid)) {
             return null;
         }
