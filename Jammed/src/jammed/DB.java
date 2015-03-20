@@ -1,3 +1,5 @@
+package jammed;
+
 /* Marcos Pedreiro - mvp34
    3/16/15
    Class to perform file management for the server

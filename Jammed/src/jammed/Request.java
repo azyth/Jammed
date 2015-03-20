@@ -1,6 +1,6 @@
+package jammed;
 
-
-	//John and megan
+//John and megan
 
 /*
  * Request
