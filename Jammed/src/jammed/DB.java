@@ -27,45 +27,12 @@ public class DB {
         USER_DATA, USER_PWD_FILE, USER_LOG, USER_IV
     }
 
-    /* Testing */
-    /*public static void main(String[] args) {
-        // Init db
-        boolean res = initialize();
-        // make test user and search for it
-        boolean mkUsr = newUser("test001");
-        boolean srchUsr = searchUser("test001");
-        System.out.println(srchUsr);
 
-        // Update the server log
-        String dataToLog = "Hello world";
-        boolean didWriteLog = writeLog(dataToLog);
-        System.out.println(didWriteLog);
-
-        // Stress test the log
-        for(int i = 0; i < 1000; i++) {
-            String msg = "This is a test, #" + i;
-            boolean sTest = writeLog(msg);
-        }
-
-        // Write data to a user file
-        String samplePassword = "username: mvp34, password: 123";
-        String passwordUpdated = "Password Updated";
-        String login = "username: example, password: exampleP, salt: 123";
-
-        boolean udRes = writeEncodedFile("test001", DBFileTypes.USER_DATA, samplePassword.getBytes());
-        boolean pwdRes = writeEncodedFile("test001", DBFileTypes.USER_PWD_FILE, login.getBytes());
-        boolean logRes = writeUserLog("test001", DBFileTypes.USER_LOG, passwordUpdated);
-
-        // read that data
-        byte[] userData = readEncodedFile("test001", DBFileTypes.USER_DATA);
-        byte[] userLogin = readEncodedFile("test001", DBFileTypes.USER_PWD_FILE);
-        String userLog = readUserLog("test001", DBFileTypes.USER_LOG);
-
-        System.out.println("User data: " + userData.toString());
-        System.out.println("User login: " + userLogin.toString());
-        System.out.println("User Log: " + userLog);
-
-    } */
+    /*
+    public static void main(String[] args) {
+        System.out.println("Use the junit Test istead");
+    }
+    */
 
     /** Purpose: Initializes the file structure for the DB in the current folder
      *           and creates the server log. Only should be called once per install.
@@ -102,11 +69,14 @@ public class DB {
             Path lgPath = Paths.get(serverPath + "log.txt");
             Files.createFile(lgPath);
             FileOutputStream initLog = new FileOutputStream(serverPath + "log.txt");
-            String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
-            String initialCreation = "Database initialization time: " + timeStamp + "\n";
-            byte[] iCBytes = initialCreation.getBytes(charsetUTF8);
-            initLog.write(iCBytes);
-            initLog.close();
+            try {
+                String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
+                String initialCreation = "Database initialization time: " + timeStamp + "\n";
+                byte[] iCBytes = initialCreation.getBytes(charsetUTF8);
+                initLog.write(iCBytes);
+            } finally {
+                initLog.close();
+            }
         } catch(Exception e) {
             //System.out.println("Could not create server log file!");
             return false;
@@ -122,7 +92,7 @@ public class DB {
      *          Writes that the user was created to the user and server log.
      *  Return: Boolean, true if creation was successful.
      * */
-    public static boolean newUser(String uid) { // TODO: Create user log
+    public static boolean newUser(String uid) { 
         Path newUser = Paths.get(usersPath + uid + "/");
 
         if(Files.exists(newUser)) {
@@ -177,11 +147,14 @@ public class DB {
         try {
             OutputStreamWriter appendLog = new OutputStreamWriter(new FileOutputStream(serverPath + "log.txt", true), "UTF-8");
             BufferedWriter bw = new BufferedWriter(appendLog);
-            String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
-            bw.write("Entry: " + dataToLog + " | time written: " + timeStamp);
-            bw.newLine();
-            bw.flush();
-            bw.close();
+            try {
+                String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
+                bw.write("Entry: " + dataToLog + " | time written: " + timeStamp);
+                bw.newLine();
+                bw.flush();
+            } finally {
+                bw.close();
+            }
         } catch(Exception e) {
             //System.out.println("Could not append data to log!");
             return false;
@@ -273,12 +246,15 @@ public class DB {
         try {
             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(usersPath + uid + "/" + uid + fname, true), "UTF-8");
             BufferedWriter bw = new BufferedWriter(writer);
-            String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
-            dataToWrite = "Entry: " + fileData + " | time written: " + timeStamp;
-            bw.write(dataToWrite);
-            bw.newLine();
-            bw.flush();
-            bw.close();
+            try {
+                String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
+                dataToWrite = "Entry: " + fileData + " | time written: " + timeStamp;
+                bw.write(dataToWrite);
+                bw.newLine();
+                bw.flush();
+            } finally {
+                bw.close();
+            }
         } catch(Exception e) {
             //System.out.println("Could not write data to file!");
             return false;
