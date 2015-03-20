@@ -1,0 +1,34 @@
+Database initialization time: 2015/03/20_12:17:59
+Entry: dummy logged in | time written: 2015/03/20_12:18:59
+Entry: guest logged in | time written: 2015/03/20_12:22:27
+Entry: guest logged in | time written: 2015/03/20_12:23:18
+Entry: guest logged in | time written: 2015/03/20_12:30:20
+Entry: guest logged in | time written: 2015/03/20_12:47:24
+Entry: guest logged in | time written: 2015/03/20_12:48:26
+Entry: guest logged in | time written: 2015/03/20_12:51:10
+Entry: guest data downloaded: true | time written: 2015/03/20_12:51:10
+Entry: guest logged in | time written: 2015/03/20_12:55:56
+Entry: guest data downloaded: false | time written: 2015/03/20_12:55:56
+Entry: guest logged in | time written: 2015/03/20_12:56:59
+Entry: guest data downloaded: true | time written: 2015/03/20_12:57:00
+Entry: guest logged in | time written: 2015/03/20_13:11:31
+Entry: guest data downloaded: true | time written: 2015/03/20_13:11:31
+Entry: guest logged in | time written: 2015/03/20_13:13:48
+Entry: guest data downloaded: true | time written: 2015/03/20_13:13:48
+Entry: guest logged in | time written: 2015/03/20_13:14:48
+Entry: guest data downloaded: true | time written: 2015/03/20_13:14:48
+Entry: guest logged in | time written: 2015/03/20_13:22:22
+Entry: guest data downloaded: true | time written: 2015/03/20_13:22:22
+Entry: guest logged in | time written: 2015/03/20_13:27:42
+Entry: guest data downloaded: true | time written: 2015/03/20_13:27:42
+Entry: guest data uploaded: true | time written: 2015/03/20_13:28:02
+Entry: guest logged in | time written: 2015/03/20_13:28:14
+Entry: guest data downloaded: true | time written: 2015/03/20_13:28:14
+Entry: guest data uploaded: true | time written: 2015/03/20_13:28:29
+Entry: guest logged in | time written: 2015/03/20_13:28:35
+Entry: guest data downloaded: true | time written: 2015/03/20_13:28:35
+Entry: guest logged in | time written: 2015/03/20_13:35:09
+Entry: guest data downloaded: true | time written: 2015/03/20_13:35:09
+Entry: guest data uploaded: true | time written: 2015/03/20_13:36:46
+Entry: guest logged in | time written: 2015/03/20_13:36:59
+Entry: guest data downloaded: true | time written: 2015/03/20_13:36:59
