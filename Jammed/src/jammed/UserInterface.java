@@ -87,6 +87,10 @@ public class UserInterface {
 
       System.out.print("Enter command: ");
       String command = br.readLine();
+      if (command == null) {
+        // this should never happen; there is no EOF to reach
+        throw new IOException();
+      }
 
       while (!command.equals("exit")) {
 
@@ -99,6 +103,10 @@ public class UserInterface {
           l.username = br.readLine();
           System.out.print("Enter the password: ");
           l.password = br.readLine();
+
+          if (l.website == null || l.username == null || l.password == null) {
+            throw new IOException();
+          }
 
           int index = data.indexOf(l);
 
@@ -127,6 +135,11 @@ public class UserInterface {
 
         System.out.print("Enter command: ");
         command = br.readLine();
+
+        if (command == null) {
+          // should never happen; there is no EOF
+          throw new IOException();
+        }
       }
     } catch (IOException e) {
       System.out.println("Error reading input; exiting...");
