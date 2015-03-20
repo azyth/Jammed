@@ -10,6 +10,7 @@
  */
 public class UserDataReq extends Request {
 	
+	private static final long serialVersionUID = 2L; // For Serialization - @Dettervt
 	public enum ReqType{upload,download}
 	private ReqType direction;
 	private byte[] userdata;//for storing AES encrypted User data

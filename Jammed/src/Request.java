@@ -13,7 +13,11 @@
  * 
  * some of this may seem irrelevant but should be useful later. 
  */
-public abstract class Request {
+public abstract class Request implements java.io.Serializable{
+	
+	private static final long serialVersionUID = 1L; // For Serialization - @Dettervt
+	// Each Request class and subclass needs a serial version UID
+	// Adding one to each
 	
 	public enum EventType{login,log,userDataDownload,userDataUpload,termination}
 	public enum MessageType{request,response}

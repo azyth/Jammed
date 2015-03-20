@@ -11,6 +11,8 @@
  */
 public class LogReq extends Request{
 	
+	private static final long serialVersionUID = 4L; // For Serialization - @Dettervt
+	
 	private String username; //used by the server to double check user identity, this better match the session username
 	private String userLog; //holds the log when passing back to the user.
 

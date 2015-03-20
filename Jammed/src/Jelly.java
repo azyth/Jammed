@@ -90,10 +90,9 @@ public class Jelly {
             				else{
             					 logResponse = new LogReq(logreq.getUsername(), Request.ErrorMessage.badArgument); //TODO: Adjust error messages
             				}
-            				comm.send(response);
+            				comm.send(logResponse);
             				break;
             			case userDataDownload:
-            				UserDataReq downloadReq = (UserDataReq)req;
             				UserDataReq downloadResponse = null;
             				byte[] userData = DB.readEncodedFile(SESSION_USERNAME, DB.DBFileTypes.USER_DATA);
             				if(userData != null){
