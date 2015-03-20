@@ -129,7 +129,7 @@ public class DB {
 
         if(Files.exists(newUser)) {
             //System.out.println("User already exists");
-            return false;
+            return true;
         }
         // Create root and server folder
         try {
@@ -184,6 +184,28 @@ public class DB {
             return false;
         }
         return true;
+
+    }
+
+    /** Purpose: Reads the server log.
+     *  Input: None.
+     *  Output: None.
+     *  Return: String of the server log data.
+     * */
+    public static String readLog() {
+        Path lgname = Paths.get(serverPath + "log.txt");
+        if(!Files.exists(lgname)) {
+            return null;
+        }
+
+        byte[] fileArray;
+        try {
+            fileArray = Files.readAllBytes(lgname);
+            return new String(fileArray, charsetUTF8);
+        } catch (Exception e) {
+            //System.out.println("Could not read User Data");
+            return null;
+        }
 
     }
 
@@ -250,7 +272,7 @@ public class DB {
             BufferedWriter bw = new BufferedWriter(writer);
             try {
                 String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
-                dataToWrite = "Entry: " + fileData + " | time written" + timeStamp;
+                dataToWrite = "Entry: " + fileData + " | time written: " + timeStamp;
                 bw.write(dataToWrite);
                 bw.newLine();
                 bw.flush();
@@ -261,7 +283,7 @@ public class DB {
             //System.out.println("Could not write data to file!");
             return false;
         }
-        return false;
+        return true;
 
     }
 
@@ -286,6 +308,7 @@ public class DB {
                 break;
             case USER_IV:
                 fname = "_IV.bin";
+                break;
             default:
                 return null;
         }
@@ -326,6 +349,7 @@ public class DB {
                 break;
             case USER_IV:
                 fname = "_IV.bin";
+                break;
             default:
                 return false;
         }
