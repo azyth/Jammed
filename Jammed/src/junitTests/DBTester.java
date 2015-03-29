@@ -14,7 +14,7 @@ public class DBTester {
 
         @Test
         public void testDB() {
-            /* Note: Reading of Data written to log has to be done manually due to time stamps and formatting */
+            /* Note: Reading of Data written to log cannot be tested due to time stamps and formatting */
 
             /* Init DB */
             assertEquals(true, DB.initialize());
@@ -28,6 +28,16 @@ public class DBTester {
             assertEquals(true, DB.newUser("test002"));
             assertEquals(true, DB.searchUser("test002"));
 
+            // create and delete user
+            assertEquals(false, DB.searchUser("test003"));
+            assertEquals(true, DB.newUser("test003"));
+            assertEquals(true, DB.searchUser("test003"));
+            assertEquals(true, DB.deleteUser("test003"));
+            assertEquals(false, DB.searchUser("test003"));
+
+            // try creating existing user
+            assertEquals(true, DB.newUser("test002"));
+
             /* Writing and reading user files */
             String user001UserData = "username: mvp34, password: 123";
             String user001Login = "username: example, password: exampleP, salt: 123";
@@ -40,56 +50,26 @@ public class DBTester {
             String user002Log = "Logged in";
 
             // Writing to user 1
-            assertEquals(DB.writeEncodedFile("test001", DB.DBFileTypes.USER_DATA, user001UserData.getBytes(charsetUTF8)), true); // ud
-            assertEquals(DB.writeEncodedFile("test001", DB.DBFileTypes.USER_PWD_FILE, user001Login.getBytes(charsetUTF8)), true); // login
-            assertEquals(DB.writeEncodedFile("test001", DB.DBFileTypes.USER_IV, user001IV.getBytes(charsetUTF8)), true);
-            assertEquals(DB.writeUserLog("test001", DB.DBFileTypes.USER_LOG, user001Log), true); // ulog
+
             // Writing to user 2
-            assertEquals(DB.writeEncodedFile("test002", DB.DBFileTypes.USER_DATA, user002UserData.getBytes(charsetUTF8)), true); // ud
-            assertEquals(DB.writeEncodedFile("test002", DB.DBFileTypes.USER_PWD_FILE, user002Login.getBytes(charsetUTF8)), true); // login
-            assertEquals(DB.writeEncodedFile("test002", DB.DBFileTypes.USER_IV, user002IV.getBytes(charsetUTF8)), true);
-            assertEquals(DB.writeUserLog("test002", DB.DBFileTypes.USER_LOG, user002Log), true); // ulog
+
             // Try writing to user 3, should be false
-            assertEquals(DB.writeEncodedFile("test003", DB.DBFileTypes.USER_DATA, user001UserData.getBytes(charsetUTF8)), false); // ud
-            assertEquals(DB.writeEncodedFile("test003", DB.DBFileTypes.USER_PWD_FILE, user001Login.getBytes(charsetUTF8)), false); // login
-            assertEquals(DB.writeEncodedFile("test003", DB.DBFileTypes.USER_IV, user001IV.getBytes(charsetUTF8)), false);
-            assertEquals(DB.writeUserLog("test003", DB.DBFileTypes.USER_LOG, user001Log), false); // ulog
+
 
             // Read user data (1)
-            String user001udRead = new String(DB.readEncodedFile("test001", DB.DBFileTypes.USER_DATA), charsetUTF8);
-            String user001LoginRead = new String(DB.readEncodedFile("test001", DB.DBFileTypes.USER_PWD_FILE), charsetUTF8);
-            String user001IVRead = new String(DB.readEncodedFile("test001", DB.DBFileTypes.USER_IV), charsetUTF8);
+
             //String user001LogRead = DB.readUserLog("test001", DB.DBFileTypes.USER_LOG);
                 // compare
-            assertEquals(user001udRead.equals(user001UserData), true);
-            assertEquals(user001Login.equals(user001LoginRead), true);
-            assertEquals(user001IV.equals(user001IVRead), true);
+
             //assertEquals(user001Log.equals(user001LogRead), true);
             // Read user data (2)
-            String user002udRead = new String(DB.readEncodedFile("test002", DB.DBFileTypes.USER_DATA), charsetUTF8);
-            String user002LoginRead = new String(DB.readEncodedFile("test002", DB.DBFileTypes.USER_PWD_FILE), charsetUTF8);
-            String user002IVRead = new String(DB.readEncodedFile("test002", DB.DBFileTypes.USER_IV), charsetUTF8);
+
             //String user002LogRead = DB.readUserLog("test002", DB.DBFileTypes.USER_LOG);
                 // compare
-            assertEquals(user002udRead.equals(user002UserData), true);
-            assertEquals(user002LoginRead.equals(user002Login), true);
-            assertEquals(user002IVRead.equals(user002IV), true);
+
             //assertEquals(user002LogRead.equals(user002Log), true);
             // Read user data (3) Doesn't exist
-            try {
-                String user003udRead = new String(DB.readEncodedFile("test003", DB.DBFileTypes.USER_DATA), charsetUTF8);
-                String user003LoginRead = new String(DB.readEncodedFile("test003", DB.DBFileTypes.USER_PWD_FILE), charsetUTF8);
-                String user003IVRead = new String(DB.readEncodedFile("test003", DB.DBFileTypes.USER_IV), charsetUTF8);
-                //String user003LogRead = DB.readUserLog("test002", DB.DBFileTypes.USER_LOG);
-                // compare, should all be false
-                assertEquals(user003udRead.equals(user002UserData), false);
-                assertEquals(user003LoginRead.equals(user002Login), false);
-                assertEquals(user003IVRead.equals(user002IV), false);
-                //assertEquals(user003LogRead.equals(user002Log), false);
-            } catch(Exception e) {
-                assertEquals(true, true); // This is good, should arrive here
-                // null pointer exception expected.
-            }
+
 
             /* Server log stuff */
             // Update the server log

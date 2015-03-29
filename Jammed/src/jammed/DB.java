@@ -21,6 +21,7 @@ public class DB {
 
     private static final String serverPath = "root/server/";
     private static final String usersPath = "root/users/";
+    private static final String serverLogPath = serverPath + "log/";
     private static final Charset charsetUTF8 = Charset.forName("UTF-8");
 
 
@@ -52,6 +53,7 @@ public class DB {
     public static boolean initialize() {
         Path server = Paths.get(serverPath);
         Path user = Paths.get(usersPath);
+        Path log = Paths.get(serverLogPath);
 
         if(Files.exists(server) && Files.exists(user)) {
             //System.out.println("DB has already been initialized");
@@ -61,6 +63,7 @@ public class DB {
         // Create root and server folder
         try {
             Files.createDirectories(server);
+            Files.createDirectories(log);
         } catch(Exception e) {
             //System.out.println("Could not create root and server dir!");
             return false;
@@ -76,9 +79,9 @@ public class DB {
 
         // create server log file
         try {
-            Path lgPath = Paths.get(serverPath + "log.txt");
+            Path lgPath = Paths.get(serverLogPath + "log.txt");
             Files.createFile(lgPath);
-            FileOutputStream initLog = new FileOutputStream(serverPath + "log.txt");
+            FileOutputStream initLog = new FileOutputStream(serverLogPath + "log.txt");
 
             String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
             String initialCreation = "Database initialization time: " + timeStamp + "\n";
@@ -141,6 +144,40 @@ public class DB {
         return Files.exists(user);
     }
 
+    /** Purpose: Removes a user managed by the server.
+     *  Input: A unique user id: uid.
+     *  Output: Removal of a user folder with name uid: root/users/uid/
+     *          Removes all files stored inside that folder.
+     *  Return: Boolean, true if deletion was successful.
+     * */
+    public static boolean deleteUser(String uid) {
+        if(!searchUser(uid)) {
+            return false;
+        }
+
+        String user = usersPath + uid + "/";
+        Path userFolderPath = Paths.get(user);
+        Path userData = Paths.get(user + uid + userDataSuffix);
+        Path userPWD = Paths.get(user + uid + userPWDSuffix);
+        Path userIV = Paths.get(user + uid + userIVSuffix);
+        Path userLog = Paths.get(user + uid + userLogSuffix);
+        
+        boolean didDelete = false;
+        try {
+            didDelete = Files.deleteIfExists(userData);
+            didDelete = Files.deleteIfExists(userPWD);
+            didDelete = Files.deleteIfExists(userIV);
+            didDelete = Files.deleteIfExists(userLog);
+
+            didDelete = Files.deleteIfExists(userFolderPath);
+
+        } catch(Exception e) {
+            return didDelete;
+        }
+
+        return didDelete;
+    }
+
     /********************************************************/
     /***********           Server Files            **********/
     /********************************************************/
@@ -151,10 +188,11 @@ public class DB {
      *  Return: Boolean, true if operation successful.
      * */
     public static boolean writeLog(String dataToLog) {
-        Path lgname = Paths.get(serverPath + "log.txt");
-        if(!Files.exists(lgname)) {
+        String sLogPath = serverLogPath + "log.txt";
+        Path logPath = Paths.get(sLogPath);
+        if(!Files.exists(logPath)) {
             try {
-                Files.createFile(lgname);
+                Files.createFile(logPath);
             } catch(Exception e) {
                 //System.out.println("Could not create log.");
                 return false;
@@ -162,11 +200,11 @@ public class DB {
         }
 
         try {
-            OutputStreamWriter appendLog = new OutputStreamWriter(new FileOutputStream(serverPath + "log.txt", true), "UTF-8");
+            OutputStreamWriter appendLog = new OutputStreamWriter(new FileOutputStream(sLogPath, true), "UTF-8");
             BufferedWriter bw = new BufferedWriter(appendLog);
 
             String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
-            bw.write("Entry: " + dataToLog + " | time written: " + timeStamp);
+            bw.write("Time Written: " + timeStamp + " | Entry: " + dataToLog);
             bw.newLine();
             bw.flush();
             bw.close();
@@ -184,14 +222,14 @@ public class DB {
      *  Return: String of the server log data.
      * */
     public static String readLog() {
-        Path lgname = Paths.get(serverPath + "log.txt");
-        if(!Files.exists(lgname)) {
+        Path logPath = Paths.get(serverLogPath + "log.txt");
+        if(!Files.exists(logPath)) {
             return null;
         }
 
         byte[] fileArray;
         try {
-            fileArray = Files.readAllBytes(lgname);
+            fileArray = Files.readAllBytes(logPath);
             return new String(fileArray, charsetUTF8);
         } catch (Exception e) {
             //System.out.println("Could not read User Data");
