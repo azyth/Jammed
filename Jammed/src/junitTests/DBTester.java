@@ -50,26 +50,31 @@ public class DBTester {
             String user002Log = "Logged in";
 
             // Writing to user 1
-
+            assertEquals(true, DB.writeUserData("test001", user001UserData.getBytes()));
+            assertEquals(true, DB.writeUserPWD("test001", user001Login.getBytes()));
+            assertEquals(true, DB.writeUserIV("test001", user001IV.getBytes()));
+            assertEquals(true, DB.writeUserLog("test001", user001Log));
             // Writing to user 2
-
+            assertEquals(true, DB.writeUserData("test002", user002UserData.getBytes()));
+            assertEquals(true, DB.writeUserPWD("test002", user002Login.getBytes()));
+            assertEquals(true, DB.writeUserIV("test002", user002IV.getBytes()));
+            assertEquals(true, DB.writeUserLog("test002", user002Log));
             // Try writing to user 3, should be false
-
+            assertEquals(false, DB.writeUserData("test003", user002UserData.getBytes()));
+            assertEquals(false, DB.writeUserPWD("test003", user002Login.getBytes()));
+            assertEquals(false, DB.writeUserIV("test003", user002IV.getBytes()));
+            assertEquals(false, DB.writeUserLog("test003", user002Log));
 
             // Read user data (1)
+            if(DB.readUserData("test001") != null) {
+                String readUser001Data = new String(DB.readUserData("test001"), charsetUTF8);
+                System.out.println(readUser001Data);
+            }
 
-            //String user001LogRead = DB.readUserLog("test001", DB.DBFileTypes.USER_LOG);
-                // compare
-
-            //assertEquals(user001Log.equals(user001LogRead), true);
-            // Read user data (2)
-
-            //String user002LogRead = DB.readUserLog("test002", DB.DBFileTypes.USER_LOG);
-                // compare
-
-            //assertEquals(user002LogRead.equals(user002Log), true);
-            // Read user data (3) Doesn't exist
-
+            if(DB.readUserLog("test002") != null) {
+                String readUser002Log = DB.readUserLog("test002");
+                System.out.println(readUser002Log);
+            }
 
             /* Server log stuff */
             // Update the server log

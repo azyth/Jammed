@@ -161,7 +161,7 @@ public class DB {
         Path userPWD = Paths.get(user + uid + userPWDSuffix);
         Path userIV = Paths.get(user + uid + userIVSuffix);
         Path userLog = Paths.get(user + uid + userLogSuffix);
-        
+
         boolean didDelete = false;
         try {
             didDelete = Files.deleteIfExists(userData);
