@@ -17,6 +17,8 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+// TODO: Store and hash+salt passwords to authenticate users
+// TODO: Secure logs
 public class DB {
 
     private static final String serverPath = "root/server/";
@@ -454,11 +456,16 @@ public class DB {
     }
 
     /********************************************************/
+    /***********  Secure Password Authentication   **********/
+    /********************************************************/
+
+    // TODO: Store and hash+salt passwords to authenticate users
+
+    /********************************************************/
     /********************************************************/
     /***********            DEPRECIATED            **********/
     /********************************************************/
     /********************************************************/
-
 
     /** Purpose: Reads the log from a specific user.
      *  Input: User id uid of user who's data is needed, fileType of which file to read.
@@ -631,5 +638,5 @@ public class DB {
 
     }
 
-
+    
 } // END CLASS

@@ -71,6 +71,16 @@ public class DBTester {
                 System.out.println(readUser001Data);
             }
 
+            if(DB.readUserPWD("test001") != null) {
+                String readUser001PWD = new String(DB.readUserPWD("test001"), charsetUTF8);
+                System.out.println(readUser001PWD);
+            }
+
+            if(DB.readUserIV("test002") != null) {
+                String readUser002IV = new String(DB.readUserIV("test002"), charsetUTF8);
+                System.out.println(readUser002IV);
+            }
+
             if(DB.readUserLog("test002") != null) {
                 String readUser002Log = DB.readUserLog("test002");
                 System.out.println(readUser002Log);
