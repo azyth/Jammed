@@ -5,8 +5,8 @@ package jammed;
    Class to perform file management for the server
 
    NOTES:
-    1) As of 3/16/15, interface is not final.
-    2) Enums used to differentiate files.
+    1) As of 3/29/15, interface has been refactored
+    2) Enums depreciated after refactoring
  */
 
 import java.io.*;
@@ -17,12 +17,22 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+// TODO: Store and hash+salt passwords to authenticate users
+// TODO: Secure logs
 public class DB {
 
     private static final String serverPath = "root/server/";
     private static final String usersPath = "root/users/";
+    private static final String serverLogPath = serverPath + "log/";
     private static final Charset charsetUTF8 = Charset.forName("UTF-8");
 
+
+    private static final String userDataSuffix = "_USERDATA.txt";
+    private static final String userPWDSuffix = "_PWD.txt";
+    private static final String userIVSuffix = "_IV.txt";
+    private static final String userLogSuffix = "_LOG.txt";
+
+    @Deprecated
     public enum DBFileTypes {
         USER_DATA, USER_PWD_FILE, USER_LOG, USER_IV
     }
@@ -36,6 +46,7 @@ public class DB {
 
     /** Purpose: Initializes the file structure for the DB in the current folder
      *           and creates the server log. Only should be called once per install.
+     *           Does nothing if file structure exists already.
      *  Input: None
      *  Output: A folder tree root/(server or users)/, and log.txt under server with
      *          time stamp of initialization.
@@ -44,18 +55,22 @@ public class DB {
     public static boolean initialize() {
         Path server = Paths.get(serverPath);
         Path user = Paths.get(usersPath);
+        Path log = Paths.get(serverLogPath);
 
         if(Files.exists(server) && Files.exists(user)) {
             //System.out.println("DB has already been initialized");
             return true;
         }
+
         // Create root and server folder
         try {
             Files.createDirectories(server);
+            Files.createDirectories(log);
         } catch(Exception e) {
             //System.out.println("Could not create root and server dir!");
             return false;
         }
+
         // Create user folder
         try {
             Files.createDirectories(user);
@@ -66,25 +81,28 @@ public class DB {
 
         // create server log file
         try {
-            Path lgPath = Paths.get(serverPath + "log.txt");
+            Path lgPath = Paths.get(serverLogPath + "log.txt");
             Files.createFile(lgPath);
-            FileOutputStream initLog = new FileOutputStream(serverPath + "log.txt");
-            try {
-                String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
-                String initialCreation = "Database initialization time: " + timeStamp + "\n";
-                byte[] iCBytes = initialCreation.getBytes(charsetUTF8);
-                initLog.write(iCBytes);
-            } finally {
-                initLog.close();
-            }
+            FileOutputStream initLog = new FileOutputStream(serverLogPath + "log.txt");
+
+            String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
+            String initialCreation = "Database initialization time: " + timeStamp + "\n";
+            byte[] iCBytes = initialCreation.getBytes(charsetUTF8);
+            initLog.write(iCBytes);
+            initLog.close();
+
         } catch(Exception e) {
             //System.out.println("Could not create server log file!");
             return false;
         }
-        //System.out.println("Successfully set up DB!");
+
         return true;
 
     }
+
+    /********************************************************/
+    /***********               Users               **********/
+    /********************************************************/
 
     /** Purpose: Adds a new user to be managed by the server.
      *  Input: A unique user id: uid.
@@ -105,7 +123,7 @@ public class DB {
 
             // initialize log
             String userInit = "User " + uid + " Created";
-            boolean initUserLog = writeUserLog(uid, DBFileTypes.USER_LOG, userInit);
+            boolean initUserLog = writeUserLog(uid, userInit);
             boolean recordOnServerLog = writeLog(userInit);
             if(!initUserLog || !recordOnServerLog) {
                 return false;
@@ -128,16 +146,55 @@ public class DB {
         return Files.exists(user);
     }
 
+    /** Purpose: Removes a user managed by the server.
+     *  Input: A unique user id: uid.
+     *  Output: Removal of a user folder with name uid: root/users/uid/
+     *          Removes all files stored inside that folder.
+     *  Return: Boolean, true if deletion was successful.
+     * */
+    public static boolean deleteUser(String uid) {
+        if(!searchUser(uid)) {
+            return false;
+        }
+
+        String user = usersPath + uid + "/";
+        Path userFolderPath = Paths.get(user);
+        Path userData = Paths.get(user + uid + userDataSuffix);
+        Path userPWD = Paths.get(user + uid + userPWDSuffix);
+        Path userIV = Paths.get(user + uid + userIVSuffix);
+        Path userLog = Paths.get(user + uid + userLogSuffix);
+
+        boolean didDelete = false;
+        try {
+            didDelete = Files.deleteIfExists(userData);
+            didDelete = Files.deleteIfExists(userPWD);
+            didDelete = Files.deleteIfExists(userIV);
+            didDelete = Files.deleteIfExists(userLog);
+
+            didDelete = Files.deleteIfExists(userFolderPath);
+
+        } catch(Exception e) {
+            return didDelete;
+        }
+
+        return didDelete;
+    }
+
+    /********************************************************/
+    /***********           Server Files            **********/
+    /********************************************************/
+
     /** Purpose: Appends data to the server log.
      *  Input: A string of the dataToLog.
      *  Output: log.txt with dataToLog appended to it.
      *  Return: Boolean, true if operation successful.
      * */
     public static boolean writeLog(String dataToLog) {
-        Path lgname = Paths.get(serverPath + "log.txt");
-        if(!Files.exists(lgname)) {
+        String sLogPath = serverLogPath + "log.txt";
+        Path logPath = Paths.get(sLogPath);
+        if(!Files.exists(logPath)) {
             try {
-                Files.createFile(lgname);
+                Files.createFile(logPath);
             } catch(Exception e) {
                 //System.out.println("Could not create log.");
                 return false;
@@ -145,16 +202,14 @@ public class DB {
         }
 
         try {
-            OutputStreamWriter appendLog = new OutputStreamWriter(new FileOutputStream(serverPath + "log.txt", true), "UTF-8");
+            OutputStreamWriter appendLog = new OutputStreamWriter(new FileOutputStream(sLogPath, true), "UTF-8");
             BufferedWriter bw = new BufferedWriter(appendLog);
-            try {
-                String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
-                bw.write("Entry: " + dataToLog + " | time written: " + timeStamp);
-                bw.newLine();
-                bw.flush();
-            } finally {
-                bw.close();
-            }
+
+            String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
+            bw.write("Time Written: " + timeStamp + " | Entry: " + dataToLog);
+            bw.newLine();
+            bw.flush();
+            bw.close();
         } catch(Exception e) {
             //System.out.println("Could not append data to log!");
             return false;
@@ -169,14 +224,14 @@ public class DB {
      *  Return: String of the server log data.
      * */
     public static String readLog() {
-        Path lgname = Paths.get(serverPath + "log.txt");
-        if(!Files.exists(lgname)) {
+        Path logPath = Paths.get(serverLogPath + "log.txt");
+        if(!Files.exists(logPath)) {
             return null;
         }
 
         byte[] fileArray;
         try {
-            fileArray = Files.readAllBytes(lgname);
+            fileArray = Files.readAllBytes(logPath);
             return new String(fileArray, charsetUTF8);
         } catch (Exception e) {
             //System.out.println("Could not read User Data");
@@ -185,28 +240,255 @@ public class DB {
 
     }
 
+    /********************************************************/
+    /***********          Read User Files          **********/
+    /********************************************************/
+
     /** Purpose: Reads the log from a specific user.
      *  Input: User id uid of user who's data is needed, fileType of which file to read.
      *  Output: None.
      *  Return: The data of the file (As a string).
      * */
-    public static String readUserLog(String uid, DBFileTypes fileType) {
-        // TODO: Maybe return a zero length string
+    public static String readUserLog(String uid) {
         if(!searchUser(uid)) {
             return null;
         }
 
-        String fname;
+        String fileAsString;
+        Path fileToRead = Paths.get(usersPath + uid + "/" + uid + userLogSuffix);
+
+        if(Files.exists(fileToRead)) {
+            byte[] fileArray;
+            try {
+                fileArray = Files.readAllBytes(fileToRead);
+                fileAsString = new String(fileArray, charsetUTF8);
+            } catch (Exception e) {
+                //System.out.println("Could not read User Data");
+                return null;
+            }
+            return fileAsString;
+        }
+        return null;
+
+    }
+
+    /** Purpose: Reads the user data of a specific user.
+     *  Input: User id uid of user who's data is needed
+     *  Output: None.
+     *  Return: The data of the file (As a byte[]).
+     * */
+    public static byte[] readUserData(String uid) {
+        if(!searchUser(uid)) {
+            return null;
+        }
+
+        Path fileToRead = Paths.get(usersPath + uid + "/" + uid + userDataSuffix);
+
+        if(Files.exists(fileToRead)) {
+            byte[] fileArray;
+            try {
+                fileArray = Files.readAllBytes(fileToRead);
+            } catch (Exception e) {
+                //System.out.println("Could not read User Data");
+                return null;
+            }
+            return fileArray;
+        }
+        return null;
+
+    }
+
+    /** Purpose: Reads the password file of a specific user.
+     *  Input: User id uid of user who's password is needed
+     *  Output: None.
+     *  Return: The data of the password file (As a byte[]).
+     * */
+    public static byte[] readUserPWD(String uid) {
+        if(!searchUser(uid)) {
+            return null;
+        }
+
+        Path fileToRead = Paths.get(usersPath + uid + "/" + uid + userPWDSuffix);
+        if(Files.exists(fileToRead)) {
+            byte[] fileArray;
+            try {
+                fileArray = Files.readAllBytes(fileToRead);
+            } catch (Exception e) {
+                //System.out.println("Could not read User Data");
+                return null;
+            }
+            return fileArray;
+        }
+        return null;
+
+    }
+
+    /** Purpose: Reads the IV of a specific user.
+     *  Input: User id uid of user who's IV is needed
+     *  Output: None.
+     *  Return: The data of the IV file (As a byte[]).
+     * */
+    public static byte[] readUserIV(String uid) {
+        if(!searchUser(uid)) {
+            return null;
+        }
+
+        Path fileToRead = Paths.get(usersPath + uid + "/" + uid + userIVSuffix);
+        if(Files.exists(fileToRead)) {
+            byte[] fileArray;
+            try {
+                fileArray = Files.readAllBytes(fileToRead);
+            } catch (Exception e) {
+                //System.out.println("Could not read User Data");
+                return null;
+            }
+            return fileArray;
+        }
+        return null;
+
+    }
+
+    /********************************************************/
+    /***********            Write Files            **********/
+    /********************************************************/
+
+    /** Purpose: Writes (Appends) the log for a specific user.
+     *  Input: User id uid of user to be update and the fileData to be written.
+     *  Output: Updated (Appended) version of the log in the specified uid folder.
+     *  Return: Boolean, true if operation successful.
+     * */
+    public static boolean writeUserLog(String uid, String fileData) {
+        if(!searchUser(uid)) {
+            return false;
+        }
+
+        String filePathName = usersPath + uid + "/" + uid + userLogSuffix;
+        String dataToWrite;
+
+        try {
+            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(filePathName, true), "UTF-8");
+            BufferedWriter bw = new BufferedWriter(writer);
+
+            String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
+            dataToWrite = "Time Written: " + timeStamp + " | Entry: " + fileData;
+            bw.write(dataToWrite);
+            bw.newLine();
+            bw.flush();
+            bw.close();
+        } catch(Exception e) {
+            //System.out.println("Could not write data to file!");
+            return false;
+        }
+        return true;
+
+    }
+
+    /** Purpose: Writes the user data for a specific user.
+     *  Input: User id uid of user to be update and the fileData to be written.
+     *  Output: Updated (Overwritten) version of the user data in the specified uid folder.
+     *  Return: Boolean, true if operation successful.
+     * */
+    public static boolean writeUserData(String uid, byte[] fileData) {
+        if (!searchUser(uid)) {
+            return false;
+        }
+
+        String filePath = usersPath + uid + "/" + uid + userDataSuffix;
+        try {
+            FileOutputStream fileOut = new FileOutputStream(filePath);
+
+            fileOut.write(fileData);
+            fileOut.close();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+
+    }
+
+    /** Purpose: Writes the password file for a specific user.
+     *  Input: User id uid of user to be update and the fileData to be written.
+     *  Output: Updated (Overwritten) version of the password file in the specified uid folder.
+     *  Return: Boolean, true if operation successful.
+     * */
+    public static boolean writeUserPWD(String uid, byte[] fileData) {
+        if (!searchUser(uid)) {
+            return false;
+        }
+
+
+        String filePath = usersPath + uid + "/" + uid + userPWDSuffix;
+
+        try {
+            FileOutputStream fileOut = new FileOutputStream(filePath);
+
+            fileOut.write(fileData);
+            fileOut.close();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+
+    }
+
+    /** Purpose: Writes the IV file for a specific user.
+     *  Input: User id uid of user to be update and the fileData to be written.
+     *  Output: Updated (Overwritten) version of the IV file in the specified uid folder.
+     *  Return: Boolean, true if operation successful.
+     * */
+    public static boolean writeUserIV(String uid, byte[] fileData) {
+        if (!searchUser(uid)) {
+            return false;
+        }
+
+        String filePath = usersPath + uid + "/" + uid + userIVSuffix;
+
+        try {
+            FileOutputStream fileOut = new FileOutputStream(filePath);
+
+            fileOut.write(fileData);
+            fileOut.close();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+
+    }
+
+    /********************************************************/
+    /***********  Secure Password Authentication   **********/
+    /********************************************************/
+
+    // TODO: Store and hash+salt passwords to authenticate users
+
+    /********************************************************/
+    /********************************************************/
+    /***********            DEPRECIATED            **********/
+    /********************************************************/
+    /********************************************************/
+
+    /** Purpose: Reads the log from a specific user.
+     *  Input: User id uid of user who's data is needed, fileType of which file to read.
+     *  Output: None.
+     *  Return: The data of the file (As a string).
+     * */
+    @Deprecated
+    public static String readUserLog(String uid, DBFileTypes fileType) {
+        if(!searchUser(uid)) {
+            return null;
+        }
+
+        String fileName;
         String fileAsString;
         switch (fileType) {
             case USER_LOG:
-                fname = "LOG.txt";
+                fileName = userLogSuffix;
                 break;
             default:
                 return null;
         }
 
-        Path fileToRead = Paths.get(usersPath + uid + "/" + uid + fname);
+        Path fileToRead = Paths.get(usersPath + uid + "/" + uid + fileName);
         if(Files.exists(fileToRead)) {
             byte[] fileArray;
             try {
@@ -228,15 +510,16 @@ public class DB {
      *  Output: Updated version of the file in the specified uid folder.
      *  Return: Boolean, true if operation successful.
      * */
+    @Deprecated
     public static boolean writeUserLog(String uid, DBFileTypes fileType, String fileData) {
         if(!searchUser(uid)) {
             return false;
         }
 
-        String fname;
+        String fileName;
         switch (fileType) {
             case USER_LOG:
-                fname = "LOG.txt";
+                fileName = userLogSuffix;
                 break;
             default:
                 return false;
@@ -244,7 +527,7 @@ public class DB {
 
         String dataToWrite;
         try {
-            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(usersPath + uid + "/" + uid + fname, true), "UTF-8");
+            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(usersPath + uid + "/" + uid + fileName, true), "UTF-8");
             BufferedWriter bw = new BufferedWriter(writer);
             try {
                 String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
@@ -268,28 +551,28 @@ public class DB {
      *  Output: None.
      *  Return: The data of the file (As a byte[]).
      * */
+    @Deprecated
     public static byte[] readEncodedFile(String uid, DBFileTypes fileType) {
-        // TODO: Maybe return a zero length array
         if(!searchUser(uid)) {
             return null;
         }
 
-        String fname;
+        String fileName;
         switch (fileType) {
             case USER_DATA:
-                fname = "USERDATA.txt";
+                fileName = userDataSuffix;
                 break;
             case USER_PWD_FILE:
-                fname = "PWD.txt";
+                fileName = userPWDSuffix;
                 break;
             case USER_IV:
-                fname = "_IV.txt";
+                fileName = userIVSuffix;
                 break;
             default:
                 return null;
         }
 
-        Path fileToRead = Paths.get(usersPath + uid + "/" + uid + fname);
+        Path fileToRead = Paths.get(usersPath + uid + "/" + uid + fileName);
         if(Files.exists(fileToRead)) {
             byte[] fileArray;
             try {
@@ -310,27 +593,28 @@ public class DB {
      *  Output: Updated version of the file in the specified uid folder.
      *  Return: Boolean, true if operation successful.
      * */
+    @Deprecated
     public static boolean writeEncodedFile(String uid, DBFileTypes fileType, byte[] fileData) {
         if(!searchUser(uid)) {
             return false;
         }
 
-        String fname;
+        String fileName;
         switch (fileType) {
             case USER_DATA:
-                fname = "USERDATA.txt";
+                fileName = userDataSuffix;
                 break;
             case USER_PWD_FILE:
-                fname = "PWD.txt";
+                fileName = userPWDSuffix;
                 break;
             case USER_IV:
-                fname = "_IV.txt";
+                fileName = userIVSuffix;
                 break;
             default:
                 return false;
         }
 
-        String filePath = usersPath + uid + "/" + uid + fname;
+        String filePath = usersPath + uid + "/" + uid + fileName;
         // Try writing the way John does
         try {
             FileOutputStream fout = new FileOutputStream(filePath);
@@ -354,5 +638,5 @@ public class DB {
 
     }
 
-
+    
 } // END CLASS
