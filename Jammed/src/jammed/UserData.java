@@ -116,8 +116,10 @@ public class UserData {
 	//loads secret key from a local file and stores it to dataSecKey
 	private void loadKey(String file) throws IOException, GeneralSecurityException {
 		byte[] encoded = Files.readAllBytes(Paths.get(file));
-		SecretKeyFactory skf = SecretKeyFactory.getInstance("AES");
-		dataSecKey = skf.generateSecret(new SecretKeySpec(encoded,"AES"));
+		
+//		SecretKeyFactory skf = SecretKeyFactory.getInstance("AES");				//TODO change to secretKeySpec
+//		dataSecKey = skf.generateSecret(new SecretKeySpec(encoded,"AES"));
+		dataSecKey = new SecretKeySpec(encoded,"AES");
 //		System.out.println("key loaded");
 	}
 	

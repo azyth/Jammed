@@ -29,6 +29,13 @@ public abstract class Request implements java.io.Serializable{
 	private ErrorMessage error=ErrorMessage.none;
 	private String message = "none";
 	
+	public Request(){
+		
+	}
+//	public Request(UserData udata){
+//		this.
+//	}
+	
 	public MessageType getType(){return this.type;}
 	public boolean getSuccess(){return this.success;}
 	public ErrorMessage getError(){return this.error;}
