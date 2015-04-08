@@ -1,30 +1,21 @@
 package jammed;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
-import java.nio.file.Paths;
-import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.*;
 
+// TODO: Add multi-threading class Toast(Server)/Crumb(Connection Handler)
+// TODO: Add actual authentication
+// TODO: Add proper system logging
+// TODO: Add more verbose error handling and reporting
+// TODO: Figure out System.SetProperty issues, fix KeyStore/Trusted Store
+
+/**
+ * The server class of the <code>Jammed</code> password management system.
+ * 
+ * @Author Daniel Etter (dje67)
+ * @version Alpha (1.0) 3.20.15
+ */
 public class Jelly {
 	private enum ServerState{INIT, ACCEPTING, AUTHENTICATING, AUTHORIZING, SESSION}
-    //private int port;
-    //private String addr;
 	private static ServerState state;
-	
-	// TODO: Add multi threading class Toast(Server)/Crumb(Connection Handler)
-	// TODO: Add actual authentication
-	// TODO: Add proper system logging
 
 	public static void main(String[] args){
 		//System.setProperty("javax.net.ssl.keyStore","\\serverkeystore.jks");
@@ -45,10 +36,6 @@ public class Jelly {
             Communication comm = new Communication(Communication.Type.SERVER);
             System.out.println("Jelly Server Created on port "+comm.getPort());
             
-            /*
-             * Currently, server will accept any and all LoginReqs as valid
-             */
-            
             while(true){
             	if(state == ServerState.INIT){
             		state = ServerState.ACCEPTING;
@@ -57,13 +44,12 @@ public class Jelly {
             	}
             	
             	if(state == ServerState.ACCEPTING){
-            		// Connection established, since accept() blocks
+            		// Connection established, since accept() blocks until a connection is made
             		req = comm.receive();
             		event = req.getEvent();
             		switch(event){
         			case login:
-                		// state = ServerState.AUTHENTICATING; // TO BE USED when we add this
-                		// Send back success or failed
+                		// state = ServerState.AUTHENTICATING; //FIXME: Use when implementing authentication
                 		state = ServerState.SESSION;
                 		LoginReq login = (LoginReq)req;
                 		response = new LoginReq(login.getUsername(), true, Request.ErrorMessage.none);
@@ -86,7 +72,7 @@ public class Jelly {
             		event = req.getEvent();
             		switch(event){
             			case login:
-            				// Ignore
+            				// Ignore during Session server state
             				break;
             			case log:
             				LogReq logreq = (LogReq)req;
@@ -96,7 +82,7 @@ public class Jelly {
             					logResponse = new LogReq(logreq.getUsername(), userLog);
             				}
             				else{
-            					 logResponse = new LogReq(logreq.getUsername(), Request.ErrorMessage.badArgument); //TODO: Adjust error messages
+            					 logResponse = new LogReq(logreq.getUsername(), Request.ErrorMessage.badArgument);
             				}
             				comm.send(logResponse);
             				DB.writeLog(SESSION_USERNAME+" log request");
@@ -140,8 +126,7 @@ public class Jelly {
             }
         }
         catch(java.net.SocketException se){
-        	// Socket closed
-        	// Handle me
+        	System.out.println("Socket closed!");
         	se.printStackTrace();
         }
         catch(Exception e){
