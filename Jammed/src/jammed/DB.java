@@ -494,8 +494,7 @@ public class DB {
 
         try {
             SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            SecretKey key = f.generateSecret(new PBEKeySpec(pwd.toCharArray(), salt, iterations, desiredKeyLen)
-            );
+            SecretKey key = f.generateSecret(new PBEKeySpec(pwd.toCharArray(), salt, iterations));
 
             return key.getEncoded();
         } catch(Exception e) {
