@@ -9,12 +9,15 @@ package jammed;
     2) Enums depreciated after refactoring
  */
 
+
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -35,7 +38,8 @@ public class DB {
     private static final String userLogSuffix = "_LOG.txt";
 
     private static final Random sRANDOM = new SecureRandom();
-    private static final int ITERATIONS = 20000;
+    private static final int iterations = 20000;
+    private static final int desiredKeyLen = 512;
 
     @Deprecated
     public enum DBFileTypes {
@@ -452,6 +456,10 @@ public class DB {
 
             fileOut.write(fileData);
             fileOut.close();
+            /*PrintWriter printer = new PrintWriter(filePath);
+            String dataAsString = new String(fileData, charsetUTF8);
+            printer.print(dataAsString);
+            printer.close(); */
         } catch (Exception e) {
             return false;
         }
@@ -479,26 +487,21 @@ public class DB {
      *  Output: None.
      *  Return: The hashed password as a byte[]. Returns null upon failure
      * */
-    public static byte[] hashPwd(String pwd, byte[] salt) {
+    public static byte[] hashPwd(String pwd, byte[] salt) { //TODO error probably happening here
         if(pwd == null || pwd.length() == 0) {
             return null;
         }
 
         try {
-            MessageDigest mDigest = MessageDigest.getInstance("SHA-512");
-            mDigest.reset();
-            mDigest.update(salt);
+            SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            SecretKey key = f.generateSecret(new PBEKeySpec(pwd.toCharArray(), salt, iterations, desiredKeyLen)
+            );
 
-            //byte[] hashedPWD = mDigest.digest(pwd.getBytes("UTF-8"));
-
-            /*for(int i=0; i < ITERATIONS; i++) {
-                hashedPWD = mDigest.digest(hashedPWD);
-            }*/
-
-            return mDigest.digest(pwd.getBytes("UTF-8"));
+            return key.getEncoded();
         } catch(Exception e) {
             return null;
         }
+
 
     }
 
@@ -508,7 +511,7 @@ public class DB {
      *  Return: True if successful, false otherwise.
      * */
     public static boolean storeUserPWD(String uid, String pwd) {
-        if(!searchUser(uid) || pwd.contains("&")) {
+        if(!searchUser(uid) || pwd.contains("$")) {
             return false;
         }
 
@@ -523,7 +526,7 @@ public class DB {
 
         // format: salt$hash
         //System.out.println("Stored values: " + saltAsString + "&" + hashedPWD);
-        byte[] storedVals = (saltAsString + "&" + hashedPwdString).getBytes();
+        byte[] storedVals = (saltAsString + "$" + hashedPwdString).getBytes();
 
         return writeUserPWD(uid, storedVals);
     }
@@ -534,40 +537,41 @@ public class DB {
      *  Return: True if given PWD matches stored PWD.
      * */
     public static boolean checkUserPWD(String uid, String givenPWD) { //TODO currently always returns false...
-        if(!searchUser(uid) || givenPWD.contains("&")) {
+        if(!searchUser(uid) || givenPWD.contains("$")) {
             return false;
         }
 
+        // load stored
         byte[] storedBytes = readUserPWD(uid);
         if(storedBytes == null) {
             return false;
         }
         String storedPWD = new String(storedBytes, charsetUTF8);
         //System.out.println("Stored values: " + storedPWD);
-        String[] saltAndHash = storedPWD.split("\\&");
+        String[] saltAndHash = storedPWD.split("\\$");
         if(saltAndHash.length != 2) {
             return false;
         }
-
+        //System.out.println(storedPWD);
         String storedSalt = saltAndHash[0];
         String storedHash = saltAndHash[1];
 
+        // hash given
         byte[] hashOfGiven = hashPwd(givenPWD, storedSalt.getBytes());
         if(hashOfGiven == null) {
             return false;
         }
-        //System.out.println("Hash of given: " + hashOfGiven);
-        byte[] stored = storedHash.getBytes();
-        if(stored.length != hashOfGiven.length) {
-            return false;
-        }
 
-        for(int i=0; i < stored.length; i++) {
-            if(stored[i] != hashOfGiven[i]) {
-                return false;
-            }
-        }
-        return true;
+        System.out.println("Stored values: " + storedPWD);
+        System.out.println("Given values: " + hashOfGiven);
+
+        return storedHash.getBytes() == hashOfGiven;
+
+        // compare
+        //String givenString = new String(hashOfGiven, charsetUTF8);
+        //System.out.println("Hash of given: " + givenString);
+        //return storedHash.equals(givenString);
+
 
     }
 
