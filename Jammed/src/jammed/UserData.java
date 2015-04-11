@@ -6,11 +6,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
@@ -41,6 +43,23 @@ public class UserData {
 		//Load SecretKey and IV
 		this.keyfile = username+SECKEYFILE;
 		loadKey(this.keyfile);
+	}
+	
+	/*
+	 * creates a new userdata file and IV pair from scratch to replace out of sync
+	 * pairs
+	 * Requires: AES secret key is loaded into instance
+	 */
+	public void createBaseData(String username) throws 
+			IOException, InvalidKeyException, GeneralSecurityException{
+		//Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
+		byte [] iv = generateIV();
+		String plaintext = "I \n wish \n my toast wouldnt \n always land \n butter side, \n Down";
+		ArrayList<LoginInfo> data = stringToList(plaintext);
+		byte[] encUD = this.encData(data,iv);
+		storeIV(iv,username+"_IV.txt");
+		storeIV(encUD,username+"_USERDATA.txt");
+		//System.out.println(text);
 	}
 	
 	
@@ -141,11 +160,11 @@ public class UserData {
 //	private void loadIV(String file) throws IOException {
 //		iv = Files.readAllBytes(Paths.get(file));
 //	}
-//	private void storeIV(byte[] iv, String ivfile) throws IOException {
-//		FileOutputStream ivout = new FileOutputStream(ivfile);
-//		ivout.write(iv);
-//		ivout.close();
-//	}
+	private void storeIV(byte[] iv, String ivfile) throws IOException {
+		FileOutputStream ivout = new FileOutputStream(ivfile);
+		ivout.write(iv);
+		ivout.close();
+	}
 
 	/************************  ARRAYLIST SECTION  
 	 * @throws IOException 
@@ -156,14 +175,28 @@ public class UserData {
 
   // test test test
   public static void main(String[] args) throws IOException, InvalidKeyException, GeneralSecurityException {
-	  byte[] cryptodata = Files.readAllBytes(Paths.get("guestud.txt"));
+	  UserData ud = new UserData("guest");
+	  
+	//create new data/IV pair
+		 
+	  ud.createBaseData("guest");
+	  //Test 1
+	  byte[] cryptodata = Files.readAllBytes(Paths.get("guest_USERDATA.txt"));
 	  ArrayList<LoginInfo> udata;
-		byte[] iv = Files.readAllBytes(Paths.get("guestiv.txt"));
-		UserData ud = new UserData("guest");
+		byte[] iv = Files.readAllBytes(Paths.get("guest_IV.txt"));
+		
 		udata = ud.decData(cryptodata, iv);
 		System.out.println("un-encrypted");
 		System.out.println(UserData.listToString(udata));
-    /*String good = "this\nis\na\ngood\nstring\nthing";
+		//storeIV(,"string.txt")
+		
+   
+	 
+	  
+	
+		
+		
+		/*String good = "this\nis\na\ngood\nstring\nthing";
     String bad = "this\none\nis\nnot";
     String none = "";
 

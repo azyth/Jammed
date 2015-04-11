@@ -17,3 +17,7 @@ java -Djavax.net.ssl.keyStore=../serverkeystore.jks -Djavax.net.ssl.keyStorePass
 
 From terminal window B:
 java -Djavax.net.ssl.trustStore=../serverkeystore.jks -Djavax.net.ssl.trustStorePassword=cs5430 jammed.Jammed       # runs jammed, client
+
+
+If Userdata and IV get out of sync and do not work/ produce errors, run createBaseData(username) in Userdata to create a new data and IV pair. 
+  Produces: username_USERDATA.txt and username_IV.txt

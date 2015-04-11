@@ -1,0 +1,4 @@
+Database initialization time: 2015/04/11_11:09:07
+Time Written: 2015/04/11_11:21:29 | Entry: guest logged in
+Time Written: 2015/04/11_11:24:07 | Entry: guest logged in
+Time Written: 2015/04/11_11:36:14 | Entry: guest logged in
