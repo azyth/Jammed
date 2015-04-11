@@ -57,7 +57,7 @@ public abstract class Request implements java.io.Serializable{
         message = "Could not validate credentials.";
         break;
       case somethingBad:
-        message = "Some unknown but terrible thing happened.";
+        message = "Some unknown but terrible thing happened. (request.java)";
         break;
       case none:
         message = "No error.";
