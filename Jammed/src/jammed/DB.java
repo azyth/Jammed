@@ -9,15 +9,20 @@ package jammed;
     2) Enums depreciated after refactoring
  */
 
+
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Random;
 
-// TODO: Store and hash+salt passwords to authenticate users
 // TODO: Secure logs
 public class DB {
 
@@ -32,15 +37,18 @@ public class DB {
     private static final String userIVSuffix = "_IV.txt";
     private static final String userLogSuffix = "_LOG.txt";
 
+    private static final Random sRANDOM = new SecureRandom();
+    private static final int iterations = 20000;
+    private static final int desiredKeyLen = 512;
+
     @Deprecated
     public enum DBFileTypes {
         USER_DATA, USER_PWD_FILE, USER_LOG, USER_IV
     }
 
-
     /*
     public static void main(String[] args) {
-        System.out.println("Use the junit Test istead");
+        System.out.println("Use the junit Test instead");
     }
     */
 
@@ -448,6 +456,10 @@ public class DB {
 
             fileOut.write(fileData);
             fileOut.close();
+            /*PrintWriter printer = new PrintWriter(filePath);
+            String dataAsString = new String(fileData, charsetUTF8);
+            printer.print(dataAsString);
+            printer.close(); */
         } catch (Exception e) {
             return false;
         }
@@ -459,7 +471,110 @@ public class DB {
     /***********  Secure Password Authentication   **********/
     /********************************************************/
 
-    // TODO: Store and hash+salt passwords to authenticate users
+    /** Purpose: Get the next 16 bytes of salt for passwords.
+     *  Input: None.
+     *  Output: None.
+     *  Return: 16 bytes of salt, generated with secureRandom.
+     * */
+    public static byte[] getNextSalt() {
+        byte[] salt = new byte[16];
+        sRANDOM.nextBytes(salt);
+        return salt;
+    }
+
+    /** Purpose: Hash a given password with a given salt
+     *  Input: password as a string, salt as a byte[]
+     *  Output: None.
+     *  Return: The hashed password as a byte[]. Returns null upon failure
+     * */
+    public static byte[] hashPwd(String pwd, byte[] salt) { //TODO error probably happening here
+        if(pwd == null || pwd.length() == 0) {
+            return null;
+        }
+
+        try {
+            SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            SecretKey key = f.generateSecret(new PBEKeySpec(pwd.toCharArray(), salt, iterations, desiredKeyLen)
+            );
+
+            return key.getEncoded();
+        } catch(Exception e) {
+            return null;
+        }
+
+
+    }
+
+    /** Purpose: Store a specific users password *** Should overwrite old password
+     *  Input: user id and password as a string
+     *  Output: Updated user PWD.txt file
+     *  Return: True if successful, false otherwise.
+     * */
+    public static boolean storeUserPWD(String uid, String pwd) {
+        if(!searchUser(uid) || pwd.contains("$")) {
+            return false;
+        }
+
+        byte[] salt = getNextSalt(); // create salt
+        byte[] hashedPWD = hashPwd(pwd, salt); // hash pwd
+
+        if(hashedPWD == null) {
+            return false;
+        }
+        String hashedPwdString = new String(hashedPWD, charsetUTF8);
+        String saltAsString = new String(salt, charsetUTF8);
+
+        // format: salt$hash
+        //System.out.println("Stored values: " + saltAsString + "&" + hashedPWD);
+        byte[] storedVals = (saltAsString + "$" + hashedPwdString).getBytes();
+
+        return writeUserPWD(uid, storedVals);
+    }
+
+    /** Purpose: Authenticate a user based on a given password
+     *  Input: user id and  given password as a string
+     *  Output: None.
+     *  Return: True if given PWD matches stored PWD.
+     * */
+    public static boolean checkUserPWD(String uid, String givenPWD) { //TODO currently always returns false...
+        if(!searchUser(uid) || givenPWD.contains("$")) {
+            return false;
+        }
+
+        // load stored
+        byte[] storedBytes = readUserPWD(uid);
+        if(storedBytes == null) {
+            return false;
+        }
+        String storedPWD = new String(storedBytes, charsetUTF8);
+        //System.out.println("Stored values: " + storedPWD);
+        String[] saltAndHash = storedPWD.split("\\$");
+        if(saltAndHash.length != 2) {
+            return false;
+        }
+        //System.out.println(storedPWD);
+        String storedSalt = saltAndHash[0];
+        String storedHash = saltAndHash[1];
+
+        // hash given
+        byte[] hashOfGiven = hashPwd(givenPWD, storedSalt.getBytes());
+        if(hashOfGiven == null) {
+            return false;
+        }
+
+        System.out.println("Stored values: " + storedPWD);
+        System.out.println("Given values: " + hashOfGiven);
+
+        return storedHash.getBytes() == hashOfGiven;
+
+        // compare
+        //String givenString = new String(hashOfGiven, charsetUTF8);
+        //System.out.println("Hash of given: " + givenString);
+        //return storedHash.equals(givenString);
+
+
+    }
+
 
     /********************************************************/
     /********************************************************/
@@ -638,5 +753,5 @@ public class DB {
 
     }
 
-    
+
 } // END CLASS

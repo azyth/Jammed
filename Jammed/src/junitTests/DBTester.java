@@ -14,12 +14,39 @@ public class DBTester {
 
         @Test
         public void testDB() {
+
+            System.out.println("Initializing...");
+            boolean initRes = DB.initialize();
+            System.out.println("Initialized!");
+            String u = "test001";
+            String p = "pass123";
+            String j = "wrongPWD";
+
+            System.out.println("New user " + u + " being added...");
+            boolean initUserRes = DB.newUser(u);
+            System.out.println("User " + u + " added! Storing pwd " + p);
+            boolean pwdStoredRes = DB.storeUserPWD(u, p);
+            System.out.println("pwd " + p + " stored!");
+
+            System.out.println("Authenticating user " + u + " with pwd " + p);
+            boolean authenticateWithCorrectPWD = DB.checkUserPWD(u, p);
+            System.out.println("Result: " + authenticateWithCorrectPWD);
+
+            System.out.println("Authenticating user " + u + " with pwd " + j);
+            boolean authenticateWithWrongPWD = DB.checkUserPWD(u, p);
+            System.out.println("Result: " + authenticateWithWrongPWD);
+
+            System.out.println("Authenticating user " + u + " with pwd " + p);
+            boolean authenticateWithCorrectPWDAgain = DB.checkUserPWD(u, p);
+            System.out.println("Result: " + authenticateWithCorrectPWDAgain);
+
+
             /* Note: Reading of Data written to log cannot be tested due to time stamps and formatting */
 
             /* Init DB */
-            assertEquals(true, DB.initialize());
+            /*assertEquals(true, DB.initialize());
 
-            /* User creation and searching */
+            // User creation and searching
             // make test user and search for it
             assertEquals(true, DB.newUser("test001"));
             assertEquals(true, DB.searchUser("test001"));
@@ -38,7 +65,7 @@ public class DBTester {
             // try creating existing user
             assertEquals(true, DB.newUser("test002"));
 
-            /* Writing and reading user files */
+            // Writing and reading user files
             String user001UserData = "username: mvp34, password: 123";
             String user001Login = "username: example, password: exampleP, salt: 123";
             String user001IV = "123456789";
@@ -86,7 +113,7 @@ public class DBTester {
                 System.out.println(readUser002Log);
             }
 
-            /* Server log stuff */
+            // Server log stuff
             // Update the server log
             String dataToLog = "Hello world";
             assertEquals(DB.writeLog(dataToLog), true);
@@ -106,7 +133,7 @@ public class DBTester {
             }
 
             // Just to finish off, I have to get this right at least...
-            assertEquals(true, true);
+            assertEquals(true, true); */
         }
 
 
