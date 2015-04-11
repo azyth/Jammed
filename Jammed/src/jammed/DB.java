@@ -468,10 +468,10 @@ public class DB {
     /***********  Secure Password Authentication   **********/
     /********************************************************/
 
-    /** Purpose: Get the next 16 bytes of salt for passwords.
+    /** Purpose: Get the next 4 bytes of salt for passwords.
      *  Input: None.
      *  Output: None.
-     *  Return: 16 bytes of salt, generated with secureRandom.
+     *  Return: 4 bytes of salt, generated with secureRandom.
      * */
     public static byte[] getNextSalt() {
         byte[] salt = new byte[4];
@@ -491,7 +491,7 @@ public class DB {
 
         char[] password = pwd.toCharArray();
 
-        PBEKeySpec spec = new PBEKeySpec(password, salt, iterations, desiredKeyLen); //Arrays.fill(password, Character.MIN_VALUE);
+        PBEKeySpec spec = new PBEKeySpec(password, salt, iterations, desiredKeyLen);
         try {
             SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             return skf.generateSecret(spec).getEncoded();
@@ -511,7 +511,7 @@ public class DB {
      *  Return: True if successful, false otherwise.
      * */
     public static boolean storeUserPWD(String uid, String pwd) {
-        if(!searchUser(uid) || pwd.contains("$")) {
+        if(!searchUser(uid)) {
             return false;
         }
 
@@ -527,15 +527,7 @@ public class DB {
         System.arraycopy(hashedPWD, 0, storeThis, salt.length, hashedPWD.length);
 
         return writeUserPWD(uid, storeThis);
-        //return true;
-        /*
-        String hashedPwdString = new String(hashedPWD, charsetUTF8);
-        String saltAsString = new String(salt, charsetUTF8);
 
-        // format: salt$hash
-        byte[] storedVals = (saltAsString + "$" + hashedPwdString).getBytes(charsetUTF8);
-
-        return writeUserPWD(uid, storedVals); */
     }
 
     /** Purpose: Authenticate a user based on a given password
@@ -544,17 +536,15 @@ public class DB {
      *  Return: True if given PWD matches stored PWD.
      * */
     public static boolean checkUserPWD(String uid, String givenPWD) { //TODO currently always returns false...
-        System.out.println("Test 1");
         if(!searchUser(uid)) {
             return false;
         }
-        System.out.println("Test 2");
+
         // load stored
         byte[] storedBytes = readUserPWD(uid);
         if(storedBytes == null) {
             return false;
         }
-        System.out.println("Test 3");
 
         byte[] storedSalt = new byte[4];
         System.arraycopy(storedBytes, 0, storedSalt, 0, 4); // length of salt
@@ -562,48 +552,18 @@ public class DB {
         byte[] storedHash = new byte[storedBytes.length - 4];
         System.arraycopy(storedBytes, 4, storedHash, 0, storedHash.length);
 
-        System.out.println("Test 4");
-
         byte[] givenHash = hashPwd(givenPWD, storedSalt);
         if(givenHash == null || givenHash.length != storedHash.length) {
             return false;
         }
-
-        System.out.println("Test 5");
 
         for(int i = 0; i < givenHash.length; i++) {
             if(givenHash[i] != storedHash[i]) {
                 return false;
             }
         }
-
-        System.out.println("Test 6");
+        
         return true;
-
-        /*
-        String storedSaltAndHash = new String(storedBytes, charsetUTF8);
-        String[] saltAndHash = storedSaltAndHash.split("\\$");
-        if(saltAndHash.length != 2) {
-            return false;
-        }
-        System.out.println("Test 4");
-        String storedSalt = saltAndHash[0];
-        String storedHash = saltAndHash[1];
-
-        // hash given
-        byte[] hashOfGiven = hashPwd(givenPWD, storedSalt.getBytes(charsetUTF8));
-        if(hashOfGiven == null) {
-            return false;
-        }
-        System.out.println("Test 5");
-        String hashOfGivenString = new String(hashOfGiven, charsetUTF8);
-
-        System.out.println("Stored: " + storedSaltAndHash);
-        System.out.println("Stored Hash: " + storedHash);
-        System.out.println("Given Hash: " + hashOfGivenString);
-
-        return storedHash.equals(hashOfGivenString);
-        */
     }
 
 
