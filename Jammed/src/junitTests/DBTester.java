@@ -33,7 +33,7 @@ public class DBTester {
             System.out.println("Result: " + authenticateWithCorrectPWD);
 
             System.out.println("Authenticating user " + u + " with pwd " + j);
-            boolean authenticateWithWrongPWD = DB.checkUserPWD(u, p);
+            boolean authenticateWithWrongPWD = DB.checkUserPWD(u, j);
             System.out.println("Result: " + authenticateWithWrongPWD);
 
             System.out.println("Authenticating user " + u + " with pwd " + p);
