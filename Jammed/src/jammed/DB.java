@@ -9,8 +9,6 @@ package jammed;
     2) Enums depreciated after refactoring
  */
 
-
-import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.io.*;
@@ -20,11 +18,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Random;
 
-// TODO: Secure logs
 public class DB {
 
     private static final String serverPath = "root/server/";
@@ -41,6 +37,7 @@ public class DB {
     private static final Random sRANDOM = new SecureRandom();
     private static final int iterations = 20000;
     private static final int desiredKeyLen = 512;
+    private static final int saltLength = 16;
 
     @Deprecated
     public enum DBFileTypes {
@@ -133,7 +130,7 @@ public class DB {
             // initialize log
             String userInit = "User " + uid + " Created";
             boolean initUserLog = writeUserLog(uid, userInit);
-            boolean recordOnServerLog = writeLog(userInit);
+            boolean recordOnServerLog = writeServerLog(userInit);
             if(!initUserLog || !recordOnServerLog) {
                 return false;
             }
@@ -188,7 +185,7 @@ public class DB {
             return didDelete;
         }
 
-        writeLog("User "+uid+" deleted");
+        writeServerLog("User "+uid+" deleted"); // server
         return didDelete;
     }
 
@@ -201,7 +198,7 @@ public class DB {
      *  Output: log.txt with dataToLog appended to it.
      *  Return: Boolean, true if operation successful.
      * */
-    public static boolean writeLog(String dataToLog) {
+    public static boolean writeServerLog(String dataToLog) {
         String sLogPath = serverLogPath + "log.txt";
         Path logPath = Paths.get(sLogPath);
         if(!Files.exists(logPath)) {
@@ -245,8 +242,7 @@ public class DB {
         try {
             fileArray = Files.readAllBytes(logPath);
 
-            boolean didUpdate = writeLog("Log read");
-
+            boolean didUpdate = writeServerLog("Log read"); // server
             if(!didUpdate) {
                 return null;
             }
@@ -286,9 +282,8 @@ public class DB {
                 return null;
             }
 
-            boolean didUpdateServerLog = writeLog("Log read for user "+uid);
-            boolean didUpdateUserLog = writeUserLog(uid, "Log read");
-
+            boolean didUpdateServerLog = writeServerLog("Log read for user "+uid); // server
+            boolean didUpdateUserLog = writeUserLog(uid, "Log read"); // user
             if(!didUpdateServerLog || !didUpdateUserLog) {
                 return null;
             }
@@ -320,7 +315,7 @@ public class DB {
                 return null;
             }
 
-            boolean didUpdateServerLog = writeLog("User data read for user "+uid);
+            boolean didUpdateServerLog = writeServerLog("User data read for user "+uid);
             boolean didUpdateUserLog = writeUserLog(uid, "Data read");
 
             if(!didUpdateServerLog || !didUpdateUserLog) {
@@ -353,7 +348,7 @@ public class DB {
                 return null;
             }
 
-            boolean didUpdateServerLog = writeLog("Pwd read for user "+uid);
+            boolean didUpdateServerLog = writeServerLog("Pwd read for user "+uid);
             boolean didUpdateUserLog = writeUserLog(uid, "pwd read");
 
             if(!didUpdateServerLog || !didUpdateUserLog) {
@@ -386,9 +381,9 @@ public class DB {
                 return null;
             }
 
-            boolean didUpdateServerLog = writeLog("IV read for user "+uid);
+            // log the data
+            boolean didUpdateServerLog = writeServerLog("IV read for user "+uid);
             boolean didUpdateUserLog = writeUserLog(uid, "IV read");
-
             if(!didUpdateServerLog || !didUpdateUserLog) {
                 return null;
             }
@@ -454,14 +449,10 @@ public class DB {
             return false;
         }
 
-        boolean didUpdateServerLog = writeLog("User data written for user "+uid);
+        boolean didUpdateServerLog = writeServerLog("User data written for user "+uid);
         boolean didUpdateUserLog = writeUserLog(uid, "Data written");
 
-        if(!didUpdateServerLog || !didUpdateUserLog) {
-            return false;
-        }
-
-        return true;
+        return didUpdateServerLog && didUpdateUserLog;
 
     }
 
@@ -487,14 +478,10 @@ public class DB {
             return false;
         }
 
-        boolean didUpdateServerLog = writeLog("pwd written for user "+uid);
+        boolean didUpdateServerLog = writeServerLog("pwd written for user "+uid);
         boolean didUpdateUserLog = writeUserLog(uid, "pwd written");
 
-        if(!didUpdateServerLog || !didUpdateUserLog) {
-            return false;
-        }
-
-        return true;
+        return didUpdateServerLog && didUpdateUserLog;
 
     }
 
@@ -519,14 +506,10 @@ public class DB {
             return false;
         }
 
-        boolean didUpdateServerLog = writeLog("IV written for user "+uid);
+        boolean didUpdateServerLog = writeServerLog("IV written for user "+uid);
         boolean didUpdateUserLog = writeUserLog(uid, "IV written");
 
-        if(!didUpdateServerLog || !didUpdateUserLog) {
-            return false;
-        }
-
-        return true;
+        return didUpdateServerLog && didUpdateUserLog;
 
     }
 
@@ -540,7 +523,7 @@ public class DB {
      *  Return: 4 bytes of salt, generated with secureRandom.
      * */
     public static byte[] getNextSalt() {
-        byte[] salt = new byte[16];
+        byte[] salt = new byte[saltLength];
         sRANDOM.nextBytes(salt);
         return salt;
     }
@@ -550,7 +533,7 @@ public class DB {
      *  Output: None.
      *  Return: The hashed password as a byte[]. Returns null upon failure
      * */
-    public static byte[] hashPwd(String pwd, byte[] salt) throws AssertionError { //TODO error probably happening here
+    public static byte[] hashPwd(String pwd, byte[] salt) throws AssertionError {
         if(pwd == null || pwd.length() == 0) {
             return null;
         }
@@ -567,7 +550,6 @@ public class DB {
         } finally {
             spec.clearPassword();
         }
-
 
     }
 
@@ -601,7 +583,7 @@ public class DB {
      *  Output: None.
      *  Return: True if given PWD matches stored PWD.
      * */
-    public static boolean checkUserPWD(String uid, String givenPWD) { //TODO currently always returns false...
+    public static boolean checkUserPWD(String uid, String givenPWD) {
         if(!searchUser(uid)) {
             return false;
         }
@@ -612,11 +594,11 @@ public class DB {
             return false;
         }
 
-        byte[] storedSalt = new byte[16];
-        System.arraycopy(storedBytes, 0, storedSalt, 0, 16); // length of salt
+        byte[] storedSalt = new byte[saltLength];
+        System.arraycopy(storedBytes, 0, storedSalt, 0, saltLength); // length of salt
 
-        byte[] storedHash = new byte[storedBytes.length - 16];
-        System.arraycopy(storedBytes, 16, storedHash, 0, storedHash.length);
+        byte[] storedHash = new byte[storedBytes.length - saltLength];
+        System.arraycopy(storedBytes, saltLength, storedHash, 0, storedHash.length);
 
         byte[] givenHash = hashPwd(givenPWD, storedSalt);
         if(givenHash == null || givenHash.length != storedHash.length) {
@@ -626,21 +608,17 @@ public class DB {
         for(int i = 0; i < givenHash.length; i++) {
             if(givenHash[i] != storedHash[i]) {
 
-                boolean didUpdateServerLog = writeLog("pwd authentication failed for user "+uid);
-                boolean didUpdateUserLog = writeUserLog(uid, "pwd authentication failed");
+                writeServerLog("pwd authentication failed for user "+uid);
+                writeUserLog(uid, "pwd authentication failed");
 
                 return false;
             }
         }
 
-        boolean didUpdateServerLog = writeLog("pwd authentication success for user "+uid);
+        boolean didUpdateServerLog = writeServerLog("pwd authentication success for user "+uid);
         boolean didUpdateUserLog = writeUserLog(uid, "pwd authentication success");
 
-        if(!didUpdateServerLog || !didUpdateUserLog) {
-            return false;
-        }
-
-        return true;
+        return didUpdateServerLog && didUpdateUserLog;
     }
 
 
