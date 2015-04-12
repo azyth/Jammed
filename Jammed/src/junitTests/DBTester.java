@@ -60,11 +60,11 @@ public class DBTester {
             authenticateWithCorrectPWD = DB.checkUserPWD(u, p);
             System.out.println("Result: " + authenticateWithCorrectPWD);
 
-            /*DB.readUserLog(u);
+            DB.readUserLog(u);
             DB.readUserData(u);
             DB.readUserIV(u);
             DB.deleteUser(u);
-            DB.readLog(); */
+            DB.readLog();
 
             /* Note: Reading of Data written to log cannot be tested due to time stamps and formatting */
 
