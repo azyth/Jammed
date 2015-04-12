@@ -63,7 +63,7 @@ public class Jelly {
         				// Do nothing for all other types of request
         				break;
             		}
-            		DB.writeLog(SESSION_USERNAME+" logged in");
+            		DB.writeServerLog(SESSION_USERNAME+" logged in");
             		continue;
             	}
             	
@@ -85,7 +85,7 @@ public class Jelly {
             					 logResponse = new LogReq(logreq.getUsername(), Request.ErrorMessage.badArgument);
             				}
             				comm.send(logResponse);
-            				DB.writeLog(SESSION_USERNAME+" log request");
+            				DB.writeServerLog(SESSION_USERNAME+" log request");
             				break;
             			case userDataDownload:
             				UserDataReq downloadResponse = null;
@@ -98,7 +98,7 @@ public class Jelly {
             					downloadResponse = new UserDataReq(false, UserDataReq.ReqType.download, Request.ErrorMessage.somethingBad);
             				}
             				comm.send(downloadResponse);
-            				DB.writeLog(SESSION_USERNAME+" data downloaded: "+downloadResponse.getSuccess());
+            				DB.writeServerLog(SESSION_USERNAME+" data downloaded: "+downloadResponse.getSuccess());
             				break;
             			case userDataUpload:
             				UserDataReq uploadReq = (UserDataReq)req;
@@ -112,13 +112,13 @@ public class Jelly {
             					uploadResponse = new UserDataReq(false, UserDataReq.ReqType.upload, Request.ErrorMessage.somethingBad);
             				}
             				comm.send(uploadResponse);
-            				DB.writeLog(SESSION_USERNAME+" data uploaded: "+uploadResponse.getSuccess());
+            				DB.writeServerLog(SESSION_USERNAME+" data uploaded: "+uploadResponse.getSuccess());
             				break;
             			case termination:
             				TerminationReq terminate = new TerminationReq(true, Request.ErrorMessage.none);
             				comm.send(terminate);
             				comm.close();
-            				DB.writeLog(SESSION_USERNAME+" session terminated");
+            				DB.writeServerLog(SESSION_USERNAME+" session terminated");
             				break;
             			}
             			continue;
