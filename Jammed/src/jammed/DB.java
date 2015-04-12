@@ -119,7 +119,7 @@ public class DB {
      *          Writes that the user was created to the user and server log.
      *  Return: Boolean, true if creation was successful.
      * */
-    public static boolean newUser(String uid) {
+    public static boolean newUser(String uid, byte[] uPWD, byte[] UD, byte[] IV) {
         Path newUser = Paths.get(usersPath + uid + "/");
 
         if(Files.exists(newUser)) {
@@ -141,7 +141,9 @@ public class DB {
             //System.out.println("Could not create new user: " + uid);
             return false;
         }
-        return true;
+
+        // create password file, create user data file, create user iv file
+        return writeUserPWD(uid, uPWD) || writeUserData(uid, UD) || writeUserIV(uid, IV);
 
     }
 
@@ -186,6 +188,7 @@ public class DB {
             return didDelete;
         }
 
+        writeLog("User "+uid+" deleted");
         return didDelete;
     }
 
@@ -241,6 +244,13 @@ public class DB {
         byte[] fileArray;
         try {
             fileArray = Files.readAllBytes(logPath);
+
+            boolean didUpdate = writeLog("Log read");
+
+            if(!didUpdate) {
+                return null;
+            }
+
             return new String(fileArray, charsetUTF8);
         } catch (Exception e) {
             //System.out.println("Could not read User Data");
@@ -275,6 +285,14 @@ public class DB {
                 //System.out.println("Could not read User Data");
                 return null;
             }
+
+            boolean didUpdateServerLog = writeLog("Log read for user "+uid);
+            boolean didUpdateUserLog = writeUserLog(uid, "Log read");
+
+            if(!didUpdateServerLog || !didUpdateUserLog) {
+                return null;
+            }
+
             return fileAsString;
         }
         return null;
@@ -301,6 +319,14 @@ public class DB {
                 //System.out.println("Could not read User Data");
                 return null;
             }
+
+            boolean didUpdateServerLog = writeLog("User data read for user "+uid);
+            boolean didUpdateUserLog = writeUserLog(uid, "Data read");
+
+            if(!didUpdateServerLog || !didUpdateUserLog) {
+                return null;
+            }
+
             return fileArray;
         }
         return null;
@@ -326,6 +352,14 @@ public class DB {
                 //System.out.println("Could not read User Data");
                 return null;
             }
+
+            boolean didUpdateServerLog = writeLog("Pwd read for user "+uid);
+            boolean didUpdateUserLog = writeUserLog(uid, "pwd read");
+
+            if(!didUpdateServerLog || !didUpdateUserLog) {
+                return null;
+            }
+
             return fileArray;
         }
         return null;
@@ -351,6 +385,14 @@ public class DB {
                 //System.out.println("Could not read User Data");
                 return null;
             }
+
+            boolean didUpdateServerLog = writeLog("IV read for user "+uid);
+            boolean didUpdateUserLog = writeUserLog(uid, "IV read");
+
+            if(!didUpdateServerLog || !didUpdateUserLog) {
+                return null;
+            }
+
             return fileArray;
         }
         return null;
@@ -411,6 +453,14 @@ public class DB {
         } catch (Exception e) {
             return false;
         }
+
+        boolean didUpdateServerLog = writeLog("User data written for user "+uid);
+        boolean didUpdateUserLog = writeUserLog(uid, "Data written");
+
+        if(!didUpdateServerLog || !didUpdateUserLog) {
+            return false;
+        }
+
         return true;
 
     }
@@ -436,6 +486,14 @@ public class DB {
         } catch (Exception e) {
             return false;
         }
+
+        boolean didUpdateServerLog = writeLog("pwd written for user "+uid);
+        boolean didUpdateUserLog = writeUserLog(uid, "pwd written");
+
+        if(!didUpdateServerLog || !didUpdateUserLog) {
+            return false;
+        }
+
         return true;
 
     }
@@ -460,6 +518,14 @@ public class DB {
         } catch (Exception e) {
             return false;
         }
+
+        boolean didUpdateServerLog = writeLog("IV written for user "+uid);
+        boolean didUpdateUserLog = writeUserLog(uid, "IV written");
+
+        if(!didUpdateServerLog || !didUpdateUserLog) {
+            return false;
+        }
+
         return true;
 
     }
@@ -484,7 +550,7 @@ public class DB {
      *  Output: None.
      *  Return: The hashed password as a byte[]. Returns null upon failure
      * */
-    public static byte[] hashPwd(String pwd, byte[] salt) { //TODO error probably happening here
+    public static byte[] hashPwd(String pwd, byte[] salt) throws AssertionError { //TODO error probably happening here
         if(pwd == null || pwd.length() == 0) {
             return null;
         }
@@ -559,10 +625,21 @@ public class DB {
 
         for(int i = 0; i < givenHash.length; i++) {
             if(givenHash[i] != storedHash[i]) {
+
+                boolean didUpdateServerLog = writeLog("pwd authentication failed for user "+uid);
+                boolean didUpdateUserLog = writeUserLog(uid, "pwd authentication failed");
+
                 return false;
             }
         }
-        
+
+        boolean didUpdateServerLog = writeLog("pwd authentication success for user "+uid);
+        boolean didUpdateUserLog = writeUserLog(uid, "pwd authentication success");
+
+        if(!didUpdateServerLog || !didUpdateUserLog) {
+            return false;
+        }
+
         return true;
     }
 

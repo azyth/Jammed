@@ -23,7 +23,7 @@ public class DBTester {
             String j = "wrongPWD";
 
             System.out.println("New user " + u + " being added...");
-            boolean initUserRes = DB.newUser(u);
+            boolean initUserRes = DB.newUser(u, null, null, null);
             System.out.println("User " + u + " added! Storing pwd " + p);
             boolean pwdStoredRes = DB.storeUserPWD(u, p);
             System.out.println("pwd " + p + " stored!");
