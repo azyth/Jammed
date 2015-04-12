@@ -474,7 +474,7 @@ public class DB {
      *  Return: 4 bytes of salt, generated with secureRandom.
      * */
     public static byte[] getNextSalt() {
-        byte[] salt = new byte[4];
+        byte[] salt = new byte[16];
         sRANDOM.nextBytes(salt);
         return salt;
     }
@@ -546,11 +546,11 @@ public class DB {
             return false;
         }
 
-        byte[] storedSalt = new byte[4];
-        System.arraycopy(storedBytes, 0, storedSalt, 0, 4); // length of salt
+        byte[] storedSalt = new byte[16];
+        System.arraycopy(storedBytes, 0, storedSalt, 0, 16); // length of salt
 
-        byte[] storedHash = new byte[storedBytes.length - 4];
-        System.arraycopy(storedBytes, 4, storedHash, 0, storedHash.length);
+        byte[] storedHash = new byte[storedBytes.length - 16];
+        System.arraycopy(storedBytes, 16, storedHash, 0, storedHash.length);
 
         byte[] givenHash = hashPwd(givenPWD, storedSalt);
         if(givenHash == null || givenHash.length != storedHash.length) {
