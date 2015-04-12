@@ -54,8 +54,14 @@ public class Jammed {
 
         if (!verified.getSuccess()) {
           ui.error("Could not verifiy those credentials - please try again.");
+          // New user? enroll yes/no?
         } else {
           try {
+        	  //if enroll == true
+        	  //UserData.enroll(username) //creates new AES key
+        	  //data = new UserData(login.username); //now it will work
+        	  //create userdata by scratch OR
+        	  //Userdata.createBaseData() //creates default files , currently writes to a file, change to return files. ??
             data = new UserData(login.username);
           } catch (IOException e) {
             throw new FileNotFoundException();

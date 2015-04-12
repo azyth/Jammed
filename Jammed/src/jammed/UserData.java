@@ -54,7 +54,7 @@ public class UserData {
 			IOException, InvalidKeyException, GeneralSecurityException{
 		//Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
 		byte [] iv = generateIV();
-		String plaintext = "I \n wish \n my toast wouldnt \n always land \n butter side, \n Down";
+		String plaintext = "I \n wish \n my toast wouldnt \n always land \n butter side, \n Down";//Default string for userdata file
 		ArrayList<LoginInfo> data = stringToList(plaintext);
 		byte[] encUD = this.encData(data,iv);
 		storeIV(iv,username+"_IV.txt");
@@ -117,7 +117,7 @@ public class UserData {
 	public static void enroll(String username) throws IOException, 
 			GeneralSecurityException {
 		
-		storeKey(generateKey(),username+SECKEYFILE);
+		storeKey(generateKey(),username+SECKEYFILE);//(new AES KEY, filepath to save key file)
 	}
 	
 	//generates a new AES-256 secret key stores in dataSecKey
@@ -173,7 +173,48 @@ public class UserData {
   // Note that, for these methods to work, no piece of user data can contain a
   // newline. This is probably OK. The UI ensures this.
 
-  // test test test
+ 
+
+  public static String listToString(ArrayList<LoginInfo> lst) {
+    StringBuffer str = new StringBuffer();
+
+    for (LoginInfo l : lst) {
+      if (str.length() > 0) {
+        str.append("\n");
+      }
+      str.append(l.website + "\n" + l.username + "\n" + l.password);
+    }
+
+    return str.toString();
+  }
+
+  public static ArrayList<LoginInfo> stringToList(String str) {
+    // handle zero-length string specially TODO any other edge cases?
+    if (str.equals("")) {
+      return new ArrayList<LoginInfo>();
+    }
+
+    String[] parts = str.split("\n");
+
+    // make sure there are 3x parts
+    if (parts.length % 3 != 0) {
+      throw new IllegalArgumentException();
+    }
+
+    ArrayList<LoginInfo> lst = new ArrayList<LoginInfo>();
+
+    for (int i=0; i<parts.length; i += 3) {
+      LoginInfo l = new LoginInfo();
+      l.website = parts[i];
+      l.username = parts[i+1];
+      l.password = parts[i+2];
+
+      lst.add(l);
+    }
+
+    return lst;
+  }
+  // test test test MAIN 
   public static void main(String[] args) throws IOException, InvalidKeyException, GeneralSecurityException {
 	  UserData ud = new UserData("guest");
 	  
@@ -234,45 +275,4 @@ public class UserData {
     System.out.println(listToString(twoentries).
                        equals("wone\nuone\npone\nwtwo\nutwo\nptwo"));*/
   }
-
-  public static String listToString(ArrayList<LoginInfo> lst) {
-    StringBuffer str = new StringBuffer();
-
-    for (LoginInfo l : lst) {
-      if (str.length() > 0) {
-        str.append("\n");
-      }
-      str.append(l.website + "\n" + l.username + "\n" + l.password);
-    }
-
-    return str.toString();
-  }
-
-  public static ArrayList<LoginInfo> stringToList(String str) {
-    // handle zero-length string specially TODO any other edge cases?
-    if (str.equals("")) {
-      return new ArrayList<LoginInfo>();
-    }
-
-    String[] parts = str.split("\n");
-
-    // make sure there are 3x parts
-    if (parts.length % 3 != 0) {
-      throw new IllegalArgumentException();
-    }
-
-    ArrayList<LoginInfo> lst = new ArrayList<LoginInfo>();
-
-    for (int i=0; i<parts.length; i += 3) {
-      LoginInfo l = new LoginInfo();
-      l.website = parts[i];
-      l.username = parts[i+1];
-      l.password = parts[i+2];
-
-      lst.add(l);
-    }
-
-    return lst;
-  }
-
 }
