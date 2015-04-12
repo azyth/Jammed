@@ -44,12 +44,6 @@ public class DB {
         USER_DATA, USER_PWD_FILE, USER_LOG, USER_IV
     }
 
-    /*
-    public static void main(String[] args) {
-        System.out.println("Use the junit Test instead");
-    }
-    */
-
     /** Purpose: Initializes the file structure for the DB in the current folder
      *           and creates the server log. Only should be called once per install.
      *           Does nothing if file structure exists already.
@@ -185,7 +179,7 @@ public class DB {
             return didDelete;
         }
 
-        writeServerLog("User "+uid+" deleted"); // server
+        writeServerLog("User " + uid + " deleted"); // server
         return didDelete;
     }
 
@@ -241,17 +235,16 @@ public class DB {
         byte[] fileArray;
         try {
             fileArray = Files.readAllBytes(logPath);
-
-            boolean didUpdate = writeServerLog("Log read"); // server
-            if(!didUpdate) {
-                return null;
-            }
-
-            return new String(fileArray, charsetUTF8);
         } catch (Exception e) {
             //System.out.println("Could not read User Data");
             return null;
         }
+
+        boolean didUpdate = writeServerLog("Log read");
+        if(!didUpdate) {
+            return null;
+        }
+        return new String(fileArray, charsetUTF8);
 
     }
 
@@ -282,8 +275,8 @@ public class DB {
                 return null;
             }
 
-            boolean didUpdateServerLog = writeServerLog("Log read for user "+uid); // server
-            boolean didUpdateUserLog = writeUserLog(uid, "Log read"); // user
+            boolean didUpdateServerLog = writeServerLog("Log read for user " + uid);
+            boolean didUpdateUserLog = writeUserLog(uid, "Log read");
             if(!didUpdateServerLog || !didUpdateUserLog) {
                 return null;
             }
@@ -315,9 +308,8 @@ public class DB {
                 return null;
             }
 
-            boolean didUpdateServerLog = writeServerLog("User data read for user "+uid);
+            boolean didUpdateServerLog = writeServerLog("User data read for user " + uid);
             boolean didUpdateUserLog = writeUserLog(uid, "Data read");
-
             if(!didUpdateServerLog || !didUpdateUserLog) {
                 return null;
             }
@@ -348,9 +340,8 @@ public class DB {
                 return null;
             }
 
-            boolean didUpdateServerLog = writeServerLog("Pwd read for user "+uid);
+            boolean didUpdateServerLog = writeServerLog("Pwd read for user " + uid);
             boolean didUpdateUserLog = writeUserLog(uid, "pwd read");
-
             if(!didUpdateServerLog || !didUpdateUserLog) {
                 return null;
             }
@@ -381,8 +372,7 @@ public class DB {
                 return null;
             }
 
-            // log the data
-            boolean didUpdateServerLog = writeServerLog("IV read for user "+uid);
+            boolean didUpdateServerLog = writeServerLog("IV read for user " + uid);
             boolean didUpdateUserLog = writeUserLog(uid, "IV read");
             if(!didUpdateServerLog || !didUpdateUserLog) {
                 return null;
@@ -449,7 +439,7 @@ public class DB {
             return false;
         }
 
-        boolean didUpdateServerLog = writeServerLog("User data written for user "+uid);
+        boolean didUpdateServerLog = writeServerLog("User data written for user " + uid);
         boolean didUpdateUserLog = writeUserLog(uid, "Data written");
 
         return didUpdateServerLog && didUpdateUserLog;
@@ -478,7 +468,7 @@ public class DB {
             return false;
         }
 
-        boolean didUpdateServerLog = writeServerLog("pwd written for user "+uid);
+        boolean didUpdateServerLog = writeServerLog("pwd written for user " + uid);
         boolean didUpdateUserLog = writeUserLog(uid, "pwd written");
 
         return didUpdateServerLog && didUpdateUserLog;
@@ -506,7 +496,7 @@ public class DB {
             return false;
         }
 
-        boolean didUpdateServerLog = writeServerLog("IV written for user "+uid);
+        boolean didUpdateServerLog = writeServerLog("IV written for user " + uid);
         boolean didUpdateUserLog = writeUserLog(uid, "IV written");
 
         return didUpdateServerLog && didUpdateUserLog;
@@ -607,15 +597,13 @@ public class DB {
 
         for(int i = 0; i < givenHash.length; i++) {
             if(givenHash[i] != storedHash[i]) {
-
-                writeServerLog("pwd authentication failed for user "+uid);
+                writeServerLog("pwd authentication failed for user " + uid);
                 writeUserLog(uid, "pwd authentication failed");
-
                 return false;
             }
         }
 
-        boolean didUpdateServerLog = writeServerLog("pwd authentication success for user "+uid);
+        boolean didUpdateServerLog = writeServerLog("pwd authentication success for user " + uid);
         boolean didUpdateUserLog = writeUserLog(uid, "pwd authentication success");
 
         return didUpdateServerLog && didUpdateUserLog;
