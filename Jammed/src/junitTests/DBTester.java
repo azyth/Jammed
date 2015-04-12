@@ -23,7 +23,7 @@ public class DBTester {
             String j = "wrongPWD";
 
             System.out.println("New user " + u + " being added...");
-            boolean initUserRes = DB.newUser(u);
+            boolean initUserRes = DB.newUser(u, null, null, null);
             System.out.println("User " + u + " added! Storing pwd " + p);
             boolean pwdStoredRes = DB.storeUserPWD(u, p);
             System.out.println("pwd " + p + " stored!");
@@ -39,6 +39,27 @@ public class DBTester {
             System.out.println("Authenticating user " + u + " with pwd " + p);
             boolean authenticateWithCorrectPWDAgain = DB.checkUserPWD(u, p);
             System.out.println("Result: " + authenticateWithCorrectPWDAgain);
+
+            System.out.println("User " + u + " added! Storing pwd " + j);
+            pwdStoredRes = DB.storeUserPWD(u, j);
+            System.out.println("pwd " + j + " stored!");
+
+            System.out.println("Authenticating user " + u + " with pwd " + p);
+            authenticateWithCorrectPWD = DB.checkUserPWD(u, p);
+            System.out.println("Result: " + authenticateWithCorrectPWD);
+
+            System.out.println("Authenticating user " + u + " with pwd " + j);
+            authenticateWithWrongPWD = DB.checkUserPWD(u, j);
+            System.out.println("Result: " + authenticateWithWrongPWD);
+
+            System.out.println("User " + u + " added! Storing pwd " + p);
+            pwdStoredRes = DB.storeUserPWD(u, p);
+            System.out.println("pwd " + p + " stored!");
+
+            System.out.println("Authenticating user " + u + " with pwd " + p);
+            authenticateWithCorrectPWD = DB.checkUserPWD(u, p);
+            System.out.println("Result: " + authenticateWithCorrectPWD);
+
 
 
             /* Note: Reading of Data written to log cannot be tested due to time stamps and formatting */
