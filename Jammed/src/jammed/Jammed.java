@@ -70,9 +70,8 @@ public class Jammed {
           if (enroll) {
             // initialize the files on this machine and an empty place to store
             // data
-            UserData.enroll(login.username); //TODO, login.password);
-            //TODO, login.password);
-            data = new UserData(login.username);
+            UserData.enroll(login.username, login.password);
+            data = new UserData(login.username, login.password);
           } else {
             // get the existing data
             server.send(new UserDataReq());
@@ -83,8 +82,7 @@ public class Jammed {
             }
 
             // TODO make sure this throws FNFException instead of IOException
-            //TODO, login.password);
-            data = new UserData(login.username);
+            data = new UserData(login.username, login.password);
 
             // get the data in a usable form
             plaindata = data.decData(serverdata.getData(), serverdata.getIV());
