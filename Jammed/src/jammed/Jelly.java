@@ -76,13 +76,13 @@ public class Jelly {
             				break;
             			case log:
             				LogReq logreq = (LogReq)req;
-            				String userLog = DB.readUserLog(logreq.getUsername(), DB.DBFileTypes.USER_LOG);
+            				String userLog = DB.readUserLog(SESSION_USERNAME, DB.DBFileTypes.USER_LOG);
             				LogReq logResponse;
             				if(userLog != null){
-            					logResponse = new LogReq(logreq.getUsername(), userLog);
+            					logResponse = new LogReq(userLog);
             				}
             				else{
-            					 logResponse = new LogReq(logreq.getUsername(), Request.ErrorMessage.badArgument);
+            					 logResponse = new LogReq(Request.ErrorMessage.badArgument);
             				}
             				comm.send(logResponse);
             				DB.writeLog(SESSION_USERNAME+" log request");

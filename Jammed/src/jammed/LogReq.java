@@ -11,28 +11,24 @@ public class LogReq extends Request{
 	
 	private static final long serialVersionUID = 4L; // For Serialization - @Dettervt
 	
-	private String username; //used by the server to double check user identity, this better match the session username
 	private String userLog; //holds the log when passing back to the user.
 
 	//Request constructor
-	public LogReq(String username){
-		this.username = username;
+	public LogReq() {
 		this.setType(MessageType.request);
 		this.setEvent(EventType.log);
 
 	}
 	//Response constructors
 	//failure 
-	public LogReq(String username, ErrorMessage err){
-		this.username = username;
+	public LogReq(ErrorMessage err){
 		this.setError(err);
 		this.setType(MessageType.response);
 		this.setSuccess(false);
 		this.setEvent(EventType.log);
 	}
 	//succeed
-	public LogReq(String username, String log){
-		this.username = username;
+	public LogReq(String log){
 		this.userLog=log;
 		this.setSuccess(true);
 		this.setType(MessageType.response);
@@ -41,6 +37,5 @@ public class LogReq extends Request{
 	
 //	public void setLog(String l){this.userLog=l;}
 	public String getLog(){return this.userLog;}
-	public String getUsername(){return this.username;}
 
 }

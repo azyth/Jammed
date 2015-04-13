@@ -30,9 +30,9 @@ public class LoginInfo implements Comparable<LoginInfo> {
       return website.equals(l.website) && username.equals(l.username);
     }
   }
+
   @Override
   public int hashCode() {
-	  assert false : "hashCode not designed";
-	  return 42; 
+    return website.concat(username).hashCode();
   }
 }
