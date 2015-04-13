@@ -1,13 +1,17 @@
 package jammed;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.AlgorithmParameters;
 import java.security.GeneralSecurityException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidParameterSpecException;
 import java.util.ArrayList;
 
 import javax.crypto.BadPaddingException;
@@ -36,7 +40,10 @@ public class UserData {
 
     // local file name key will be stored at
 	private final static String SECKEYFILE = "-ProtectedAESkey.txt";
+	private final static byte[] salt = {0x0};
+	//private final static byte[] iv = {0xc,0x0,0xf,0x0};
  	private String keyfile;
+ 	private String keyivfile;
 	private SecretKey dataSecKey;
 	
 	//CONSTRUCTOR
@@ -44,10 +51,11 @@ public class UserData {
 	public UserData(String username, String password) throws GeneralSecurityException, 
 	 		IOException, InvalidKeyException {
 		this.keyfile = username+SECKEYFILE;
+		this.keyivfile = username+"-iv"+SECKEYFILE;
 		//hash the password, 
 		SecretKey hashPass = hashPwd(password);
 		//load the encrypted key file, decrpyt with hashed password. load secret key to dataSecKey
-		this.decKey(hashPass,this.keyfile);
+		this.decKey(hashPass,this.keyfile, this.keyivfile);
 		
 		
 		//Load SecretKey and IV
@@ -129,7 +137,7 @@ public class UserData {
 	public static void enroll(String username, String password) throws IOException, 
 			GeneralSecurityException {
 		
-		storeKey(generateKey(),hashPwd(password),username+SECKEYFILE);//(new AES KEY, filepath to save key file)
+		storeKey(generateKey(),hashPwd(password),username);//(new AES KEY, filepath to save key file)
 		
 	}
 	
@@ -151,14 +159,14 @@ public class UserData {
      *  Return: The hashed password as a byte[]. Returns null upon failure
      */
     public static SecretKey hashPwd(String pwd) { 
-        byte[] salt = {0x0};
+        
     	if(pwd == null || pwd.length() == 0) {
             return null;
         }
 
         char[] password = pwd.toCharArray();
 
-        PBEKeySpec spec = new PBEKeySpec(password, salt, 1000, 512);
+        PBEKeySpec spec = new PBEKeySpec(password, salt, 1000, 192);
         try {
             SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             return skf.generateSecret(spec);
@@ -171,19 +179,8 @@ public class UserData {
 
 
     }
-	//decrypts and loads secret key into this.dataSeckey
-	private void decKey(SecretKey hashPass, String file) throws IllegalBlockSizeException, 
-			BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, 
-			NoSuchPaddingException, IOException {
-		
-		byte[] encoded = Files.readAllBytes(Paths.get(file));
-		Cipher pwc = Cipher.getInstance("PBKDF2WithHmacSHA1");
-		pwc.init(Cipher.DECRYPT_MODE,hashPass);
-		byte[] decoded = pwc.doFinal(encoded);
-		this.dataSecKey = new SecretKeySpec(decoded,"AES");
-		
-		
-	}
+    
+	
 
 	
 	//loads secret key from a local file and stores it to dataSecKey
@@ -199,30 +196,64 @@ public class UserData {
 //	}
 	
 	//writes secret key to a file on local machine for storage 
-	private static void storeKey(SecretKey key, SecretKey encryptionKey, String file) 
+	private static void storeKey(SecretKey key, SecretKey encryptionKey, String username) 
 			throws IOException, InvalidKeyException, IllegalBlockSizeException, 
-			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
-		FileOutputStream fout = new FileOutputStream(file);
+			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidParameterSpecException {
+		
+		FileOutputStream fout = new FileOutputStream(username+SECKEYFILE);
+		FileOutputStream iout = new FileOutputStream(username+"-iv"+SECKEYFILE);
 		byte[] skey = key.getEncoded();
-		byte[] encKey = encKey(skey,encryptionKey);
+		//System.out.println(skey.toString());
+		Keys keys = encKey(skey,encryptionKey);
+		byte[] encKey = keys.block;
+		byte[] iv = keys.ivector;
+		//System.out.println(encKey.toString());
 		try {
 			fout.write(encKey);
-//			System.out.println("key stored");
+			iout.write(iv);
+			System.out.println("key stored");
 		} catch (Exception e) {
 			throw e;
 		}finally {
 			fout.close();
+			iout.close();
 		}
 	}
-	
+//	private static byte[] doubleKey(byte[] key) throws IOException{
+//		
+//		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+//		outputStream.write( key );
+//		outputStream.write( key );
+//
+//		return outputStream.toByteArray( );
+//	}
 	//encrypts the secret key with the users password.
-	private static byte[] encKey(byte[] encodedSecretKey, SecretKey encryptionKey) 
+	private static Keys encKey(byte[] encodedSecretKey, SecretKey encryptionKey) 
 			throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, 
-			NoSuchPaddingException, InvalidKeyException {
-		Cipher aes = Cipher.getInstance("PBKDF2WithHmacSHA1");
-		aes.init(Cipher.ENCRYPT_MODE, encryptionKey);
+			NoSuchPaddingException, InvalidKeyException, IOException, InvalidParameterSpecException {
+		Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
+		aes.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(encryptionKey.getEncoded(), "AES")); //invalid key length new SecretKeySpec(encryptionKey.getEncoded(), "AES")
+		AlgorithmParameters params = aes.getParameters();
+		byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
 		byte[] block = aes.doFinal(encodedSecretKey);
-		return block;
+		
+		return new Keys(block,iv);
+	}
+	
+	//decrypts and loads secret key into this.dataSeckey
+	private void decKey(SecretKey hashPass, String file, String ivfile) throws IllegalBlockSizeException, 
+			BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, 
+			NoSuchPaddingException, IOException, InvalidAlgorithmParameterException {
+		
+		byte[] encoded = Files.readAllBytes(Paths.get(file));
+		byte[] iv = Files.readAllBytes(Paths.get(ivfile));
+		Cipher pwc = Cipher.getInstance("AES/CBC/PKCS5Padding"); //AES/CBC/PKCS5Padding
+		IvParameterSpec ips = new IvParameterSpec(iv);
+		pwc.init(Cipher.DECRYPT_MODE, new SecretKeySpec(hashPass.getEncoded(), "AES"),ips); //invalid key length?
+		byte[] decoded = pwc.doFinal(encoded);
+		this.dataSecKey = new SecretKeySpec(decoded,"AES");
+		
+		
 	}
 
 //	These functions would only be used if we are not passing in the IV with userdata
@@ -346,4 +377,14 @@ public class UserData {
     System.out.println(listToString(twoentries).
                        equals("wone\nuone\npone\nwtwo\nutwo\nptwo"));*/
   }
+  private static class Keys{
+	  
+	  public Keys(byte[] block, byte[] iv) {
+		this.block=block;
+		this.ivector=iv;
+	}
+	  private byte[] block;
+	  private byte[] ivector;
 }
+}
+

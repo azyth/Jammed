@@ -22,13 +22,13 @@ public class UserInterface {
     ui.error("hihi error");
     LoginInfo thing = ui.getLoginInfo();
     System.out.println(thing);
-    data = ui.getChanges(data);
     ui.error("ok done");
     for (LoginInfo d : data) {
       System.out.println(d);
     }
   }
 
+  /* Initializes and displays the user interface */
   public UserInterface() {
     System.out.println("Welcome to Jammed");
     System.out.println("..._____...");
@@ -40,6 +40,11 @@ public class UserInterface {
     System.out.println();
   }
 
+  /* Returns a LoginInfo object with the username and password fields filled in.
+   * Usable to get new enrollment credentials as well as existing user
+   * credentials. IF THIS IS AN ENROLLMENT, the "website" field of the returned
+   * object should be set to "enroll". Anything else and the returned object is
+   * interpreted as an existing user's credentials. */
   public LoginInfo getLoginInfo() throws UnsupportedEncodingException,
                                          IOException {
     BufferedReader br =
@@ -47,21 +52,54 @@ public class UserInterface {
 
     LoginInfo login = new LoginInfo();
 
+    System.out.println("Enter \"*\" in the username field in order to enroll " +
+        "yourself as a new user.\nUsernames should be chosen from the " +
+        "alphabet [a-zA-Z0-9].");
+
     System.out.print("Enter username: ");
     login.username = br.readLine();
+
+    // sanity check; should (probably?) never happen
+    if (login.username == null) {
+      throw new IOException();
+    }
+
+    if (login.username.equals("*")) {
+      // we want to make a new user and check username validity e.g. that the
+      // name comes from a correct alphabet.
+      boolean success = false;
+      while (!success) {
+        System.out.print("Enter desired username: ");
+        login.username = br.readLine();
+
+        if (login.username.matches("[a-zA-Z0-9]+")) {
+          success = true;
+        } else {
+          System.out.println("Username must contain only upper/lowercase " +
+              "letters and numbers.");
+        }
+      }
+
+      // signal that this is a new user
+      login.website = "enroll";
+    }
+
     System.out.print("Enter password: ");
     login.password = br.readLine();
 
     return login;
   }
 
+  /* Displays the given message somehow */
   public void error(String message) {
     System.out.println(message);
   }
 
+  /* Exits the user interface */
   public void close() {}
 
-  private void display(ArrayList<LoginInfo> data) {
+  /* Displays the data contained in the given ArrayList */
+  public void display(ArrayList<LoginInfo> data) {
     System.out.println();
     System.out.println(String.format("%-20s %-20s %-20s", "Website:",
                                      "Username:", "Password:"));
@@ -71,85 +109,128 @@ public class UserInterface {
     System.out.println();
   }
 
-  public ArrayList<LoginInfo> getChanges(ArrayList<LoginInfo> data)
-      throws UnsupportedEncodingException {
+  /* Gets the next user action. Actions are chosen from the enum ActionType and
+   * returned in an Action object. */
+  public Action getAction() throws IOException, UnsupportedEncodingException {
     BufferedReader br =
       new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
-    boolean changes = false;
 
-    Collections.sort(data);
+    Action action = new Action();
+    boolean success = false;
 
-    System.out.println("Type \"exit\" to save changes and close, or \"add\" " +
-        "to add or modify an existing password.\n");
+    while (!success) {
+      System.out.print("Enter action: ");
 
-    try {
-      display(data);
-
-      System.out.print("Enter command: ");
-      String command = br.readLine();
-      if (command == null) {
-        // this should never happen; there is no EOF to reach
+      String choice = br.readLine();
+      if (choice == null) {
         throw new IOException();
       }
 
-      while (!command.equals("exit")) {
+      switch (choice) {
+        case "add":
 
-        if (command.equals("add")) {
-          LoginInfo l = new LoginInfo();
+          action.info = new LoginInfo();
 
-          System.out.print("Enter the website: ");
-          l.website = br.readLine();
-          System.out.print("Enter the username: ");
-          l.username = br.readLine();
-          System.out.print("Enter the password: ");
-          l.password = br.readLine();
+          System.out.print("Enter website: ");
+          action.info.website = br.readLine();
 
-          if (l.website == null || l.username == null || l.password == null) {
+          System.out.print("Enter username: ");
+          action.info.username = br.readLine();
+
+          System.out.print("Enter password: ");
+          action.info.password  = br.readLine();
+
+          // sanity check
+          if (action.info.website == null || action.info.username == null ||
+              action.info.password == null) {
             throw new IOException();
           }
 
-          int index = data.indexOf(l);
-
-          if (l.website.contains("\n") || l.username.contains("\n") ||
-              l.password.contains("\n")) {
+          if (action.info.website.contains("\n") ||
+              action.info.username.contains("\n") ||
+              action.info.password.contains("\n")) {
             System.out.println("You are not allowed to have newlines in your " +
-                "data.\n");
-          } else if (index != -1) {
-            // replace the existing element with a new one
-            data.set(index, l);
-            changes = true;
-            display(data);
+                "data");
           } else {
-            // add the new element to the end
-            data.add(l);
-            Collections.sort(data);
-            changes = true;
-            display(data);
+            success = true;
+            action.type = ActionType.ADD;
+          }
+          break;
+
+        case "remove":
+
+          action.info = new LoginInfo();
+
+          System.out.print("Enter website: ");
+          action.info.website = br.readLine();
+
+          System.out.print("Enter username: ");
+          action.info.username = br.readLine();
+
+          System.out.print("Enter password: ");
+          action.info.password  = br.readLine();
+
+          // sanity check
+          if (action.info.website == null || action.info.username == null ||
+              action.info.password == null) {
+            throw new IOException();
           }
 
-        } else {
-          System.out.println("Unrecognized command. Use \"exit\" to save " +
-              "changes and close, and \"add\" to add to or " +
-              "modify the password list.\n");
-        }
+          success = true;
+          action.type = ActionType.REMOVE;
+          break;
 
-        System.out.print("Enter command: ");
-        command = br.readLine();
+        case "log":
 
-        if (command == null) {
-          // should never happen; there is no EOF
-          throw new IOException();
-        }
+          success = true;
+          action.type = ActionType.LOG;
+          break;
+
+        case "change":
+
+          action.info = new LoginInfo();
+          System.out.print("Enter new password: ");
+          action.info.password = br.readLine();
+
+          if (action.info.password == null) {
+            throw new IOException();
+          }
+
+          success = true;
+          action.type = ActionType.CHANGE;
+          break;
+
+        case "exit":
+
+          success = true;
+          action.type = ActionType.EXIT;
+          break;
+
+        default:
+
+          System.out.println("Possible operations:");
+          System.out.println("\t\"add\" adds or modifies an entry");
+          System.out.println("\t\"remove\" deletes an entry");
+          System.out.println("\t\"log\" obtains log files for your account");
+          System.out.println("\t\"change\" changes the password to your " +
+              "account");
+          System.out.println("\t\"exit\" saves changes and exits the program");
       }
-    } catch (IOException e) {
-      System.out.println("Error reading input; exiting...");
     }
 
-    if (changes) {
-      return data;
-    } else {
-      return null;
-    }
+    return action;
+  }
+
+  /* Everything that the user can do. Note that "ADD" covers both adding and
+   * modifying existing passwords, and "CHANGE" refers to modifying the overall
+   * account password. */
+  public enum ActionType {ADD, REMOVE, LOG, CHANGE, EXIT};
+
+  /* Holds an ActionType and a LoginInfo containing information pertaining to
+   * that action. */
+  public class Action {
+    public ActionType type;
+    public LoginInfo info;
   }
 
 }
