@@ -9,8 +9,6 @@ package jammed;
     2) Enums depreciated after refactoring
  */
 
-
-import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.io.*;
@@ -20,11 +18,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Random;
 
-// TODO: Secure logs
 public class DB {
 
     private static final String serverPath = "root/server/";
@@ -41,17 +37,12 @@ public class DB {
     private static final Random sRANDOM = new SecureRandom();
     private static final int iterations = 20000;
     private static final int desiredKeyLen = 512;
+    private static final int saltLength = 16;
 
     @Deprecated
     public enum DBFileTypes {
         USER_DATA, USER_PWD_FILE, USER_LOG, USER_IV
     }
-
-    /*
-    public static void main(String[] args) {
-        System.out.println("Use the junit Test instead");
-    }
-    */
 
     /** Purpose: Initializes the file structure for the DB in the current folder
      *           and creates the server log. Only should be called once per install.
@@ -119,7 +110,7 @@ public class DB {
      *          Writes that the user was created to the user and server log.
      *  Return: Boolean, true if creation was successful.
      * */
-    public static boolean newUser(String uid) {
+    public static boolean newUser(String uid, byte[] uPWD, byte[] UD, byte[] IV) {
         Path newUser = Paths.get(usersPath + uid + "/");
 
         if(Files.exists(newUser)) {
@@ -133,7 +124,7 @@ public class DB {
             // initialize log
             String userInit = "User " + uid + " Created";
             boolean initUserLog = writeUserLog(uid, userInit);
-            boolean recordOnServerLog = writeLog(userInit);
+            boolean recordOnServerLog = writeServerLog(userInit);
             if(!initUserLog || !recordOnServerLog) {
                 return false;
             }
@@ -141,7 +132,9 @@ public class DB {
             //System.out.println("Could not create new user: " + uid);
             return false;
         }
-        return true;
+
+        // create password file, create user data file, create user iv file
+        return writeUserPWD(uid, uPWD) || writeUserData(uid, UD) || writeUserIV(uid, IV);
 
     }
 
@@ -186,6 +179,7 @@ public class DB {
             return didDelete;
         }
 
+        writeServerLog("User " + uid + " deleted"); // server
         return didDelete;
     }
 
@@ -198,7 +192,7 @@ public class DB {
      *  Output: log.txt with dataToLog appended to it.
      *  Return: Boolean, true if operation successful.
      * */
-    public static boolean writeLog(String dataToLog) {
+    public static boolean writeServerLog(String dataToLog) {
         String sLogPath = serverLogPath + "log.txt";
         Path logPath = Paths.get(sLogPath);
         if(!Files.exists(logPath)) {
@@ -241,11 +235,16 @@ public class DB {
         byte[] fileArray;
         try {
             fileArray = Files.readAllBytes(logPath);
-            return new String(fileArray, charsetUTF8);
         } catch (Exception e) {
             //System.out.println("Could not read User Data");
             return null;
         }
+
+        boolean didUpdate = writeServerLog("Log read");
+        if(!didUpdate) {
+            return null;
+        }
+        return new String(fileArray, charsetUTF8);
 
     }
 
@@ -275,6 +274,13 @@ public class DB {
                 //System.out.println("Could not read User Data");
                 return null;
             }
+
+            boolean didUpdateServerLog = writeServerLog("Log read for user " + uid);
+            boolean didUpdateUserLog = writeUserLog(uid, "Log read");
+            if(!didUpdateServerLog || !didUpdateUserLog) {
+                return null;
+            }
+
             return fileAsString;
         }
         return null;
@@ -301,6 +307,13 @@ public class DB {
                 //System.out.println("Could not read User Data");
                 return null;
             }
+
+            boolean didUpdateServerLog = writeServerLog("User data read for user " + uid);
+            boolean didUpdateUserLog = writeUserLog(uid, "Data read");
+            if(!didUpdateServerLog || !didUpdateUserLog) {
+                return null;
+            }
+
             return fileArray;
         }
         return null;
@@ -326,6 +339,13 @@ public class DB {
                 //System.out.println("Could not read User Data");
                 return null;
             }
+
+            boolean didUpdateServerLog = writeServerLog("Pwd read for user " + uid);
+            boolean didUpdateUserLog = writeUserLog(uid, "pwd read");
+            if(!didUpdateServerLog || !didUpdateUserLog) {
+                return null;
+            }
+
             return fileArray;
         }
         return null;
@@ -351,6 +371,13 @@ public class DB {
                 //System.out.println("Could not read User Data");
                 return null;
             }
+
+            boolean didUpdateServerLog = writeServerLog("IV read for user " + uid);
+            boolean didUpdateUserLog = writeUserLog(uid, "IV read");
+            if(!didUpdateServerLog || !didUpdateUserLog) {
+                return null;
+            }
+
             return fileArray;
         }
         return null;
@@ -411,7 +438,11 @@ public class DB {
         } catch (Exception e) {
             return false;
         }
-        return true;
+
+        boolean didUpdateServerLog = writeServerLog("User data written for user " + uid);
+        boolean didUpdateUserLog = writeUserLog(uid, "Data written");
+
+        return didUpdateServerLog && didUpdateUserLog;
 
     }
 
@@ -436,7 +467,11 @@ public class DB {
         } catch (Exception e) {
             return false;
         }
-        return true;
+
+        boolean didUpdateServerLog = writeServerLog("pwd written for user " + uid);
+        boolean didUpdateUserLog = writeUserLog(uid, "pwd written");
+
+        return didUpdateServerLog && didUpdateUserLog;
 
     }
 
@@ -460,7 +495,11 @@ public class DB {
         } catch (Exception e) {
             return false;
         }
-        return true;
+
+        boolean didUpdateServerLog = writeServerLog("IV written for user " + uid);
+        boolean didUpdateUserLog = writeUserLog(uid, "IV written");
+
+        return didUpdateServerLog && didUpdateUserLog;
 
     }
 
@@ -474,7 +513,7 @@ public class DB {
      *  Return: 4 bytes of salt, generated with secureRandom.
      * */
     public static byte[] getNextSalt() {
-        byte[] salt = new byte[4];
+        byte[] salt = new byte[saltLength];
         sRANDOM.nextBytes(salt);
         return salt;
     }
@@ -484,7 +523,7 @@ public class DB {
      *  Output: None.
      *  Return: The hashed password as a byte[]. Returns null upon failure
      * */
-    public static byte[] hashPwd(String pwd, byte[] salt) { //TODO error probably happening here
+    public static byte[] hashPwd(String pwd, byte[] salt) throws AssertionError {
         if(pwd == null || pwd.length() == 0) {
             return null;
         }
@@ -501,7 +540,6 @@ public class DB {
         } finally {
             spec.clearPassword();
         }
-
 
     }
 
@@ -535,7 +573,7 @@ public class DB {
      *  Output: None.
      *  Return: True if given PWD matches stored PWD.
      * */
-    public static boolean checkUserPWD(String uid, String givenPWD) { //TODO currently always returns false...
+    public static boolean checkUserPWD(String uid, String givenPWD) {
         if(!searchUser(uid)) {
             return false;
         }
@@ -546,11 +584,11 @@ public class DB {
             return false;
         }
 
-        byte[] storedSalt = new byte[4];
-        System.arraycopy(storedBytes, 0, storedSalt, 0, 4); // length of salt
+        byte[] storedSalt = new byte[saltLength];
+        System.arraycopy(storedBytes, 0, storedSalt, 0, saltLength); // length of salt
 
-        byte[] storedHash = new byte[storedBytes.length - 4];
-        System.arraycopy(storedBytes, 4, storedHash, 0, storedHash.length);
+        byte[] storedHash = new byte[storedBytes.length - saltLength];
+        System.arraycopy(storedBytes, saltLength, storedHash, 0, storedHash.length);
 
         byte[] givenHash = hashPwd(givenPWD, storedSalt);
         if(givenHash == null || givenHash.length != storedHash.length) {
@@ -559,11 +597,16 @@ public class DB {
 
         for(int i = 0; i < givenHash.length; i++) {
             if(givenHash[i] != storedHash[i]) {
+                writeServerLog("pwd authentication failed for user " + uid);
+                writeUserLog(uid, "pwd authentication failed");
                 return false;
             }
         }
-        
-        return true;
+
+        boolean didUpdateServerLog = writeServerLog("pwd authentication success for user " + uid);
+        boolean didUpdateUserLog = writeUserLog(uid, "pwd authentication success");
+
+        return didUpdateServerLog && didUpdateUserLog;
     }
 
 
