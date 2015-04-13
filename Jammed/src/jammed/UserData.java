@@ -1,5 +1,6 @@
 package jammed;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -171,19 +172,7 @@ public class UserData {
 
 
     }
-	//decrypts and loads secret key into this.dataSeckey
-	private void decKey(SecretKey hashPass, String file) throws IllegalBlockSizeException, 
-			BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, 
-			NoSuchPaddingException, IOException {
-		
-		byte[] encoded = Files.readAllBytes(Paths.get(file));
-		Cipher pwc = Cipher.getInstance("PBKDF2WithHmacSHA1");
-		pwc.init(Cipher.DECRYPT_MODE,hashPass);
-		byte[] decoded = pwc.doFinal(encoded);
-		this.dataSecKey = new SecretKeySpec(decoded,"AES");
-		
-		
-	}
+	
 
 	
 	//loads secret key from a local file and stores it to dataSecKey
@@ -214,15 +203,38 @@ public class UserData {
 			fout.close();
 		}
 	}
-	
+	private static byte[] doubleKey(byte[] key) throws IOException{
+		
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+		outputStream.write( key );
+		outputStream.write( key );
+
+		return outputStream.toByteArray( );
+	}
 	//encrypts the secret key with the users password.
 	private static byte[] encKey(byte[] encodedSecretKey, SecretKey encryptionKey) 
 			throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, 
-			NoSuchPaddingException, InvalidKeyException {
-		Cipher aes = Cipher.getInstance("PBKDF2WithHmacSHA1");
-		aes.init(Cipher.ENCRYPT_MODE, encryptionKey);
+			NoSuchPaddingException, InvalidKeyException, IOException {
+		Cipher aes = Cipher.getInstance("AES");
+		aes.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(encryptionKey.getEncoded(), "AES"));
 		byte[] block = aes.doFinal(encodedSecretKey);
 		return block;
+	}
+	
+	//decrypts and loads secret key into this.dataSeckey
+	private void decKey(SecretKey hashPass, String file) throws IllegalBlockSizeException, 
+			BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, 
+			NoSuchPaddingException, IOException {
+		
+		byte[] encoded = Files.readAllBytes(Paths.get(file));
+		Cipher pwc = Cipher.getInstance("AES"); //AES/CBC/PKCS5Padding
+		SecretKeySpec key = new SecretKeySpec(hashPass.getEncoded(), "AES");
+		//check parameters of key
+		pwc.init(Cipher.DECRYPT_MODE, key); //invalid key length?
+		byte[] decoded = pwc.doFinal(encoded);
+		this.dataSecKey = new SecretKeySpec(decoded,"AES");
+		
+		
 	}
 
 //	These functions would only be used if we are not passing in the IV with userdata
