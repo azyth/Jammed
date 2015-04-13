@@ -78,6 +78,7 @@ public class Jammed {
             UserDataReq serverdata = (UserDataReq) server.receive();
 
             if (!serverdata.getSuccess()) {
+              System.out.println("here");
               throw new UserDataException(serverdata.getError());
             }
 
