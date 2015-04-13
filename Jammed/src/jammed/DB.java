@@ -579,7 +579,7 @@ public class DB {
         }
 
         // load stored
-        byte[] storedBytes = readUserPWD(uid);
+        byte[] storedBytes = readUserPWD(uid); // DB method
         if(storedBytes == null) {
             return false;
         }
@@ -608,7 +608,6 @@ public class DB {
 
         return didUpdateServerLog && didUpdateUserLog;
     }
-
 
     /********************************************************/
     /********************************************************/
