@@ -196,7 +196,7 @@ public class Jelly {
 
             // try to enroll the new user...
             if (!DB.searchUser(login.getUsername())) {
-              if (enroll(login.getUsername(), login.getPassword())) {
+              if (DB.newUser(login.getUsername(), login.getPassword())) {
                 loginResponse = new LoginReq(true, ErrorMessage.NONE);
                 username = login.getUsername();
                 //toLog = username + " enrolled";
@@ -355,31 +355,6 @@ public class Jelly {
     }
     if (!DB.writeUserLog(username, text)) {
       System.out.println("Could not write to user " + username + "'s log...");
-    }
-  }
-
-  /* Enrolls a new user. Returns success.
-   * Invariant: The username specified cannot already be in use, and must be
-   * already sanitized. */
-  // TODO: can this be replaced by a function in DB?
-  private static boolean enroll(String username, String password) {
-    try {
-      byte[] temp = new String("").getBytes("UTF-8");
-
-      // kinda hacky...there doesn't seem to be a way to write a user
-      // password both without the user existing and also without figuring out
-      // password hashing and such on my own which I'm going to be lazy about
-      if (DB.newUser(username, temp, temp, temp)) {
-        // TODO we can get bad results if newUser goes OK but storeUserPWD is
-        // not -- the username would be taken but there would be no accessible
-        // account for it
-        return DB.storeUserPWD(username, password);
-      }
-
-      return false;
-
-    } catch (UnsupportedEncodingException e) {
-      return false;
     }
   }
 
