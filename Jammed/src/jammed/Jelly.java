@@ -35,6 +35,8 @@ public class Jelly {
       comm.accept();
 
       handle_connection(comm);
+
+      comm.close();
     }
   }
 
@@ -211,11 +213,8 @@ public class Jelly {
               } else {
 
                 // have to make sure that logging is ok...
-                if (!DB.writeServerLog("attempt made on user " + username +
-                      "'s account")) {
-                  System.out.println("Something went bad with logging");
-                  return;
-                }
+                writeLogs(username, "Attempt made on user " + username +
+                    "'s account");
 
                 loginResponse =
                   new LoginReq(false, ErrorMessage.BAD_CREDENTIALS);
@@ -242,9 +241,6 @@ public class Jelly {
           return;
 
         case TERMINATION:
-          TerminationReq loginTermResponse =
-            new TerminationReq(true, ErrorMessage.BAD_REQUEST);
-          comm.send(loginTermResponse);
           return;
 
         default:
@@ -259,11 +255,7 @@ public class Jelly {
     // that username's files
 
     if (!toLog.equals("")) {
-      if (!DB.writeServerLog(toLog)) {
-        System.out.println("Something went bad with writing to the server " +
-            "log... exiting.");
-        return;
-      }
+      writeLogs(username, toLog);
     }
 
     boolean sessionover = false;
@@ -332,10 +324,7 @@ public class Jelly {
 
         case TERMINATION:
           sessionover = true;
-          TerminationReq termResponse =
-            new TerminationReq(true, ErrorMessage.NONE);
-          comm.send(termResponse);
-          DB.writeServerLog("User " + username + " logged out.");
+          writeLogs(username, "User " + username + " logged out.");
           break;
 
         default:
@@ -346,6 +335,17 @@ public class Jelly {
     }
 
     return;
+  }
+
+  /* Writes the given string to the server log and the specified user's log.
+   * Does NOT crash the program on failure... TODO is this OK? */
+  private static void writeLogs(String username, String text) {
+    if (!DB.writeServerLog(text)) {
+      System.out.println("Could not write to server log...");
+    }
+    if (!DB.writeUserLog(username, text)) {
+      System.out.println("Could not write to user " + username + "'s log...");
+    }
   }
 
   /* Authenticates an existing user */

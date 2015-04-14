@@ -167,12 +167,8 @@ public class UserInterface {
           System.out.print("Enter username: ");
           action.info.username = br.readLine();
 
-          System.out.print("Enter password: ");
-          action.info.password  = br.readLine();
-
           // sanity check
-          if (action.info.website == null || action.info.username == null ||
-              action.info.password == null) {
+          if (action.info.website == null || action.info.username == null) {
             throw new IOException();
           }
 

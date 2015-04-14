@@ -136,6 +136,7 @@ public class Jammed {
             // element was removed
             boolean changed = plaindata.remove(action.info);
             changes = changes || changed;
+            ui.display(plaindata);
             break;
 
           case LOG:
@@ -181,6 +182,10 @@ public class Jammed {
           }
         }
       }
+
+      // close the connection...
+      server.send(new TerminationReq(TerminationReq.Term.USER_REQUEST));
+      server.close();
 
     } catch (FileNotFoundException e) {
       ui.error("No key files found - have you enrolled yet?");
