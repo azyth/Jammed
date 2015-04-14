@@ -456,7 +456,7 @@ public class DB {
      *  Output: Updated (Overwritten) version of the password file in the specified uid folder.
      *  Return: Boolean, true if operation successful.
      * */
-    public static boolean writeUserPWD(String uid, byte[] fileData) {
+    private static boolean writeUserPWD(String uid, byte[] fileData) {
         if (!searchUser(uid)) {
             return false;
         }
