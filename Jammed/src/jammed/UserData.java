@@ -149,7 +149,7 @@ public class UserData {
 	    return keyGenerator.generateKey();
 	}
 	//generates a random string of bytes for a new IV
-	public byte[] generateIV(){
+	public static byte[] generateIV(){
 			return SecureRandom.getSeed(16);
 	}
 	
@@ -198,7 +198,7 @@ public class UserData {
 	//writes secret key to a file on local machine for storage 
 	private static void storeKey(SecretKey key, SecretKey encryptionKey, String username) 
 			throws IOException, InvalidKeyException, IllegalBlockSizeException, 
-			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidParameterSpecException {
+			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidParameterSpecException, InvalidAlgorithmParameterException {
 		
 		FileOutputStream fout = new FileOutputStream(username+SECKEYFILE);
 		FileOutputStream iout = new FileOutputStream(username+"-iv"+SECKEYFILE);
@@ -230,9 +230,10 @@ public class UserData {
 	//encrypts the secret key with the users password.
 	private static Keys encKey(byte[] encodedSecretKey, SecretKey encryptionKey) 
 			throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, 
-			NoSuchPaddingException, InvalidKeyException, IOException, InvalidParameterSpecException {
+			NoSuchPaddingException, InvalidKeyException, IOException, InvalidParameterSpecException, InvalidAlgorithmParameterException {
 		Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
-		aes.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(encryptionKey.getEncoded(), "AES")); //invalid key length new SecretKeySpec(encryptionKey.getEncoded(), "AES")
+		byte[] ivec = generateIV();
+		aes.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(encryptionKey.getEncoded(), "AES"),new IvParameterSpec(ivec)); //invalid key length new SecretKeySpec(encryptionKey.getEncoded(), "AES")
 		AlgorithmParameters params = aes.getParameters();
 		byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
 		byte[] block = aes.doFinal(encodedSecretKey);
