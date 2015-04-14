@@ -63,7 +63,13 @@ public class Jammed {
 
         LoginReq verif = (LoginReq) server.receive();
 
-        if (verif != null && verif.getSuccess()) {
+        if (verif == null) {
+
+          // the server gave a null response--this probably means we should
+          // exit...
+          throw new UserDataException(Request.ErrorMessage.OTHER);
+
+        } else if (verif.getSuccess()) {
 
           success = true;
 
