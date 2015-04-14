@@ -112,11 +112,20 @@ public class UserInterface {
   /* Gets the next user action. Actions are chosen from the enum ActionType and
    * returned in an Action object. */
   public Action getAction() throws IOException, UnsupportedEncodingException {
+    String help = "Possible operations:\n" +
+      "\t\"add\" adds or modifies an entry\n" +
+      "\t\"remove\" deletes an entry\n" +
+      "\t\"log\" obtains log files for your account\n" +
+      "\t\"change\" changes the password to your account\n" +
+      "\t\"exit\" saves changes and exits the program";
+
     BufferedReader br =
       new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
 
     Action action = new Action();
     boolean success = false;
+
+    System.out.println(help);
 
     while (!success) {
       System.out.print("Enter action: ");
@@ -205,13 +214,7 @@ public class UserInterface {
 
         default:
 
-          System.out.println("Possible operations:");
-          System.out.println("\t\"add\" adds or modifies an entry");
-          System.out.println("\t\"remove\" deletes an entry");
-          System.out.println("\t\"log\" obtains log files for your account");
-          System.out.println("\t\"change\" changes the password to your " +
-              "account");
-          System.out.println("\t\"exit\" saves changes and exits the program");
+          System.out.println(help);
       }
     }
 
