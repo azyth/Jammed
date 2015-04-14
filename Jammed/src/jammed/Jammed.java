@@ -162,19 +162,19 @@ public class Jammed {
 
             ui.error("Unknown action type.");
         }
+      }
 
-        if (changes) {
-          // (8) if changes were made, send updated data to server for storage
-          byte[] iv = data.generateIV();
-          byte[] encdata = data.encData(plaindata, iv); 
-          server.send(new UserDataReq(encdata,iv));					//send upload request
+      if (changes) {
+        // (8) if changes were made, send updated data to server for storage
+        byte[] iv = data.generateIV();
+        byte[] encdata = data.encData(plaindata, iv); 
+        server.send(new UserDataReq(encdata,iv));					//send upload request
 
-          //receive upload resonse with success of error message
-          UserDataReq uploadresp = (UserDataReq) server.receive();
-          if (!uploadresp.getSuccess()){
-            // something terrible happened
-            throw new UserDataException(uploadresp.getError());
-          }
+        //receive upload resonse with success of error message
+        UserDataReq uploadresp = (UserDataReq) server.receive();
+        if (!uploadresp.getSuccess()){
+          // something terrible happened
+          throw new UserDataException(uploadresp.getError());
         }
       }
 
