@@ -23,8 +23,6 @@ import jammed.UserDataReq.ReqType;
 public class Jelly {
 
   public static void main(String[] args) throws SocketException {
-    //System.setProperty("javax.net.ssl.keyStore","\\serverkeystore.jks");
-    //System.setProperty("java.net.ssl.keyStorePassword", "cs5430");
 
     if (!DB.initialize()) {
       System.err.println("DB Initialization Failure");

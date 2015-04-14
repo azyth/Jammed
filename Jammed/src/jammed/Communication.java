@@ -47,11 +47,15 @@ public class Communication {
     try {
       
       if (type == Type.SERVER) {
+    	System.setProperty("javax.net.ssl.keyStore", "serverkeystore.jks");
+    	System.setProperty("javax.net.ssl.keyStorePassword", "cs5430");
         ServerSocketFactory serverSocketFactory = SSLServerSocketFactory.getDefault();
         this.serverSocket = serverSocketFactory.createServerSocket(port);
         this.dummy = false;
       }
       else if (type == Type.CLIENT) {
+    	System.setProperty("javax.net.ssl.trustStore", "serverkeystore.jks");
+      	System.setProperty("javax.net.ssl.trustStorePassword", "cs5430");
         // Create a Client
         // Dummy object, call .connect() method to use
       }
