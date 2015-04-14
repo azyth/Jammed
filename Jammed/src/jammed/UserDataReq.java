@@ -10,47 +10,40 @@ package jammed;
 public class UserDataReq extends Request implements Cloneable {
 	
 	private static final long serialVersionUID = 2L; // For Serialization - @Dettervt
-	public enum ReqType{upload,download}
+	public enum ReqType { UPLOAD, DOWNLOAD }
 	private ReqType direction;
 	private byte[] userdata;//for storing AES encrypted User data
 	private byte[] iv;
 
 	//Request download
 	public UserDataReq(){
-		this.direction = ReqType.download;
-		this.setEvent(EventType.userDataDownload);
+		this.direction = ReqType.DOWNLOAD;
+		this.setEvent(EventType.USER_DATA_OP);
 	}
 	//Request upload
 	public UserDataReq(byte[] cyphertext, byte[] iv){
-		this.direction = ReqType.upload;
+		this.direction = ReqType.UPLOAD;
 		this.userdata=cyphertext.clone();
 		this.iv=iv.clone();
-		this.setEvent(EventType.userDataUpload);
+		this.setEvent(EventType.USER_DATA_OP);
 	}
 	//Response w/o data
-	public UserDataReq(boolean success, ReqType dir, ErrorMessage err){
-		this.direction = dir;
+	public UserDataReq(boolean success, ErrorMessage err){
 		this.setSuccess(success);
 		this.setError(err);
 	}
+
 	//Response with data
-	public UserDataReq(boolean success, ReqType dir, ErrorMessage err, byte[] cyphertext, byte[] iv){
-		this.direction = dir;
+	public UserDataReq(boolean success, ErrorMessage err, byte[] cyphertext, byte[] iv){
 		this.setSuccess(success);
 		this.setError(err);
 		this.userdata=cyphertext.clone();
 		this.iv=iv.clone();
 	}
 		
-	public ReqType getDirection(){return this.direction;}
-	public byte[] getData(){return this.userdata.clone();}
-	public byte[] getIV(){return this.iv.clone();}
+	public ReqType getDirection() { return this.direction; }
+	public byte[] getData() { return this.userdata.clone(); }
+	public byte[] getIV() { return this.iv.clone(); }
 
-//	@Override
-//	public byte[] clone() throws CloneNotSupportedException{
-//		return (byte[])super.clone();
-//		
-//	}
-	
 }
 

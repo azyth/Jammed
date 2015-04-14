@@ -15,24 +15,24 @@ public class LogReq extends Request{
 
 	//Request constructor
 	public LogReq() {
-		this.setType(MessageType.request);
-		this.setEvent(EventType.log);
-
+		this.setType(MessageType.REQUEST);
+		this.setEvent(EventType.LOG);
 	}
+
 	//Response constructors
 	//failure 
 	public LogReq(ErrorMessage err){
 		this.setError(err);
-		this.setType(MessageType.response);
+		this.setType(MessageType.RESPONSE);
 		this.setSuccess(false);
-		this.setEvent(EventType.log);
+		this.setEvent(EventType.LOG);
 	}
 	//succeed
 	public LogReq(String log){
 		this.userLog=log;
 		this.setSuccess(true);
-		this.setType(MessageType.response);
-		this.setEvent(EventType.log);
+		this.setType(MessageType.RESPONSE);
+		this.setEvent(EventType.LOG);
 	}
 	
 //	public void setLog(String l){this.userLog=l;}
