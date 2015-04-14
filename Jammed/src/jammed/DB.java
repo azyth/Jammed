@@ -105,13 +105,18 @@ public class DB {
     /********************************************************/
 
     /** Purpose: Adds a new user to be managed by the server.
-     *  Input: A unique user id: uid.
+     *  Input: A unique user id: uid, and their password as a string
      *  Output: A new user folder with name uid: root/users/uid/
      *          Writes that the user was created to the user and server log.
+     *          An empty user data, IV file, and the hashed and salted user password
      *  Return: Boolean, true if creation was successful.
      * */
-    public static boolean newUser(String uid, byte[] uPWD, byte[] UD, byte[] IV) {
+    public static boolean newUser(String uid, String uPWD) {
         Path newUser = Paths.get(usersPath + uid + "/");
+
+        if(uid == null || uPWD == null || uid.equals("") || uPWD.equals("")) {
+            return false;
+        }
 
         if(Files.exists(newUser)) {
             //System.out.println("User already exists");
@@ -134,7 +139,7 @@ public class DB {
         }
 
         // create password file, create user data file, create user iv file
-        return writeUserPWD(uid, uPWD) || writeUserData(uid, UD) || writeUserIV(uid, IV);
+        return storeUserPWD(uid, uPWD) || writeUserData(uid, null) || writeUserIV(uid, null);
 
     }
 
