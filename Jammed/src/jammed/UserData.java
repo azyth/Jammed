@@ -72,7 +72,7 @@ public class UserData {
 			IOException, InvalidKeyException, GeneralSecurityException{
 		//Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
 		byte [] iv = generateIV();
-		String plaintext = "I \n wish \n my toast wouldnt \n always land \n butter side, \n Down";//Default string for userdata file
+		String plaintext = "I\nwish\nmy toast wouldnt\nalways land\nbutter side,\nDown";//Default string for userdata file
 		ArrayList<LoginInfo> data = stringToList(plaintext);
 		byte[] encUD = this.encData(data,iv);
 		storeIV(iv,username+"_IV.txt");
@@ -211,7 +211,7 @@ public class UserData {
 		try {
 			fout.write(encKey);
 			iout.write(iv);
-			System.out.println("key stored");
+			//System.out.println("key stored");
 		} catch (Exception e) {
 			throw e;
 		}finally {
@@ -316,8 +316,10 @@ public class UserData {
 
     return lst;
   }
+
   // test test test MAIN 
   public static void main(String[] args) throws IOException, InvalidKeyException, GeneralSecurityException {
+    enroll("guest", "guest");
 	  UserData ud = new UserData("guest","guest");
 	  
 	//create new data/IV pair
@@ -329,8 +331,8 @@ public class UserData {
 		byte[] iv = Files.readAllBytes(Paths.get("guest_IV.txt"));
 		
 		udata = ud.decData(cryptodata, iv);
-		System.out.println("un-encrypted");
-		System.out.println(UserData.listToString(udata));
+		//System.out.println("un-encrypted");
+		//System.out.println(UserData.listToString(udata));
 		//storeIV(,"string.txt")
 		
    
@@ -377,6 +379,7 @@ public class UserData {
     System.out.println(listToString(twoentries).
                        equals("wone\nuone\npone\nwtwo\nutwo\nptwo"));*/
   }
+
   private static class Keys{
 	  
 	  public Keys(byte[] block, byte[] iv) {

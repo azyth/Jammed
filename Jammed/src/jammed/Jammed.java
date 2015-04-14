@@ -92,12 +92,7 @@ public class Jammed {
         } else {
 
           // display the appropriate error message and try again
-          if (enroll) {
-            ui.error("Could not enroll with those credentials -- please pick " +
-                "another username.");
-          } else {
-            ui.error("Could not verify those credentials -- please try again.");
-          }
+          ui.error(Request.errToString(verif.getError()));
 
         }
       }
@@ -136,6 +131,7 @@ public class Jammed {
             // element was removed
             boolean changed = plaindata.remove(action.info);
             changes = changes || changed;
+            ui.display(plaindata);
             break;
 
           case LOG:
@@ -166,21 +162,25 @@ public class Jammed {
 
             ui.error("Unknown action type.");
         }
+      }
 
-        if (changes) {
-          // (8) if changes were made, send updated data to server for storage
-          byte[] iv = data.generateIV();
-          byte[] encdata = data.encData(plaindata, iv); 
-          server.send(new UserDataReq(encdata,iv));					//send upload request
+      if (changes) {
+        // (8) if changes were made, send updated data to server for storage
+        byte[] iv = data.generateIV();
+        byte[] encdata = data.encData(plaindata, iv); 
+        server.send(new UserDataReq(encdata,iv));					//send upload request
 
-          //receive upload resonse with success of error message
-          UserDataReq uploadresp = (UserDataReq) server.receive();
-          if (!uploadresp.getSuccess()){
-            // something terrible happened
-            throw new UserDataException(uploadresp.getError());
-          }
+        //receive upload resonse with success of error message
+        UserDataReq uploadresp = (UserDataReq) server.receive();
+        if (!uploadresp.getSuccess()){
+          // something terrible happened
+          throw new UserDataException(uploadresp.getError());
         }
       }
+
+      // close the connection...
+      server.send(new TerminationReq(TerminationReq.Term.USER_REQUEST));
+      server.close();
 
     } catch (FileNotFoundException e) {
       ui.error("No key files found - have you enrolled yet?");

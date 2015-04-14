@@ -2,6 +2,9 @@ package jammed;
 
 /** Wrapper for two strings. Seems moderately useful. */
 public class LoginInfo implements Comparable<LoginInfo> {
+
+  public static final long serialVersionUID = 6L; // For serialization
+
   public String website = "";
   public String username = "";
   public String password = "";
