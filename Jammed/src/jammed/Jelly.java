@@ -30,9 +30,8 @@ public class Jelly {
       System.exit(1);
     }
 
-    Communication comm = new Communication(Communication.Type.SERVER);
-
     while (true) {
+      Communication comm = new Communication(Communication.Type.SERVER);
       comm.accept();
 
       handle_connection(comm);
@@ -308,7 +307,8 @@ public class Jelly {
                 new UserDataReq(false, ErrorMessage.DATABASE_FAILURE);
               System.out.println("cypher/iv are null");
             } else {
-              UDResponse = new UserDataReq(cyphertext, iv);
+              UDResponse =
+                new UserDataReq(true, ErrorMessage.NONE, cyphertext, iv);
             }
           } else {
             // replace the data with what is in the request

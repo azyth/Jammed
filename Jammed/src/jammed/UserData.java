@@ -316,8 +316,10 @@ public class UserData {
 
     return lst;
   }
+
   // test test test MAIN 
   public static void main(String[] args) throws IOException, InvalidKeyException, GeneralSecurityException {
+    enroll("guest", "guest");
 	  UserData ud = new UserData("guest","guest");
 	  
 	//create new data/IV pair
@@ -377,6 +379,7 @@ public class UserData {
     System.out.println(listToString(twoentries).
                        equals("wone\nuone\npone\nwtwo\nutwo\nptwo"));*/
   }
+
   private static class Keys{
 	  
 	  public Keys(byte[] block, byte[] iv) {
