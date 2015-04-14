@@ -1,5 +1,6 @@
 package jammed;
 
+import java.io.UnsupportedEncodingException;
 import java.net.SocketException;
 
 import jammed.Request.ErrorMessage;
@@ -175,7 +176,7 @@ public class Jelly {
     Request req;
     boolean loginsuccess = false;
     String username = null;
-    String toLog = "";
+    //String toLog = "";
 
     while (!loginsuccess) {
       req = comm.receive();
@@ -187,14 +188,23 @@ public class Jelly {
           LoginReq login = (LoginReq) req;
           LoginReq loginResponse;
 
-          if (login.getEnrolling()) {
+          if (!login.getUsername().matches("[a-zA-Z0-9]+")) {
+
+            loginResponse = new LoginReq(false, ErrorMessage.BAD_USERNAME);
+
+          } else if (login.getEnrolling()) {
 
             // try to enroll the new user...
-            if (enroll(login.getUsername(), login.getPassword())) {
-              loginResponse = new LoginReq(true, ErrorMessage.NONE);
-              username = login.getUsername();
-              toLog = username + " enrolled";
-              loginsuccess = true;
+            if (!DB.searchUser(login.getUsername())) {
+              if (enroll(login.getUsername(), login.getPassword())) {
+                loginResponse = new LoginReq(true, ErrorMessage.NONE);
+                username = login.getUsername();
+                //toLog = username + " enrolled";
+                loginsuccess = true;
+              } else {
+                loginResponse =
+                  new LoginReq(false, ErrorMessage.DATABASE_FAILURE);
+              }
             } else {
               loginResponse =
                 new LoginReq(false, ErrorMessage.DUPLICATE_USERNAME);
@@ -205,16 +215,16 @@ public class Jelly {
 
             // try to authenticate the new user...
             if (DB.searchUser(login.getUsername())) {
-              if (authenticate(login.getUsername(), login.getPassword())) {
+              if (DB.checkUserPWD(login.getUsername(), login.getPassword())) {
                 loginResponse = new LoginReq(true, ErrorMessage.NONE);
                 username = login.getUsername();
-                toLog = username + " logged in";
+                //toLog = username + " logged in";
                 loginsuccess = true;
               } else {
 
                 // have to make sure that logging is ok...
-                writeLogs(username, "Attempt made on user " + username +
-                    "'s account");
+                //writeLogs(login.getUsername(), "Attempt made on user " +
+                //    username + "'s account");
 
                 loginResponse =
                   new LoginReq(false, ErrorMessage.BAD_CREDENTIALS);
@@ -254,9 +264,9 @@ public class Jelly {
     // should be set, and we know that this session has permission to access
     // that username's files
 
-    if (!toLog.equals("")) {
-      writeLogs(username, toLog);
-    }
+    //if (!toLog.equals("")) {
+    //  writeLogs(username, toLog);
+    //}
 
     boolean sessionover = false;
 
@@ -348,16 +358,29 @@ public class Jelly {
     }
   }
 
-  /* Authenticates an existing user */
-  private static boolean authenticate(String username, String password) {
-    // TODO
-    return true;
-  }
-
-  /* Enrolls a new user. Returns success. */
+  /* Enrolls a new user. Returns success.
+   * Invariant: The username specified cannot already be in use, and must be
+   * already sanitized. */
+  // TODO: can this be replaced by a function in DB?
   private static boolean enroll(String username, String password) {
-    // TODO
-    return false;
+    try {
+      byte[] temp = new String("").getBytes("UTF-8");
+
+      // kinda hacky...there doesn't seem to be a way to write a user
+      // password both without the user existing and also without figuring out
+      // password hashing and such on my own which I'm going to be lazy about
+      if (DB.newUser(username, temp, temp, temp)) {
+        // TODO we can get bad results if newUser goes OK but storeUserPWD is
+        // not -- the username would be taken but there would be no accessible
+        // account for it
+        return DB.storeUserPWD(username, password);
+      }
+
+      return false;
+
+    } catch (UnsupportedEncodingException e) {
+      return false;
+    }
   }
 
 }

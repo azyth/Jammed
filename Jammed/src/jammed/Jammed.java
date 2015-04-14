@@ -92,12 +92,7 @@ public class Jammed {
         } else {
 
           // display the appropriate error message and try again
-          if (enroll) {
-            ui.error("Could not enroll with those credentials -- please pick " +
-                "another username.");
-          } else {
-            ui.error("Could not verify those credentials -- please try again.");
-          }
+          ui.error(Request.errToString(verif.getError()));
 
         }
       }

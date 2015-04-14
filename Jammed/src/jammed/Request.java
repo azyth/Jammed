@@ -22,7 +22,8 @@ public abstract class Request implements java.io.Serializable{
 	public enum EventType { LOGIN, LOG, USER_DATA_OP, TERMINATION }
 	public enum MessageType { REQUEST, RESPONSE }
 	public enum ErrorMessage { BAD_ARGUMENT, BAD_CREDENTIALS, NO_SUCH_USER,
-    DUPLICATE_USERNAME, BAD_REQUEST, DATABASE_FAILURE, OTHER, NONE }//etc
+    DUPLICATE_USERNAME, BAD_REQUEST, DATABASE_FAILURE, BAD_USERNAME, OTHER,
+    NONE }//etc
 	
 	private EventType event;
 	private MessageType type;
@@ -63,6 +64,9 @@ public abstract class Request implements java.io.Serializable{
         break;
       case DATABASE_FAILURE:
         message = "I/O issue with server database.";
+        break;
+      case BAD_USERNAME:
+        message = "Usernames should match \"[a-zA-Z0-9]+\".";
         break;
       case OTHER:
         message = "Some unknown but terrible thing happened. (request.java)";

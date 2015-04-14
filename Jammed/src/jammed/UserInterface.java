@@ -67,17 +67,12 @@ public class UserInterface {
     if (login.username.equals("*")) {
       // we want to make a new user and check username validity e.g. that the
       // name comes from a correct alphabet.
-      boolean success = false;
-      while (!success) {
-        System.out.print("Enter desired username: ");
-        login.username = br.readLine();
+      System.out.print("Enter desired username: ");
+      login.username = br.readLine();
 
-        if (login.username.matches("[a-zA-Z0-9]+")) {
-          success = true;
-        } else {
-          System.out.println("Username must contain only upper/lowercase " +
-              "letters and numbers.");
-        }
+      // sanity check sanity check
+      if (login.username == null) {
+        throw new IOException();
       }
 
       // signal that this is a new user
@@ -86,6 +81,11 @@ public class UserInterface {
 
     System.out.print("Enter password: ");
     login.password = br.readLine();
+
+    // sanity check sanity check sanity check
+    if (login.password == null) {
+      throw new IOException();
+    }
 
     return login;
   }
@@ -146,6 +146,7 @@ public class UserInterface {
             throw new IOException();
           }
 
+          // TODO maybe move this to jammed?
           if (action.info.website.contains("\n") ||
               action.info.username.contains("\n") ||
               action.info.password.contains("\n")) {
