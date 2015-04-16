@@ -18,5 +18,7 @@ hs_err_pid*
 *.iml
 
 Jammed/root/server/log.txt
-
+Jammed/bin/*AESkey.txt
+Jammed/bin/log.txt
+Jammed/guest*
 
