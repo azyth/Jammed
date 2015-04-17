@@ -1,3 +1,4 @@
+#all compiled files in jammed/bin/jammed
 *.class
 
 # Mobile Tools for Java (J2ME)
@@ -17,6 +18,8 @@ hs_err_pid*
 .idea/*
 *.iml
 
-Jammed/root/server/log.txt
-
-
+log.txt
+*AESkey.txt
+guest*
+#user data
+Jammed/bin/root/users/*

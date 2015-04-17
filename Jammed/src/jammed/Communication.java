@@ -6,16 +6,22 @@ package jammed;
 // TODO: Soft code host name and port
 
 import java.io.EOFException;
+import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.ServerSocket;
+
 import javax.net.SocketFactory;
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocketFactory;
+
 import java.net.SocketException;
+
 import javax.net.ssl.*;
+
+import java.security.KeyStore;
 import java.security.cert.*;
 
 /**
@@ -47,15 +53,22 @@ public class Communication {
     try {
       
       if (type == Type.SERVER) {
-    	System.setProperty("javax.net.ssl.keyStore", "serverkeystore.jks");
-    	System.setProperty("javax.net.ssl.keyStorePassword", "cs5430");
-        ServerSocketFactory serverSocketFactory = SSLServerSocketFactory.getDefault();
-        this.serverSocket = serverSocketFactory.createServerSocket(port);
-        this.dummy = false;
+    	  SSLContext context = SSLContext.getInstance("SSL");
+    	  KeyStore ks = KeyStore.getInstance("JKS");
+    	  KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+    	  FileInputStream ksin = new FileInputStream("serverkeystore.jks");
+    	  ks.load(ksin, "cs5430".toCharArray());
+    	  kmf.init(ks, "cs5430".toCharArray());
+    	  context.init(kmf.getKeyManagers(), null, null);
+    	  //System.setProperty("javax.net.ssl.keyStore", "serverkeystore.jks");
+    	  //System.setProperty("javax.net.ssl.keyStorePassword", "cs5430");
+    	  ServerSocketFactory serverSocketFactory = context.getServerSocketFactory();
+    	  this.serverSocket = serverSocketFactory.createServerSocket(port);
+    	  this.dummy = false;
       }
       else if (type == Type.CLIENT) {
-    	System.setProperty("javax.net.ssl.trustStore", "serverkeystore.jks");
-      	System.setProperty("javax.net.ssl.trustStorePassword", "cs5430");
+    	//System.setProperty("javax.net.ssl.trustStore", "serverkeystore.jks");
+      	//System.setProperty("javax.net.ssl.trustStorePassword", "cs5430");
         // Create a Client
         // Dummy object, call .connect() method to use
       }
@@ -78,7 +91,14 @@ public class Communication {
       throw new SocketException("Can't connect from a server!");
     }
     try{
-      SocketFactory ClientSocketFactory = SSLSocketFactory.getDefault();
+    	SSLContext context = SSLContext.getInstance("SSL");
+  	  KeyStore ks = KeyStore.getInstance("JKS");
+  	  TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+  	  FileInputStream ksin = new FileInputStream("serverkeystore.jks");
+  	  ks.load(ksin, "cs5430".toCharArray());
+  	  tmf.init(ks);
+  	  context.init(null, tmf.getTrustManagers(), null);
+      SocketFactory ClientSocketFactory = context.getSocketFactory();
       SSLSocket socket = (SSLSocket) ClientSocketFactory.createSocket(hostname, port);
       socket.startHandshake(); //May not need?
       this.tx = new ObjectOutputStream(socket.getOutputStream());

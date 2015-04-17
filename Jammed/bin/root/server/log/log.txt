@@ -4,3 +4,17 @@ Time Written: 2015/04/11_11:24:07 | Entry: guest logged in
 Time Written: 2015/04/11_11:36:14 | Entry: guest logged in
 Time Written: 2015/04/12_13:15:55 | Entry: guest logged in
 Time Written: 2015/04/12_13:15:55 | Entry: guest data downloaded: true
+Time Written: 2015/04/16_15:04:59 | Entry: Pwd read for user john
+Time Written: 2015/04/16_15:04:59 | Entry: pwd authentication success for user john
+Time Written: 2015/04/16_15:04:59 | Entry: User data read for user john
+Time Written: 2015/04/16_15:04:59 | Entry: IV read for user john
+Time Written: 2015/04/16_15:06:30 | Entry: User jh Created
+Time Written: 2015/04/16_15:06:30 | Entry: pwd written for user jh
+Time Written: 2015/04/16_15:07:02 | Entry: User data written for user jh
+Time Written: 2015/04/16_15:07:02 | Entry: IV written for user jh
+Time Written: 2015/04/16_15:07:02 | Entry: User jh logged out.
+Time Written: 2015/04/16_15:07:09 | Entry: Pwd read for user jh
+Time Written: 2015/04/16_15:07:10 | Entry: pwd authentication success for user jh
+Time Written: 2015/04/16_15:07:10 | Entry: User data read for user jh
+Time Written: 2015/04/16_15:07:10 | Entry: IV read for user jh
+Time Written: 2015/04/16_15:07:12 | Entry: User jh logged out.
