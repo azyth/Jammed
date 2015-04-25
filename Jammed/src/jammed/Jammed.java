@@ -161,7 +161,10 @@ public class Jammed {
             break;
 
           case EXIT:
-
+        	  if (plaindata.toString().equalsIgnoreCase("")){  									//blank string crypto check
+      			plaindata = UserData.stringToList("default \n value \n here");
+      		}
+        	  changes = true;
             break;
 
           default:
@@ -170,7 +173,7 @@ public class Jammed {
         }
       }
 
-      if (changes) {
+      if (changes ) {																// OR empty! 
         // (8) if changes were made, send updated data to server for storage
         byte[] iv = data.generateIV();
         byte[] encdata = data.encData(plaindata, iv); 
