@@ -61,7 +61,7 @@ public class Jelly {
           LoginReq login = (LoginReq) req;
           LoginReq loginResponse;
 
-          if (!login.getUsername().matches("[a-zA-Z0-9]+")) {
+          if (!login.getUsername().matches("[a-zA-Z0-9]+")) {					// Add user name checks for prohibited names or chars
 
             loginResponse = new LoginReq(false, ErrorMessage.BAD_USERNAME);
 
@@ -78,7 +78,13 @@ public class Jelly {
                 loginResponse =
                   new LoginReq(false, ErrorMessage.DATABASE_FAILURE);
               }
-            } else {
+            } else if (login.getUpdating()) {									// UPDATEING PASSWORD not working correctly
+            																	// server exits for somereason BEFORE print statement
+            	boolean sucess = DB.storeUserPWD(login.getUsername(), login.getPassword());
+            	System.out.println(sucess);
+          	  	loginResponse = 
+          	  		new LoginReq(sucess, ErrorMessage.NONE);
+            }else {
               loginResponse =
                 new LoginReq(false, ErrorMessage.DUPLICATE_USERNAME);
               // TODO anything to log here?
