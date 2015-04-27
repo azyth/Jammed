@@ -226,7 +226,7 @@ public class DB {
      *  Output: None.
      *  Return: String of the server log data.
      * */
-    public static synchronized String readLog() {
+    public static synchronized String readServerLog() {
         Path logPath = Paths.get(serverLogPath + "log.txt");
         if(!Files.exists(logPath)) {
             return null;
