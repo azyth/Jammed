@@ -18,7 +18,8 @@ public class Enc {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
+		System.out.println("I'm getting an error compiling: UserData ud = new UserData(guest); ");
+		/*
 		String plaintext = "I \n wish \n my toast wouldnt \n always land \n butter side, \n Down";
 		ArrayList<LoginInfo> udata;
 		byte[] cryptodata;
@@ -60,7 +61,7 @@ public class Enc {
 		}
 		
 		
-		
+		*/
 		//create a 
 
 	}
