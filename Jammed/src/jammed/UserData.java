@@ -116,6 +116,9 @@ public class UserData {
 		aes.init(Cipher.ENCRYPT_MODE, this.dataSecKey, ips);
 
 		String text = listToString(data);
+		if (text.equalsIgnoreCase("")){  									//blank string crypto check
+			text = "default \n value \n here";
+		}
 		byte[] textbyte = text.getBytes("UTF8");
 		
 		byte[] block = aes.doFinal(textbyte);
