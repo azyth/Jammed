@@ -63,7 +63,7 @@ public class DBTester {
             DB.readUserData(u);
             DB.readUserIV(u);
             DB.deleteUser(u);
-            DB.readLog();
+            DB.readServerLog();
 
             /* Note: Reading of Data written to log cannot be tested due to time stamps and formatting */
 
@@ -142,7 +142,7 @@ public class DBTester {
             String dataToLog = "Hello world";
             assertEquals(DB.writeLog(dataToLog), true);
             // read "Hello World"
-            String serverLogRead = DB.readLog();
+            String serverLogRead = DB.readServerLog();
             try {
                 assertEquals("".equals(serverLogRead), false);
             } catch(Exception e) {
