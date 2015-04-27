@@ -2,7 +2,6 @@ package junitTests;
 
 import jammed.*;
 import org.junit.Test;
-import static junit.framework.Assert.assertEquals;
 import java.nio.charset.Charset;
 
 /*

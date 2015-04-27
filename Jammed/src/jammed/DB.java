@@ -47,7 +47,7 @@ public class DB {
      *          time stamp of initialization.
      *  Return: Boolean, true if initialization was successful
      * */
-    public static boolean initialize() {
+    public static synchronized boolean initialize() {
         Path server = Paths.get(serverPath);
         Path user = Paths.get(usersPath);
         Path log = Paths.get(serverLogPath);
@@ -106,7 +106,7 @@ public class DB {
      *          An empty user data, IV file, and the hashed and salted user password
      *  Return: Boolean, true if creation was successful.
      * */
-    public static boolean newUser(String uid, String uPWD) {
+    public static synchronized boolean newUser(String uid, String uPWD) {
         Path newUser = Paths.get(usersPath + uid + "/");
 
         if(uid == null || uPWD == null || uid.equals("") || uPWD.equals("")) {
@@ -143,7 +143,7 @@ public class DB {
      *  Output: None.
      *  Return: True if uid found, false otherwise.
      * */
-    public static boolean searchUser(String uid) {
+    public static synchronized boolean searchUser(String uid) {
         Path user = Paths.get(usersPath + uid + "/");
         return Files.exists(user);
     }
@@ -154,7 +154,7 @@ public class DB {
      *          Removes all files stored inside that folder.
      *  Return: Boolean, true if deletion was successful.
      * */
-    public static boolean deleteUser(String uid) {
+    public static synchronized boolean deleteUser(String uid) {
         if(!searchUser(uid)) {
             return false;
         }
@@ -192,7 +192,7 @@ public class DB {
      *  Output: log.txt with dataToLog appended to it.
      *  Return: Boolean, true if operation successful.
      * */
-    public static boolean writeServerLog(String dataToLog) {
+    public static synchronized boolean writeServerLog(String dataToLog) {
         String sLogPath = serverLogPath + "log.txt";
         Path logPath = Paths.get(sLogPath);
         if(!Files.exists(logPath)) {
@@ -226,7 +226,7 @@ public class DB {
      *  Output: None.
      *  Return: String of the server log data.
      * */
-    public static String readLog() {
+    public static synchronized String readLog() {
         Path logPath = Paths.get(serverLogPath + "log.txt");
         if(!Files.exists(logPath)) {
             return null;
@@ -257,7 +257,7 @@ public class DB {
      *  Output: None.
      *  Return: The data of the file (As a string).
      * */
-    public static String readUserLog(String uid) {
+    public static synchronized String readUserLog(String uid) {
         if(!searchUser(uid)) {
             return null;
         }
@@ -292,7 +292,7 @@ public class DB {
      *  Output: None.
      *  Return: The data of the file (As a byte[]).
      * */
-    public static byte[] readUserData(String uid) {
+    public static synchronized byte[] readUserData(String uid) {
         if(!searchUser(uid)) {
             return null;
         }
@@ -325,7 +325,7 @@ public class DB {
      *  Output: None.
      *  Return: The data of the password file (As a byte[]).
      * */
-    public static byte[] readUserPWD(String uid) {
+    private static synchronized byte[] readUserPWD(String uid) {
         if(!searchUser(uid)) {
             return null;
         }
@@ -357,7 +357,7 @@ public class DB {
      *  Output: None.
      *  Return: The data of the IV file (As a byte[]).
      * */
-    public static byte[] readUserIV(String uid) {
+    public static synchronized byte[] readUserIV(String uid) {
         if(!searchUser(uid)) {
             return null;
         }
@@ -393,7 +393,7 @@ public class DB {
      *  Output: Updated (Appended) version of the log in the specified uid folder.
      *  Return: Boolean, true if operation successful.
      * */
-    public static boolean writeUserLog(String uid, String fileData) {
+    public static synchronized boolean writeUserLog(String uid, String fileData) {
         if(!searchUser(uid)) {
             return false;
         }
@@ -424,7 +424,7 @@ public class DB {
      *  Output: Updated (Overwritten) version of the user data in the specified uid folder.
      *  Return: Boolean, true if operation successful.
      * */
-    public static boolean writeUserData(String uid, byte[] fileData) {
+    public static synchronized boolean writeUserData(String uid, byte[] fileData) {
         if (!searchUser(uid)) {
             return false;
         }
@@ -451,7 +451,7 @@ public class DB {
      *  Output: Updated (Overwritten) version of the password file in the specified uid folder.
      *  Return: Boolean, true if operation successful.
      * */
-    private static boolean writeUserPWD(String uid, byte[] fileData) {
+    private static synchronized boolean writeUserPWD(String uid, byte[] fileData) {
         if (!searchUser(uid)) {
             return false;
         }
@@ -480,7 +480,7 @@ public class DB {
      *  Output: Updated (Overwritten) version of the IV file in the specified uid folder.
      *  Return: Boolean, true if operation successful.
      * */
-    public static boolean writeUserIV(String uid, byte[] fileData) {
+    public static synchronized boolean writeUserIV(String uid, byte[] fileData) {
         if (!searchUser(uid)) {
             return false;
         }
@@ -512,7 +512,7 @@ public class DB {
      *  Output: None.
      *  Return: 4 bytes of salt, generated with secureRandom.
      * */
-    public static byte[] getNextSalt() {
+    public static synchronized byte[] getNextSalt() {
         byte[] salt = new byte[saltLength];
         sRANDOM.nextBytes(salt);
         return salt;
@@ -523,7 +523,7 @@ public class DB {
      *  Output: None.
      *  Return: The hashed password as a byte[]. Returns null upon failure
      * */
-    public static byte[] hashPwd(String pwd, byte[] salt) throws AssertionError {
+    public static synchronized byte[] hashPwd(String pwd, byte[] salt) throws AssertionError {
         if(pwd == null || pwd.length() == 0) {
             return null;
         }
@@ -548,7 +548,7 @@ public class DB {
      *  Output: Updated user PWD.txt file
      *  Return: True if successful, false otherwise.
      * */
-    public static boolean storeUserPWD(String uid, String pwd) {
+    public static synchronized boolean storeUserPWD(String uid, String pwd) {
         if(!searchUser(uid)) {
             return false;
         }
@@ -573,7 +573,7 @@ public class DB {
      *  Output: None.
      *  Return: True if given PWD matches stored PWD.
      * */
-    public static boolean checkUserPWD(String uid, String givenPWD) {
+    public static synchronized boolean checkUserPWD(String uid, String givenPWD) {
         if(!searchUser(uid)) {
             return false;
         }
