@@ -1,12 +1,11 @@
 package jammed;
 
 /* Marcos Pedreiro - mvp34
-   3/16/15
+   Created: 3/16/15
    Class to perform file management for the server
 
    NOTES:
-    1) As of 3/29/15, interface has been refactored
-    2) Enums depreciated after refactoring
+    1) 4/27/15 - All methods are synchronized for thread safety
  */
 
 import javax.crypto.SecretKeyFactory;
@@ -28,7 +27,6 @@ public class DB {
     private static final String serverLogPath = serverPath + "log/";
     private static final Charset charsetUTF8 = Charset.forName("UTF-8");
 
-
     private static final String userDataSuffix = "_USERDATA.txt";
     private static final String userPWDSuffix = "_PWD.txt";
     private static final String userIVSuffix = "_IV.txt";
@@ -46,6 +44,8 @@ public class DB {
      *  Output: A folder tree root/(server or users)/, and log.txt under server with
      *          time stamp of initialization.
      *  Return: Boolean, true if initialization was successful
+     *  IMPORTANT: If either the server directory or the users directory does not exist,
+     *  Will proceed with initialization and overwrite what was there.
      * */
     public static synchronized boolean initialize() {
         Path server = Paths.get(serverPath);
