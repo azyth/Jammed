@@ -3,7 +3,9 @@ package jammed;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.AlgorithmParameters;
 import java.security.GeneralSecurityException;
@@ -45,6 +47,7 @@ public class UserData {
  	private String keyfile;
  	private String keyivfile;
 	private SecretKey dataSecKey;
+	private static String dir = "keys";
 	
 	//CONSTRUCTOR
 	// Load Key and decrypt it with the users password
@@ -202,8 +205,12 @@ public class UserData {
 	private static void storeKey(SecretKey key, SecretKey encryptionKey, String username) 
 			throws IOException, InvalidKeyException, IllegalBlockSizeException, 
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidParameterSpecException, InvalidAlgorithmParameterException {
+		//Path k = FileSystems.getDefault().getPath(dir, username+SECKEYFILE);
+		//Path i = FileSystems.getDefault().getPath(dir, username+"-iv"+SECKEYFILE);
+		//Files.deleteIfExists(Paths.get(dir, username+SECKEYFILE));
+		//Files.deleteIfExists(Paths.get(dir, username+"-iv"+SECKEYFILE));
 		
-		FileOutputStream fout = new FileOutputStream(username+SECKEYFILE);
+		FileOutputStream fout = new FileOutputStream(username+SECKEYFILE);			//dir +"/"+
 		FileOutputStream iout = new FileOutputStream(username+"-iv"+SECKEYFILE);
 		byte[] skey = key.getEncoded();
 		//System.out.println(skey.toString());

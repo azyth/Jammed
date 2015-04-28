@@ -156,8 +156,27 @@ public class Jammed {
             break;
 
           case CHANGE:
+        	  
+        	  login.password = action.info.password;	
+        	  					// update password?
+              Request req = new LoginReq(login, true, true); //enroll , update
+              server.send(req);
 
-            ui.error("Unimplemented functionality.");
+              LoginReq verif = (LoginReq) server.receive();
+
+              if (verif == null) {
+
+                // the server gave a null response--this probably means we should
+                // exit...
+                ui.error("verification was null");
+
+              } else if (verif.getSuccess()) {
+
+                success = true;
+              }	
+        	  UserData.enroll(login.username, login.password);			//creates new local key files
+              data = new UserData(login.username, login.password);		//updates teh current userdata instance 
+              changes = true;
             break;
 
           case EXIT:
@@ -175,7 +194,7 @@ public class Jammed {
 
       if (changes ) {																// OR empty! 
         // (8) if changes were made, send updated data to server for storage
-        byte[] iv = data.generateIV();
+        byte[] iv = UserData.generateIV();
         byte[] encdata = data.encData(plaindata, iv); 
         server.send(new UserDataReq(encdata,iv));					//send upload request
 

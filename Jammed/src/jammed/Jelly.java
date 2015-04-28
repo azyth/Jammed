@@ -61,28 +61,28 @@ public class Jelly {
           LoginReq login = (LoginReq) req;
           LoginReq loginResponse;
 
-          if (!login.getUsername().matches("[a-zA-Z0-9]+")) {
+          if (!login.getUsername().matches("[a-zA-Z0-9]+")) {					// Add user name checks for prohibited names or chars
 
-            loginResponse = new LoginReq(false, ErrorMessage.BAD_USERNAME);
+        	  loginResponse = new LoginReq(false, ErrorMessage.BAD_USERNAME);
 
-          } else if (login.getEnrolling()) {
+          } else if (login.getEnrolling()) {										//enrolling == true
 
-            // try to enroll the new user...
-            if (!DB.searchUser(login.getUsername())) {
-              if (DB.newUser(login.getUsername(), login.getPassword())) {
-                loginResponse = new LoginReq(true, ErrorMessage.NONE);
-                username = login.getUsername();
-                //toLog = username + " enrolled";
-                loginsuccess = true;
-              } else {
-                loginResponse =
-                  new LoginReq(false, ErrorMessage.DATABASE_FAILURE);
-              }
-            } else {
-              loginResponse =
-                new LoginReq(false, ErrorMessage.DUPLICATE_USERNAME);
-              // TODO anything to log here?
-            }
+				// try to enroll the new user...
+				if (!DB.searchUser(login.getUsername())) { 							// user does not exist
+					  if (DB.newUser(login.getUsername(), login.getPassword())) {	 //enroll the user
+						    loginResponse = new LoginReq(true, ErrorMessage.NONE);
+						    username = login.getUsername();
+						    //toLog = username + " enrolled";
+						    loginsuccess = true;
+					  } else {														//failure to enroll
+						    loginResponse =
+						      new LoginReq(false, ErrorMessage.DATABASE_FAILURE);
+					  }
+				} else {
+					  loginResponse =
+					    new LoginReq(false, ErrorMessage.DUPLICATE_USERNAME);
+					  // TODO anything to log here?
+				}
 
           } else {
 
@@ -148,11 +148,16 @@ public class Jelly {
 
       switch (req.getEvent()) {
         case LOGIN:
-          // we don't support this anymore...
-          LoginReq sessionloginresp =
-            new LoginReq(false, ErrorMessage.BAD_REQUEST);
-          comm.send(sessionloginresp);
-          return;
+        	LoginReq sessionloginresp;
+        	if (((LoginReq) req).getUpdating()) {									
+        		boolean sucess = DB.storeUserPWD(((LoginReq) req).getUsername(), ((LoginReq) req).getPassword());
+        		System.out.println(sucess);
+        		sessionloginresp = new LoginReq(sucess, ErrorMessage.NONE);
+			}else{
+				sessionloginresp =
+						new LoginReq(false, ErrorMessage.BAD_REQUEST);}
+        	comm.send(sessionloginresp);
+        	break;
 
         case LOG:
           String log = DB.readUserLog(username);

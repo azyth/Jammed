@@ -13,6 +13,7 @@ public class LoginReq extends Request {
 	private String username;
   private String password;
   private boolean enroll = false;
+  private boolean update = false;
 	
 	//Response constructor - err should be "none" if success is true
 	public LoginReq(boolean success, ErrorMessage err){
@@ -25,16 +26,22 @@ public class LoginReq extends Request {
 	//Request constructor
 	public LoginReq(LoginInfo l, boolean enroll){
 		this.username = l.username;
-    this.password = l.password;
-    this.enroll = enroll;
+		this.password = l.password;
+		this.enroll = enroll;
 		this.setEvent(EventType.LOGIN);
 		super.setType(MessageType.REQUEST);
+	}
+	
+	public LoginReq(LoginInfo l, boolean enroll, boolean update){
+		this(l, enroll);
+		this.update = update;
 	}
 	
 	
   public String getUsername() { return this.username; }
   public String getPassword() { return this.password; }
   public boolean getEnrolling(){ return this.enroll; }
+  public boolean getUpdating(){ return this.update; }
 	
 	public String toString(){
 		String a = "Login: " + this.username;
