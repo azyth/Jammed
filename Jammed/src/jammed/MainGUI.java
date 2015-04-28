@@ -36,7 +36,7 @@ public class MainGUI extends JFrame {
             try {
                 PrintWriter newFile = new PrintWriter(fileDataPath);
                 String dataHeader = "Username\tPassword\tWebsite";
-                String dataHeade2 = "--------\t--------\t--------";
+                String dataHeade2 = "________\t________\t_______";
                 newFile.println(dataHeader);
                 newFile.println(dataHeade2);
                 newFile.close();
@@ -45,6 +45,8 @@ public class MainGUI extends JFrame {
                 userData.read(rd, "Data");
             } catch(Exception er) { }
         }
+        JScrollPane udScroller = new JScrollPane(userData);
+        udScroller.setBounds(30,30, 400, 450);
         /* End open file */
         //////////////////////////////////////////////////////////////////////////////////
         JLabel usernameLabel = new JLabel("Username: ");
@@ -61,13 +63,16 @@ public class MainGUI extends JFrame {
         serviceTF = new JTextField(10);
         serviceTF.setBounds(510, 80, 150, 30);
         ////////////////////////////////////////////////////////////////////////
-        JButton addData = new JButton("Add Data"); addData.setBounds(440, 120, 100, 50);
-        addData.addActionListener(new AddDataButtonHandler());
+        JButton addDataB = new JButton("Add Data"); addDataB.setBounds(440, 120, 100, 50);
+        addDataB.addActionListener(new AddDataButtonHandler());
+
+        JButton deleteDataB = new JButton("Delete Data"); deleteDataB.setBounds(550, 120, 100, 50);
+        deleteDataB.addActionListener(new DeleteDataButtonHandler());
 
         JButton exitB = new JButton("Exit"); exitB.setBounds(700, 500, 70, 50);
         exitB.addActionListener(new ExitButtonHandler());
 
-        JButton changePWD = new JButton("Change Password"); changePWD.setBounds(440, 170, 150, 50);
+        JButton changePWD = new JButton("Change Password"); changePWD.setBounds(545, 500, 150, 50);
         changePWD.addActionListener(new ChangePWDButtonHandler());
 
         JButton saveButton = new JButton("Save Changes");
@@ -75,7 +80,7 @@ public class MainGUI extends JFrame {
         saveButton.addActionListener(new SaveButtonHandler());
 
         // Display items
-        con.add(userData); // Text Area
+        con.add(udScroller); // Text Area
         con.add(usernameLabel); // Labels
         con.add(usernameTF);
         con.add(passwordLabel);
@@ -83,7 +88,8 @@ public class MainGUI extends JFrame {
         con.add(ServiceLabel);
         con.add(serviceTF);
         con.add(saveButton); // Buttons
-        con.add(addData);
+        con.add(addDataB);
+        con.add(deleteDataB);
         con.add(exitB);
         con.add(changePWD);
         // Display all
@@ -111,6 +117,19 @@ public class MainGUI extends JFrame {
 
             if(!(username.isEmpty() || password.isEmpty() || service.isEmpty())) {
                 userData.append(username + "\t" + password + "\t" + service + "\n");
+            }
+        }
+    }
+
+    private class DeleteDataButtonHandler implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            String selected = userData.getSelectedText();
+
+            boolean doNotDelete = selected.contains("Username") || selected.contains("Password")
+                    || selected.contains("Website") || selected.contains("_");
+
+            if(!doNotDelete) {
+                userData.replaceSelection("");
             }
         }
     }
@@ -143,7 +162,7 @@ public class MainGUI extends JFrame {
             confirmpwdTF = new JPasswordField(10);
             confirmpwdTF.setBounds(140, 70, 150, 30);
 
-            JButton chngpwdB = new JButton("Confirm Change"); chngpwdB.setBounds(10, 120, 150, 50);
+            JButton chngpwdB = new JButton("Confirm Change"); chngpwdB.setBounds(120, 120, 150, 50);
             chngpwdB.addActionListener(new ConfirmButtonHandler());
             JButton exitB = new JButton("Cancel"); exitB.setBounds(170, 120, 100, 50);
             exitB.addActionListener(new ExitCHNGPWDButtonHandler());
