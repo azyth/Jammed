@@ -76,7 +76,7 @@ public class Jammed {
           if (enroll) {
             // initialize the files on this machine and an empty place to store
             // data
-            UserData.enroll(login.username, login.password);
+            UserData.enroll(login.username, login.password, "keys/"); //TODO get proper filepath location to store key and IV
             data = new UserData(login.username, login.password);
           } else {
             // get the existing data
@@ -92,7 +92,7 @@ public class Jammed {
             data = new UserData(login.username, login.password);
 
             // get the data in a usable form
-            plaindata = data.decData(serverdata.getData(), serverdata.getIV());
+            plaindata = data.decData(serverdata.getData(), serverdata.getIV());  //TODO GUI add file directory string
           }
 
         } else {
@@ -174,7 +174,7 @@ public class Jammed {
 
                 success = true;
               }	
-        	  UserData.enroll(login.username, login.password);			//creates new local key files
+        	  UserData.enroll(login.username, login.password, "keys/");			//creates new local key files TODO get proper filepath location to store keys
               data = new UserData(login.username, login.password);		//updates teh current userdata instance 
               changes = true;
             break;
