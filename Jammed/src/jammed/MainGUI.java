@@ -116,8 +116,39 @@ public class MainGUI extends JFrame {
     }
 
     private class ChangePWDButtonHandler implements ActionListener {
+
+        private JTextField oldpwdTF, newpwdTF, confirmpwdTF;
+
         public void actionPerformed(ActionEvent event) {
             //TODO
+            JFrame newWindow = new JFrame("Change Password");
+            newWindow.setBounds(500, 250, 400, 200);
+
+            Container con2 = newWindow.getContentPane(); // inherit main frame
+            con2.setBackground(Color.WHITE);
+            con2.setLayout(null);
+            
+            JLabel oldpwdLabel = new JLabel("Old Password: ");
+            oldpwdLabel.setSize(100, 30); oldpwdLabel.setLocation(10, 10);
+            JLabel newpwdLabel = new JLabel("New Password: ");
+            newpwdLabel.setSize(100, 30); newpwdLabel.setLocation(10, 40);
+            JLabel confirmpwdLabel = new JLabel("Confirm Password: ");
+            confirmpwdLabel.setSize(150, 30); confirmpwdLabel.setLocation(10, 70);
+
+            oldpwdTF = new JTextField(10);
+            oldpwdTF.setBounds(140, 10, 150, 30);
+            newpwdTF = new JTextField(10);
+            newpwdTF.setBounds(140, 40, 150, 30);
+            confirmpwdTF = new JTextField(10);
+            confirmpwdTF.setBounds(140, 70, 150, 30);
+
+            con2.add(oldpwdLabel);
+            con2.add(newpwdLabel);
+            con2.add(confirmpwdLabel);
+            con2.add(oldpwdTF);
+            con2.add(newpwdTF);
+            con2.add(confirmpwdTF);
+            newWindow.setVisible(true);
         }
     }
 
@@ -131,3 +162,4 @@ public class MainGUI extends JFrame {
         new MainGUI();
     }
 }
+
