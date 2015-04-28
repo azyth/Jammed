@@ -25,7 +25,7 @@ public class MainGUI extends JFrame {
         con.setBackground(Color.WHITE);
         con.setLayout(null);
 
-        /* Open File */
+        /* Display File */
         userData = new JTextArea();
         userData.setSize(400, 450); userData.setLocation(30, 30); userData.setBackground(Color.LIGHT_GRAY);
         userData.setEditable(false);
@@ -47,7 +47,7 @@ public class MainGUI extends JFrame {
         }
         JScrollPane udScroller = new JScrollPane(userData);
         udScroller.setBounds(30,30, 400, 450);
-        /* End open file */
+        /* End Display File */
         //////////////////////////////////////////////////////////////////////////////////
         JLabel usernameLabel = new JLabel("Username: ");
         usernameLabel.setSize(300, 30); usernameLabel.setLocation(440, 20);
@@ -96,6 +96,7 @@ public class MainGUI extends JFrame {
         setVisible(true);
     }
 
+    /** Class to save changes */
     private class SaveButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             File file;
@@ -109,6 +110,7 @@ public class MainGUI extends JFrame {
         }
     }
 
+    /** Class to add entries */
     private class AddDataButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             String username = usernameTF.getText();
@@ -121,6 +123,7 @@ public class MainGUI extends JFrame {
         }
     }
 
+    /** Class to handle deletion of entries */
     private class DeleteDataButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             String selected = userData.getSelectedText();
@@ -134,6 +137,7 @@ public class MainGUI extends JFrame {
         }
     }
 
+    /** Class to handle a password change */
     private class ChangePWDButtonHandler implements ActionListener {
         private JTextField oldpwdTF, newpwdTF, confirmpwdTF;
         private JFrame newWindow;
@@ -179,6 +183,7 @@ public class MainGUI extends JFrame {
             newWindow.setVisible(true);
         }
 
+        /** Class to handle what happens when user presses "Confirm Change" Button */
         private class ConfirmButtonHandler implements ActionListener {
             public void actionPerformed(ActionEvent event) {
                 String oldpwd = oldpwdTF.getText();
@@ -191,7 +196,7 @@ public class MainGUI extends JFrame {
 
                 String msg = " ";
 
-                if(pwdAreEmpty) {
+                if(pwdAreEmpty) { // Make sure the attempted change isn't blatant bs
                     msg = "Cannot have an empty password";
                 } else if(!newMatchesCon) {
                     msg = "New password must match confirmation field";
@@ -207,6 +212,7 @@ public class MainGUI extends JFrame {
             }
         }
 
+        /** Close the password change window */
         private class ExitCHNGPWDButtonHandler implements ActionListener {
             public void actionPerformed(ActionEvent event) {
                 newWindow.setVisible(false);
@@ -214,6 +220,7 @@ public class MainGUI extends JFrame {
         }
     } // End chngpwd class
 
+    /** Class to exit the program */
     private class ExitButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             System.exit(0);

@@ -63,6 +63,7 @@ public class LoginGUI extends JFrame {
         setVisible(true);
     }
 
+    /** Class to handle user registration */
     private class RegisterButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             String username, password;
@@ -76,12 +77,12 @@ public class LoginGUI extends JFrame {
         }
     }
 
+    /** Class to handle when the user presses the loging button */
     private class LoginButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             String username, password;
             username = usernameTF.getText();
             password = passwordTF.getText();
-
 
             extraInfo.setText("Incorrect login credentials!");
             extraInfo.setForeground(Color.RED);
@@ -89,6 +90,7 @@ public class LoginGUI extends JFrame {
         }
     }
 
+    /** Exits the program */
     private class ExitButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             System.exit(0);
