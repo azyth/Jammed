@@ -43,8 +43,7 @@ public class MainGUI extends JFrame {
 
                 Reader rd = new FileReader(fileDataPath);
                 userData.read(rd, "Data");
-            } catch(Exception er) {
-            }
+            } catch(Exception er) { }
         }
         /* End open file */
         //////////////////////////////////////////////////////////////////////////////////
@@ -65,21 +64,29 @@ public class MainGUI extends JFrame {
         JButton addData = new JButton("Add Data"); addData.setBounds(440, 120, 100, 50);
         addData.addActionListener(new AddDataButtonHandler());
 
+        JButton exitB = new JButton("Exit"); exitB.setBounds(700, 500, 70, 50);
+        exitB.addActionListener(new ExitButtonHandler());
+
+        JButton changePWD = new JButton("Change Password"); changePWD.setBounds(440, 170, 150, 50);
+        changePWD.addActionListener(new ChangePWDButtonHandler());
+
         JButton saveButton = new JButton("Save Changes");
         saveButton.setBounds(30, 500, 100, 50);
         saveButton.addActionListener(new SaveButtonHandler());
 
-        con.add(userData);
-        //
-        con.add(usernameLabel);
+        // Display items
+        con.add(userData); // Text Area
+        con.add(usernameLabel); // Labels
         con.add(usernameTF);
         con.add(passwordLabel);
         con.add(passwordTF);
         con.add(ServiceLabel);
         con.add(serviceTF);
-        //
-        con.add(saveButton);
+        con.add(saveButton); // Buttons
         con.add(addData);
+        con.add(exitB);
+        con.add(changePWD);
+        // Display all
         setVisible(true);
     }
 
@@ -87,14 +94,12 @@ public class MainGUI extends JFrame {
         public void actionPerformed(ActionEvent event) {
             File file;
             FileWriter out;
-
             try {
                 file = new File(fileDataPath);
                 out = new FileWriter(file);
                 out.write(userData.getText());
                 out.close();
-            } catch (Exception e) {
-            }
+            } catch (Exception e) { }
         }
     }
 
@@ -107,6 +112,18 @@ public class MainGUI extends JFrame {
             if(!(username.isEmpty() || password.isEmpty() || service.isEmpty())) {
                 userData.append(username + "\t" + password + "\t" + service + "\n");
             }
+        }
+    }
+
+    private class ChangePWDButtonHandler implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            //TODO
+        }
+    }
+
+    private class ExitButtonHandler implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            System.exit(0);
         }
     }
 
