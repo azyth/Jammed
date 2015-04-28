@@ -78,14 +78,7 @@ public class Jelly {
 						    loginResponse =
 						      new LoginReq(false, ErrorMessage.DATABASE_FAILURE);
 					  }
-				} else if (login.getUpdating()) {									//updateing is true
-																					// UPDATEING PASSWORD not working correctly
-																					// server exits for somereason BEFORE print statement
-					boolean sucess = DB.storeUserPWD(login.getUsername(), login.getPassword());
-					System.out.println(sucess);
-				  	loginResponse = 
-				  		new LoginReq(sucess, ErrorMessage.NONE);
-				}else {
+				} else {
 					  loginResponse =
 					    new LoginReq(false, ErrorMessage.DUPLICATE_USERNAME);
 					  // TODO anything to log here?
@@ -155,11 +148,16 @@ public class Jelly {
 
       switch (req.getEvent()) {
         case LOGIN:
-          // we don't support this anymore...
-          LoginReq sessionloginresp =
-            new LoginReq(false, ErrorMessage.BAD_REQUEST);
-          comm.send(sessionloginresp);
-          return;
+        	LoginReq sessionloginresp;
+        	if (((LoginReq) req).getUpdating()) {									
+        		boolean sucess = DB.storeUserPWD(((LoginReq) req).getUsername(), ((LoginReq) req).getPassword());
+        		System.out.println(sucess);
+        		sessionloginresp = new LoginReq(sucess, ErrorMessage.NONE);
+			}else{
+				sessionloginresp =
+						new LoginReq(false, ErrorMessage.BAD_REQUEST);}
+        	comm.send(sessionloginresp);
+        	break;
 
         case LOG:
           String log = DB.readUserLog(username);
