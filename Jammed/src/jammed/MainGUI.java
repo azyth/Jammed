@@ -116,18 +116,19 @@ public class MainGUI extends JFrame {
     }
 
     private class ChangePWDButtonHandler implements ActionListener {
-
         private JTextField oldpwdTF, newpwdTF, confirmpwdTF;
+        private JFrame newWindow;
+        private JLabel pwdChangeInfo = new JLabel(" ");
 
         public void actionPerformed(ActionEvent event) {
             //TODO
-            JFrame newWindow = new JFrame("Change Password");
-            newWindow.setBounds(500, 250, 400, 200);
+            newWindow = new JFrame("Change Password");
+            newWindow.setBounds(500, 250, 400, 250);
 
             Container con2 = newWindow.getContentPane(); // inherit main frame
             con2.setBackground(Color.WHITE);
             con2.setLayout(null);
-            
+
             JLabel oldpwdLabel = new JLabel("Old Password: ");
             oldpwdLabel.setSize(100, 30); oldpwdLabel.setLocation(10, 10);
             JLabel newpwdLabel = new JLabel("New Password: ");
@@ -135,12 +136,17 @@ public class MainGUI extends JFrame {
             JLabel confirmpwdLabel = new JLabel("Confirm Password: ");
             confirmpwdLabel.setSize(150, 30); confirmpwdLabel.setLocation(10, 70);
 
-            oldpwdTF = new JTextField(10);
+            oldpwdTF = new JPasswordField(10);
             oldpwdTF.setBounds(140, 10, 150, 30);
-            newpwdTF = new JTextField(10);
+            newpwdTF = new JPasswordField(10);
             newpwdTF.setBounds(140, 40, 150, 30);
-            confirmpwdTF = new JTextField(10);
+            confirmpwdTF = new JPasswordField(10);
             confirmpwdTF.setBounds(140, 70, 150, 30);
+
+            JButton chngpwdB = new JButton("Confirm Change"); chngpwdB.setBounds(10, 120, 150, 50);
+            chngpwdB.addActionListener(new ConfirmButtonHandler());
+            JButton exitB = new JButton("Cancel"); exitB.setBounds(170, 120, 100, 50);
+            exitB.addActionListener(new ExitCHNGPWDButtonHandler());
 
             con2.add(oldpwdLabel);
             con2.add(newpwdLabel);
@@ -148,9 +154,46 @@ public class MainGUI extends JFrame {
             con2.add(oldpwdTF);
             con2.add(newpwdTF);
             con2.add(confirmpwdTF);
+            con2.add(chngpwdB);
+            con2.add(exitB);
+            con2.add(pwdChangeInfo);
             newWindow.setVisible(true);
         }
-    }
+
+        private class ConfirmButtonHandler implements ActionListener {
+            public void actionPerformed(ActionEvent event) {
+                String oldpwd = oldpwdTF.getText();
+                String newpwd = newpwdTF.getText();
+                String conpwd = confirmpwdTF.getText();
+
+                boolean pwdAreEmpty = oldpwd.isEmpty() || newpwd.isEmpty() || conpwd.isEmpty();
+                boolean newMatchesCon = newpwd.equals(conpwd);
+                boolean oldMatchesnew = oldpwd.equals(newpwd);
+
+                String msg = " ";
+
+                if(pwdAreEmpty) {
+                    msg = "Cannot have an empty password";
+                } else if(!newMatchesCon) {
+                    msg = "New password must match confirmation field";
+                } else if(oldMatchesnew) {
+                    msg = "Cannot make the new password the same as the old one";
+                } else {
+                    msg = "Password changed!";
+                    // Do password change in here
+                }
+                pwdChangeInfo.setText(msg); pwdChangeInfo.setForeground(Color.RED);
+                pwdChangeInfo.setBounds(10, 185, 400, 30);
+
+            }
+        }
+
+        private class ExitCHNGPWDButtonHandler implements ActionListener {
+            public void actionPerformed(ActionEvent event) {
+                newWindow.setVisible(false);
+            }
+        }
+    } // End chngpwd class
 
     private class ExitButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
@@ -158,8 +201,12 @@ public class MainGUI extends JFrame {
         }
     }
 
+
+
     public static void main(String[] args) {
         new MainGUI();
     }
-}
+
+
+} // END CLASS
 
