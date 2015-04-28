@@ -36,7 +36,7 @@ public class MainGUI extends JFrame {
             try {
                 PrintWriter newFile = new PrintWriter(fileDataPath);
                 String dataHeader = "Username\tPassword\tWebsite";
-                String dataHeade2 = "--------\t--------\t--------";
+                String dataHeade2 = "________\t________\t_______";
                 newFile.println(dataHeader);
                 newFile.println(dataHeade2);
                 newFile.close();
@@ -45,6 +45,8 @@ public class MainGUI extends JFrame {
                 userData.read(rd, "Data");
             } catch(Exception er) { }
         }
+        JScrollPane udScroller = new JScrollPane(userData);
+        udScroller.setBounds(30,30, 400, 450);
         /* End open file */
         //////////////////////////////////////////////////////////////////////////////////
         JLabel usernameLabel = new JLabel("Username: ");
@@ -61,13 +63,16 @@ public class MainGUI extends JFrame {
         serviceTF = new JTextField(10);
         serviceTF.setBounds(510, 80, 150, 30);
         ////////////////////////////////////////////////////////////////////////
-        JButton addData = new JButton("Add Data"); addData.setBounds(440, 120, 100, 50);
-        addData.addActionListener(new AddDataButtonHandler());
+        JButton addDataB = new JButton("Add Data"); addDataB.setBounds(440, 120, 100, 50);
+        addDataB.addActionListener(new AddDataButtonHandler());
+
+        JButton deleteDataB = new JButton("Delete Data"); deleteDataB.setBounds(550, 120, 100, 50);
+        deleteDataB.addActionListener(new DeleteDataButtonHandler());
 
         JButton exitB = new JButton("Exit"); exitB.setBounds(700, 500, 70, 50);
         exitB.addActionListener(new ExitButtonHandler());
 
-        JButton changePWD = new JButton("Change Password"); changePWD.setBounds(440, 170, 150, 50);
+        JButton changePWD = new JButton("Change Password"); changePWD.setBounds(545, 500, 150, 50);
         changePWD.addActionListener(new ChangePWDButtonHandler());
 
         JButton saveButton = new JButton("Save Changes");
@@ -75,7 +80,7 @@ public class MainGUI extends JFrame {
         saveButton.addActionListener(new SaveButtonHandler());
 
         // Display items
-        con.add(userData); // Text Area
+        con.add(udScroller); // Text Area
         con.add(usernameLabel); // Labels
         con.add(usernameTF);
         con.add(passwordLabel);
@@ -83,7 +88,8 @@ public class MainGUI extends JFrame {
         con.add(ServiceLabel);
         con.add(serviceTF);
         con.add(saveButton); // Buttons
-        con.add(addData);
+        con.add(addDataB);
+        con.add(deleteDataB);
         con.add(exitB);
         con.add(changePWD);
         // Display all
@@ -115,19 +121,33 @@ public class MainGUI extends JFrame {
         }
     }
 
-    private class ChangePWDButtonHandler implements ActionListener {
+    private class DeleteDataButtonHandler implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            String selected = userData.getSelectedText();
 
+            boolean doNotDelete = selected.contains("Username") || selected.contains("Password")
+                    || selected.contains("Website") || selected.contains("_");
+
+            if(!doNotDelete) {
+                userData.replaceSelection("");
+            }
+        }
+    }
+
+    private class ChangePWDButtonHandler implements ActionListener {
         private JTextField oldpwdTF, newpwdTF, confirmpwdTF;
+        private JFrame newWindow;
+        private JLabel pwdChangeInfo = new JLabel(" ");
 
         public void actionPerformed(ActionEvent event) {
             //TODO
-            JFrame newWindow = new JFrame("Change Password");
-            newWindow.setBounds(500, 250, 400, 200);
+            newWindow = new JFrame("Change Password");
+            newWindow.setBounds(500, 250, 400, 250);
 
             Container con2 = newWindow.getContentPane(); // inherit main frame
             con2.setBackground(Color.WHITE);
             con2.setLayout(null);
-            
+
             JLabel oldpwdLabel = new JLabel("Old Password: ");
             oldpwdLabel.setSize(100, 30); oldpwdLabel.setLocation(10, 10);
             JLabel newpwdLabel = new JLabel("New Password: ");
@@ -135,12 +155,17 @@ public class MainGUI extends JFrame {
             JLabel confirmpwdLabel = new JLabel("Confirm Password: ");
             confirmpwdLabel.setSize(150, 30); confirmpwdLabel.setLocation(10, 70);
 
-            oldpwdTF = new JTextField(10);
+            oldpwdTF = new JPasswordField(10);
             oldpwdTF.setBounds(140, 10, 150, 30);
-            newpwdTF = new JTextField(10);
+            newpwdTF = new JPasswordField(10);
             newpwdTF.setBounds(140, 40, 150, 30);
-            confirmpwdTF = new JTextField(10);
+            confirmpwdTF = new JPasswordField(10);
             confirmpwdTF.setBounds(140, 70, 150, 30);
+
+            JButton chngpwdB = new JButton("Confirm Change"); chngpwdB.setBounds(120, 120, 150, 50);
+            chngpwdB.addActionListener(new ConfirmButtonHandler());
+            JButton exitB = new JButton("Cancel"); exitB.setBounds(170, 120, 100, 50);
+            exitB.addActionListener(new ExitCHNGPWDButtonHandler());
 
             con2.add(oldpwdLabel);
             con2.add(newpwdLabel);
@@ -148,9 +173,46 @@ public class MainGUI extends JFrame {
             con2.add(oldpwdTF);
             con2.add(newpwdTF);
             con2.add(confirmpwdTF);
+            con2.add(chngpwdB);
+            con2.add(exitB);
+            con2.add(pwdChangeInfo);
             newWindow.setVisible(true);
         }
-    }
+
+        private class ConfirmButtonHandler implements ActionListener {
+            public void actionPerformed(ActionEvent event) {
+                String oldpwd = oldpwdTF.getText();
+                String newpwd = newpwdTF.getText();
+                String conpwd = confirmpwdTF.getText();
+
+                boolean pwdAreEmpty = oldpwd.isEmpty() || newpwd.isEmpty() || conpwd.isEmpty();
+                boolean newMatchesCon = newpwd.equals(conpwd);
+                boolean oldMatchesnew = oldpwd.equals(newpwd);
+
+                String msg = " ";
+
+                if(pwdAreEmpty) {
+                    msg = "Cannot have an empty password";
+                } else if(!newMatchesCon) {
+                    msg = "New password must match confirmation field";
+                } else if(oldMatchesnew) {
+                    msg = "Cannot make the new password the same as the old one";
+                } else {
+                    msg = "Password changed!";
+                    // Do password change in here
+                }
+                pwdChangeInfo.setText(msg); pwdChangeInfo.setForeground(Color.RED);
+                pwdChangeInfo.setBounds(10, 185, 400, 30);
+
+            }
+        }
+
+        private class ExitCHNGPWDButtonHandler implements ActionListener {
+            public void actionPerformed(ActionEvent event) {
+                newWindow.setVisible(false);
+            }
+        }
+    } // End chngpwd class
 
     private class ExitButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
@@ -158,8 +220,12 @@ public class MainGUI extends JFrame {
         }
     }
 
+
+
     public static void main(String[] args) {
         new MainGUI();
     }
-}
+
+
+} // END CLASS
 
