@@ -89,6 +89,26 @@ public class UserInterface {
 
     return login;
   }
+  
+  public String getNewPassword() throws IOException {
+	BufferedReader br = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
+	
+	LoginInfo login = new LoginInfo();
+	String password;
+	
+	System.out.println("Enter a NEW password, passwords should be chosen from the " +
+	    "alphabet [a-zA-Z0-9].");
+
+	password = br.readLine();
+	
+	// sanity check sanity check sanity check
+	if (login.password == null) {
+	  throw new IOException();
+	}
+	
+	return password;
+
+	}
 
   /* Displays the given message somehow */
   public void error(String message) {
@@ -232,5 +252,7 @@ public class UserInterface {
     public ActionType type;
     public LoginInfo info;
   }
+
+
 
 }
