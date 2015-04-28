@@ -36,7 +36,6 @@ public class LoginGUI extends JFrame {
         passwordTF = new JPasswordField(10);
         passwordTF.setBounds(200, 85, 300, 35);
 
-
         JButton loginB = new JButton("Login"); loginB.setBounds(55, 140, 150, 50);
         loginB.addActionListener(new LoginButtonHandler());
         JButton registerB = new JButton("Register"); registerB.setBounds(225, 140, 150, 50);
