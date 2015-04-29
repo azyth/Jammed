@@ -14,6 +14,15 @@ public class LoginInfo implements Comparable<LoginInfo> {
     return String.format("%-20s %-20s %-20s", website, username, password);
   }
 
+  public String secureToString(boolean showpwd) {
+    String stars = "*****";
+    if(showpwd) {
+      return String.format("%-20s %-20s %-20s", website, username, password);
+    } else {
+      return String.format("%-20s %-20s %-20s", website, username, stars);
+    }
+  }
+
   @Override
   public int compareTo(LoginInfo l) {
     int wcomp = website.compareTo(l.website);
