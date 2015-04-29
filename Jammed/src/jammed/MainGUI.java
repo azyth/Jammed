@@ -18,6 +18,7 @@ public class MainGUI extends JFrame {
     private JTextArea userDataDisplay;
     private JTextField usernameTF, passwordTF, serviceTF;
     private ArrayList<LoginInfo> userDataArray;
+    private boolean showPasswords = false;
 
     public MainGUI(ArrayList<LoginInfo> ud) {
         super("Jammed"); setBounds(300, 100, 800, 600);
@@ -57,8 +58,11 @@ public class MainGUI extends JFrame {
         JButton deleteDataB = new JButton("Delete Data"); deleteDataB.setBounds(550, 120, 100, 50);
         deleteDataB.addActionListener(new DeleteDataButtonHandler());
 
-        JButton chngDataB = new JButton("Change Entry"); chngDataB.setBounds(440, 200, 100, 50);
-        chngDataB.addActionListener(new ChngEntryDataButtonHandler());
+        JButton chngDataB = new JButton("Change Entry"); chngDataB.setBounds(440, 180, 100, 50);
+        chngDataB.addActionListener(new AddDataButtonHandler());
+
+        JButton showPWDB = new JButton("Show Passwords"); showPWDB.setBounds(550, 180, 150, 50);
+        showPWDB.addActionListener(new ShowPWDButtonHandler());
 
         JButton exitB = new JButton("Exit"); exitB.setBounds(700, 500, 70, 50);
         exitB.addActionListener(new ExitButtonHandler());
@@ -84,6 +88,7 @@ public class MainGUI extends JFrame {
         con.add(exitB);
         con.add(changePWDB);
         con.add(chngDataB);
+        con.add(showPWDB);
         // Display all
         setVisible(true);
     }
@@ -92,40 +97,12 @@ public class MainGUI extends JFrame {
     private class SaveButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             // Upload new userdata to server
+            // TODO
         }
     }
 
     /** Class to add entries */
     private class AddDataButtonHandler implements ActionListener {
-        public void actionPerformed(ActionEvent event) {
-            String username = usernameTF.getText();
-            String password = passwordTF.getText();
-            String service = serviceTF.getText();
-
-            if(!(username.isEmpty() || password.isEmpty() || service.isEmpty())) {
-                userDataDisplay.append(username + "\t" + password + "\t" + service + "\n");
-            }
-        }
-    }
-
-    /** Class to handle deletion of entries
-     *  Note: Users can do stupid things like delete only the website portion
-     *  of their entry, they will have to delete the whole entry and reenter it.
-     * */
-    private class DeleteDataButtonHandler implements ActionListener {
-        public void actionPerformed(ActionEvent event) {
-            String selected = userDataDisplay.getSelectedText();
-
-            boolean doNotDelete = selected.contains("Username") || selected.contains("Password")
-                    || selected.contains("Website") || selected.contains("_");
-
-            if(!doNotDelete) {
-                userDataDisplay.replaceSelection("");
-            }
-        }
-    }
-
-    private class ChngEntryDataButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             boolean fieldsAreValid = !(usernameTF.getText().isEmpty() ||
                     passwordTF.getText().isEmpty() || serviceTF.getText().isEmpty());
@@ -149,6 +126,31 @@ public class MainGUI extends JFrame {
         }
     }
 
+    /** Class to handle deletion of entries
+     *  Note: Users can do stupid things like delete only the website portion
+     *  of their entry, they will have to delete the whole entry and reenter it.
+     * */
+    private class DeleteDataButtonHandler implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            boolean fieldsAreValid = !(usernameTF.getText().isEmpty() ||
+                    passwordTF.getText().isEmpty() || serviceTF.getText().isEmpty());
+
+            if(fieldsAreValid) {
+                LoginInfo chng = new LoginInfo();
+                chng.website = serviceTF.getText();
+                chng.username = usernameTF.getText();
+                chng.password = passwordTF.getText();
+                int index = userDataArray.indexOf(chng);
+
+                if (index != -1) {
+                    userDataArray.remove(chng);
+                    Collections.sort(userDataArray);
+                }
+                refreshDisplay();
+            }
+        }
+    }
+
     /** Class to handle a password change */
     private class ChangePWDButtonHandler implements ActionListener {
         private JTextField oldpwdTF, newpwdTF, confirmpwdTF;
@@ -156,7 +158,6 @@ public class MainGUI extends JFrame {
         private JLabel pwdChangeInfo = new JLabel(" ");
 
         public void actionPerformed(ActionEvent event) {
-            //TODO
             newWindow = new JFrame("Change Password");
             newWindow.setBounds(500, 250, 400, 250);
 
@@ -217,6 +218,7 @@ public class MainGUI extends JFrame {
                 } else {
                     msg = "Password changed!";
                     // Do password change in here
+                    // TODO
                 }
                 pwdChangeInfo.setText(msg); pwdChangeInfo.setForeground(Color.RED);
                 pwdChangeInfo.setBounds(10, 185, 400, 30);
@@ -233,15 +235,26 @@ public class MainGUI extends JFrame {
     } // End chngpwd class
 
     /** Class to exit the program */
-    private class ExitButtonHandler implements ActionListener {
+    private class ExitButtonHandler implements ActionListener { // TODO
         public void actionPerformed(ActionEvent event) {
             System.exit(0);
         }
     }
 
+    private class ShowPWDButtonHandler implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            if(showPasswords) {
+                showPasswords = false;
+            } else {
+                showPasswords = true;
+            }
+            refreshDisplay();
+        }
+    }
+
     public void displayUserData(ArrayList<LoginInfo> ud) {
         for(LoginInfo l : ud) {
-            userDataDisplay.append(l.toString() + "\n");
+            userDataDisplay.append(l.secureToString(showPasswords) + "\n");
         }
     }
 
