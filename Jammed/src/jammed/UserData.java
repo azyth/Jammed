@@ -47,7 +47,7 @@ public class UserData {
  	private String keyfile;
  	private String keyivfile;
 	private SecretKey dataSecKey;
-	private static String dir = "keys";
+	private String dir = "keys/";
 	
 	//CONSTRUCTOR
 	// Load Key and decrypt it with the users password
@@ -58,7 +58,7 @@ public class UserData {
 		//hash the password, 
 		SecretKey hashPass = hashPwd(password);
 		//load the encrypted key file, decrpyt with hashed password. load secret key to dataSecKey
-		this.decKey(hashPass,this.keyfile, this.keyivfile);
+		this.decKey(hashPass,dir+this.keyfile, dir+this.keyivfile);
 		
 		
 		//Load SecretKey and IV
@@ -66,6 +66,10 @@ public class UserData {
 //		loadKey(this.keyfile);
 	}
 	
+	public void setDir(String directoryFileStructure){
+		//add check to make sure ends with "/"
+		this.dir = directoryFileStructure;
+	}
 	/*
 	 * creates a new userdata file and IV pair from scratch to replace out of sync
 	 * pairs
@@ -78,7 +82,7 @@ public class UserData {
 		String plaintext = "I\nwish\nmy toast wouldnt\nalways land\nbutter side,\nDown";//Default string for userdata file
 		ArrayList<LoginInfo> data = stringToList(plaintext);
 		byte[] encUD = this.encData(data,iv);
-		storeIV(iv,username+"_IV.txt");
+		storeIV(iv,dir+username+"_IV.txt");
 		//this.iv=iv;
 		storeIV(encUD,username+"_USERDATA.txt");
 		//this.ud=encUD;
@@ -140,10 +144,10 @@ public class UserData {
 	/* used to initiate secret key and store it to users machine, 
 	 * either to replace a compromised key or for a new user
 	 */
-	public static void enroll(String username, String password) throws IOException, 
+	public static void enroll(String username, String password, String filepath) throws IOException, //add String filepath argument
 			GeneralSecurityException {
 		
-		storeKey(generateKey(),hashPwd(password),username);//(new AES KEY, filepath to save key file)
+		storeKey(generateKey(),hashPwd(password),username, filepath);//(new AES KEY, filepath to save key file)
 		
 	}
 	
@@ -202,7 +206,7 @@ public class UserData {
 //	}
 	
 	//writes secret key to a file on local machine for storage 
-	private static void storeKey(SecretKey key, SecretKey encryptionKey, String username) 
+	private static void storeKey(SecretKey key, SecretKey encryptionKey, String username, String filepath) //add String filepath argument
 			throws IOException, InvalidKeyException, IllegalBlockSizeException, 
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidParameterSpecException, InvalidAlgorithmParameterException {
 		//Path k = FileSystems.getDefault().getPath(dir, username+SECKEYFILE);
@@ -210,8 +214,8 @@ public class UserData {
 		//Files.deleteIfExists(Paths.get(dir, username+SECKEYFILE));
 		//Files.deleteIfExists(Paths.get(dir, username+"-iv"+SECKEYFILE));
 		
-		FileOutputStream fout = new FileOutputStream(username+SECKEYFILE);			//dir +"/"+
-		FileOutputStream iout = new FileOutputStream(username+"-iv"+SECKEYFILE);
+		FileOutputStream fout = new FileOutputStream(filepath+username+SECKEYFILE);			//dir +"/"+
+		FileOutputStream iout = new FileOutputStream(filepath+username+"-iv"+SECKEYFILE);
 		byte[] skey = key.getEncoded();
 		//System.out.println(skey.toString());
 		Keys keys = encKey(skey,encryptionKey);
@@ -330,18 +334,18 @@ public class UserData {
 
   // test test test MAIN 
   public static void main(String[] args) throws IOException, InvalidKeyException, GeneralSecurityException {
-    enroll("guest", "guest");
-	  UserData ud = new UserData("guest","guest");
-	  
-	//create new data/IV pair
-		 
-	  ud.createBaseData("guest");
-	  //Test 1
-	  byte[] cryptodata = Files.readAllBytes(Paths.get("guest_USERDATA.txt"));
-	  ArrayList<LoginInfo> udata;
-		byte[] iv = Files.readAllBytes(Paths.get("guest_IV.txt"));
-		
-		udata = ud.decData(cryptodata, iv);
+//    enroll("guest", "guest");
+//	  UserData ud = new UserData("guest","guest");
+//	  
+//	//create new data/IV pair
+//		 
+//	  ud.createBaseData("guest");
+//	  //Test 1
+//	  byte[] cryptodata = Files.readAllBytes(Paths.get("guest_USERDATA.txt"));
+//	  ArrayList<LoginInfo> udata;
+//		byte[] iv = Files.readAllBytes(Paths.get("guest_IV.txt"));
+//		
+//		udata = ud.decData(cryptodata, iv);
 		//System.out.println("un-encrypted");
 		//System.out.println(UserData.listToString(udata));
 		//storeIV(,"string.txt")

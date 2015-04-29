@@ -45,27 +45,33 @@ protocol:
 	(repeat sl.createEntry(loginfo') as many times as you would like)
 	...
 	sl.close(); 			//MUST be closed to record final hashed value for the next use of ak.
+	
+	
+	in order to decode a log entry you need to know how many times the origional key was hashed to create that entry
+	recording this as the line number could be useful or writing entry as hashnum:entry could be useful.  
  */
 
 public class SecureLog {
 
 	private static final String LOGGINGMASTERKEY = "nutritionfactsLogKey.txt";
 	private static final String LOGGINGKEYFILE = "JellySecureLogKey.txt";
-	private String dir = "keys/";
+	private static String dir = "keys/";
 	private SecretKey ek;
 	private SecretKey ak;
+	private byte[] iv;
 	//private String m;
 	//private byte[] c;
 	//private byte[] t;
 	//private byte[] entry;
 	
-	public SecureLog() throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IOException{
+	public SecureLog() throws InvalidKeyException, IllegalBlockSizeException, 
+			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, 
+			InvalidAlgorithmParameterException, IOException{
 		//load secret key ak from dir
-		this.loadKey(LOGGINGKEYFILE);
+		this.loadKey(dir + LOGGINGKEYFILE);
 		
 		//instantiate ek
 		this.ek = this.encryptionKey(this.ak);
-		//establish connection with secure log server?  ie folder named "secure log server"
 		//
 	}
 	
@@ -76,12 +82,13 @@ public class SecureLog {
 //		System.out.println("key created");
 	    SecretKey k = keyGenerator.generateKey();
 		//write key to file
-	    //writeKey(k,LOGGINGMASTERKEY); //server needs to send this to log server and then delete it. 
-	    writeKey(k,LOGGINGKEYFILE); //server need to make a copy of this on log sever before ever using it. 
+	    writeKey(k,LOGGINGMASTERKEY); //server needs to send this to log server and then delete it. (this shoudl not remail in jelly
+	    writeKey(k, dir + LOGGINGKEYFILE); // OR server need to make a copy of this on log sever before ever using it. 
 		//also write to "log server"?...no
 		
 	}
-	public String createEntry(String logentry) throws InvalidKeyException, NoSuchAlgorithmException{
+	public String createEntry(String logentry) throws InvalidKeyException, 
+			NoSuchAlgorithmException{
 		//take in logentry, secure it, and return encoded entry
 		byte[] c = this.encryptLogEntry(this.ek, logentry);
 		byte[]  t = this.tagLogEntry(ak, c);
@@ -151,7 +158,8 @@ public class SecureLog {
 		return null;//TODO change to string
 	}
 	
-	public byte[] tagLogEntry(SecretKey ak, byte[] encEntry) throws NoSuchAlgorithmException, InvalidKeyException{
+	public byte[] tagLogEntry(SecretKey ak, byte[] encEntry) throws 
+			NoSuchAlgorithmException, InvalidKeyException{
 
 		// get an hmac_sha1 Mac instance and initialize with the signing key
 		Mac mac = Mac.getInstance("HmacSHA1");
@@ -177,12 +185,11 @@ public class SecureLog {
 		}finally {
 			fout.close();
 		}
-		
 		return true;
 	}
 	public boolean close() throws IOException{
 		//write ak to server ak file
-		return writeKey(this.ak, LOGGINGKEYFILE);
+		return writeKey(this.ak, dir + LOGGINGKEYFILE);
 		
 	}
 }
