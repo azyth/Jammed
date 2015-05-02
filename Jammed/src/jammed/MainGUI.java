@@ -10,44 +10,33 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class MainGUI extends JFrame {
 
-    private String fileDataPath = "userData.txt";
-    private JTextArea userData;
+    private JTextArea userDataDisplay;
     private JTextField usernameTF, passwordTF, serviceTF;
+    private ArrayList<LoginInfo> userDataArray;
+    private boolean showPasswords = false;
 
-    public MainGUI() {
+    public MainGUI(ArrayList<LoginInfo> ud) {
         super("Jammed"); setBounds(300, 100, 800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container con = getContentPane(); // inherit main frame
         con.setBackground(Color.WHITE);
         con.setLayout(null);
+        userDataArray = ud;
 
-        /* Open File */
-        userData = new JTextArea();
-        userData.setSize(400, 450); userData.setLocation(30, 30); userData.setBackground(Color.LIGHT_GRAY);
-        userData.setEditable(false);
-        try {
-            Reader rd = new FileReader(fileDataPath);
-            userData.read(rd, "Data");
-        } catch(Exception e) {
-            try {
-                PrintWriter newFile = new PrintWriter(fileDataPath);
-                String dataHeader = "Username\tPassword\tWebsite";
-                String dataHeade2 = "________\t________\t_______";
-                newFile.println(dataHeader);
-                newFile.println(dataHeade2);
-                newFile.close();
-
-                Reader rd = new FileReader(fileDataPath);
-                userData.read(rd, "Data");
-            } catch(Exception er) { }
-        }
-        JScrollPane udScroller = new JScrollPane(userData);
+        /* Display File */
+        userDataDisplay = new JTextArea();
+        userDataDisplay.setSize(400, 450); userDataDisplay.setLocation(30, 30); userDataDisplay.setBackground(Color.LIGHT_GRAY);
+        userDataDisplay.setEditable(false);
+        userDataDisplay.append("Website\tUsername\tPassword\n__________\t__________\t__________\n");
+        displayUserData(userDataArray); // display info
+        JScrollPane udScroller = new JScrollPane(userDataDisplay);
         udScroller.setBounds(30,30, 400, 450);
-        /* End open file */
+        /* End Display File */
         //////////////////////////////////////////////////////////////////////////////////
         JLabel usernameLabel = new JLabel("Username: ");
         usernameLabel.setSize(300, 30); usernameLabel.setLocation(440, 20);
@@ -69,11 +58,17 @@ public class MainGUI extends JFrame {
         JButton deleteDataB = new JButton("Delete Data"); deleteDataB.setBounds(550, 120, 100, 50);
         deleteDataB.addActionListener(new DeleteDataButtonHandler());
 
+        JButton chngDataB = new JButton("Change Entry"); chngDataB.setBounds(440, 180, 100, 50);
+        chngDataB.addActionListener(new AddDataButtonHandler());
+
+        JButton showPWDB = new JButton("Show Passwords"); showPWDB.setBounds(550, 180, 150, 50);
+        showPWDB.addActionListener(new ShowPWDButtonHandler());
+
         JButton exitB = new JButton("Exit"); exitB.setBounds(700, 500, 70, 50);
         exitB.addActionListener(new ExitButtonHandler());
 
-        JButton changePWD = new JButton("Change Password"); changePWD.setBounds(545, 500, 150, 50);
-        changePWD.addActionListener(new ChangePWDButtonHandler());
+        JButton changePWDB = new JButton("Change Password"); changePWDB.setBounds(545, 500, 150, 50);
+        changePWDB.addActionListener(new ChangePWDButtonHandler());
 
         JButton saveButton = new JButton("Save Changes");
         saveButton.setBounds(30, 500, 100, 50);
@@ -91,56 +86,78 @@ public class MainGUI extends JFrame {
         con.add(addDataB);
         con.add(deleteDataB);
         con.add(exitB);
-        con.add(changePWD);
+        con.add(changePWDB);
+        con.add(chngDataB);
+        con.add(showPWDB);
         // Display all
         setVisible(true);
     }
 
+    /** Class to save changes */
     private class SaveButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            File file;
-            FileWriter out;
-            try {
-                file = new File(fileDataPath);
-                out = new FileWriter(file);
-                out.write(userData.getText());
-                out.close();
-            } catch (Exception e) { }
+            // Upload new userdata to server
+            // TODO
         }
     }
 
+    /** Class to add entries */
     private class AddDataButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            String username = usernameTF.getText();
-            String password = passwordTF.getText();
-            String service = serviceTF.getText();
+            boolean fieldsAreValid = !(usernameTF.getText().isEmpty() ||
+                    passwordTF.getText().isEmpty() || serviceTF.getText().isEmpty());
 
-            if(!(username.isEmpty() || password.isEmpty() || service.isEmpty())) {
-                userData.append(username + "\t" + password + "\t" + service + "\n");
+            if(fieldsAreValid) {
+                LoginInfo chng = new LoginInfo();
+                chng.website = serviceTF.getText();
+                chng.username = usernameTF.getText();
+                chng.password = passwordTF.getText();
+                // check if the added thing is already in the data or not...
+                int index = userDataArray.indexOf(chng);
+
+                if (index == -1) {
+                    userDataArray.add(chng);
+                    Collections.sort(userDataArray);
+                } else {
+                    userDataArray.set(index, chng);
+                }
+                refreshDisplay();
             }
         }
     }
 
+    /** Class to handle deletion of entries
+     *  Note: Users can do stupid things like delete only the website portion
+     *  of their entry, they will have to delete the whole entry and reenter it.
+     * */
     private class DeleteDataButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            String selected = userData.getSelectedText();
+            boolean fieldsAreValid = !(usernameTF.getText().isEmpty() ||
+                    passwordTF.getText().isEmpty() || serviceTF.getText().isEmpty());
 
-            boolean doNotDelete = selected.contains("Username") || selected.contains("Password")
-                    || selected.contains("Website") || selected.contains("_");
+            if(fieldsAreValid) {
+                LoginInfo chng = new LoginInfo();
+                chng.website = serviceTF.getText();
+                chng.username = usernameTF.getText();
+                chng.password = passwordTF.getText();
+                int index = userDataArray.indexOf(chng);
 
-            if(!doNotDelete) {
-                userData.replaceSelection("");
+                if (index != -1) {
+                    userDataArray.remove(chng);
+                    Collections.sort(userDataArray);
+                }
+                refreshDisplay();
             }
         }
     }
 
+    /** Class to handle a password change */
     private class ChangePWDButtonHandler implements ActionListener {
         private JTextField oldpwdTF, newpwdTF, confirmpwdTF;
         private JFrame newWindow;
         private JLabel pwdChangeInfo = new JLabel(" ");
 
         public void actionPerformed(ActionEvent event) {
-            //TODO
             newWindow = new JFrame("Change Password");
             newWindow.setBounds(500, 250, 400, 250);
 
@@ -162,7 +179,7 @@ public class MainGUI extends JFrame {
             confirmpwdTF = new JPasswordField(10);
             confirmpwdTF.setBounds(140, 70, 150, 30);
 
-            JButton chngpwdB = new JButton("Confirm Change"); chngpwdB.setBounds(120, 120, 150, 50);
+            JButton chngpwdB = new JButton("Confirm Change"); chngpwdB.setBounds(10, 120, 150, 50);
             chngpwdB.addActionListener(new ConfirmButtonHandler());
             JButton exitB = new JButton("Cancel"); exitB.setBounds(170, 120, 100, 50);
             exitB.addActionListener(new ExitCHNGPWDButtonHandler());
@@ -179,6 +196,7 @@ public class MainGUI extends JFrame {
             newWindow.setVisible(true);
         }
 
+        /** Class to handle what happens when user presses "Confirm Change" Button */
         private class ConfirmButtonHandler implements ActionListener {
             public void actionPerformed(ActionEvent event) {
                 String oldpwd = oldpwdTF.getText();
@@ -191,7 +209,7 @@ public class MainGUI extends JFrame {
 
                 String msg = " ";
 
-                if(pwdAreEmpty) {
+                if(pwdAreEmpty) { // Make sure the attempted change isn't blatant bs
                     msg = "Cannot have an empty password";
                 } else if(!newMatchesCon) {
                     msg = "New password must match confirmation field";
@@ -200,6 +218,7 @@ public class MainGUI extends JFrame {
                 } else {
                     msg = "Password changed!";
                     // Do password change in here
+                    // TODO
                 }
                 pwdChangeInfo.setText(msg); pwdChangeInfo.setForeground(Color.RED);
                 pwdChangeInfo.setBounds(10, 185, 400, 30);
@@ -207,6 +226,7 @@ public class MainGUI extends JFrame {
             }
         }
 
+        /** Close the password change window */
         private class ExitCHNGPWDButtonHandler implements ActionListener {
             public void actionPerformed(ActionEvent event) {
                 newWindow.setVisible(false);
@@ -214,16 +234,50 @@ public class MainGUI extends JFrame {
         }
     } // End chngpwd class
 
-    private class ExitButtonHandler implements ActionListener {
+    /** Class to exit the program */
+    private class ExitButtonHandler implements ActionListener { // TODO
         public void actionPerformed(ActionEvent event) {
             System.exit(0);
         }
     }
 
+    private class ShowPWDButtonHandler implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            if(showPasswords) {
+                showPasswords = false;
+            } else {
+                showPasswords = true;
+            }
+            refreshDisplay();
+        }
+    }
 
+    public void displayUserData(ArrayList<LoginInfo> ud) {
+        for(LoginInfo l : ud) {
+            userDataDisplay.append(l.secureToString(showPasswords) + "\n");
+        }
+    }
+
+    private void initDisplay() {
+        userDataDisplay.setText("");
+        userDataDisplay.append("Website\tUsername\tPassword\n__________\t__________\t__________\n");
+    }
+
+    private void refreshDisplay() {
+        initDisplay();
+        displayUserData(userDataArray);
+    }
+
+    public void setUserDataArray(ArrayList<LoginInfo> ud) {
+        userDataArray = ud;
+    }
+    public ArrayList<LoginInfo> getUserDataArray() {
+        return userDataArray;
+    }
 
     public static void main(String[] args) {
-        new MainGUI();
+        ArrayList<LoginInfo> ud = new ArrayList<LoginInfo>();
+        new MainGUI(ud);
     }
 
 
