@@ -1,153 +1,64 @@
-Database initialization time: 2015/04/11_11:09:07
-Time Written: 2015/04/11_11:21:29 | Entry: guest logged in
-Time Written: 2015/04/11_11:24:07 | Entry: guest logged in
-Time Written: 2015/04/11_11:36:14 | Entry: guest logged in
-Time Written: 2015/04/12_13:15:55 | Entry: guest logged in
-Time Written: 2015/04/12_13:15:55 | Entry: guest data downloaded: true
-Time Written: 2015/04/16_15:04:59 | Entry: Pwd read for user john
-Time Written: 2015/04/16_15:04:59 | Entry: pwd authentication success for user john
-Time Written: 2015/04/16_15:04:59 | Entry: User data read for user john
-Time Written: 2015/04/16_15:04:59 | Entry: IV read for user john
-Time Written: 2015/04/16_15:06:30 | Entry: User jh Created
-Time Written: 2015/04/16_15:06:30 | Entry: pwd written for user jh
-Time Written: 2015/04/16_15:07:02 | Entry: User data written for user jh
-Time Written: 2015/04/16_15:07:02 | Entry: IV written for user jh
-Time Written: 2015/04/16_15:07:02 | Entry: User jh logged out.
-Time Written: 2015/04/16_15:07:09 | Entry: Pwd read for user jh
-Time Written: 2015/04/16_15:07:10 | Entry: pwd authentication success for user jh
-Time Written: 2015/04/16_15:07:10 | Entry: User data read for user jh
-Time Written: 2015/04/16_15:07:10 | Entry: IV read for user jh
-Time Written: 2015/04/16_15:07:12 | Entry: User jh logged out.
-Time Written: 2015/04/25_12:25:42 | Entry: User john Created
-Time Written: 2015/04/25_12:25:42 | Entry: pwd written for user john
-Time Written: 2015/04/25_12:25:47 | Entry: User john logged out.
-Time Written: 2015/04/25_12:25:54 | Entry: Pwd read for user john
-Time Written: 2015/04/25_12:25:54 | Entry: pwd authentication success for user john
-Time Written: 2015/04/25_12:26:59 | Entry: User jh Created
-Time Written: 2015/04/25_12:26:59 | Entry: pwd written for user jh
-Time Written: 2015/04/25_12:27:13 | Entry: User data written for user jh
-Time Written: 2015/04/25_12:27:13 | Entry: IV written for user jh
-Time Written: 2015/04/25_12:27:13 | Entry: User jh logged out.
-Time Written: 2015/04/25_12:27:21 | Entry: Pwd read for user jh
-Time Written: 2015/04/25_12:27:21 | Entry: pwd authentication success for user jh
-Time Written: 2015/04/25_12:27:21 | Entry: User data read for user jh
-Time Written: 2015/04/25_12:27:21 | Entry: IV read for user jh
-Time Written: 2015/04/25_12:27:52 | Entry: User jh logged out.
-Time Written: 2015/04/25_12:38:45 | Entry: User j Created
-Time Written: 2015/04/25_12:38:45 | Entry: pwd written for user j
-Time Written: 2015/04/25_12:38:48 | Entry: User j logged out.
-Time Written: 2015/04/25_12:38:54 | Entry: Pwd read for user j
-Time Written: 2015/04/25_12:38:54 | Entry: pwd authentication success for user j
-Time Written: 2015/04/25_12:40:19 | Entry: User go Created
-Time Written: 2015/04/25_12:40:19 | Entry: pwd written for user go
-Time Written: 2015/04/25_12:40:24 | Entry: User data written for user go
-Time Written: 2015/04/25_12:40:24 | Entry: IV written for user go
-Time Written: 2015/04/25_12:40:24 | Entry: User go logged out.
-Time Written: 2015/04/25_12:40:31 | Entry: Pwd read for user go
-Time Written: 2015/04/25_12:40:31 | Entry: pwd authentication success for user go
-Time Written: 2015/04/25_12:40:31 | Entry: User data read for user go
-Time Written: 2015/04/25_12:40:31 | Entry: IV read for user go
-Time Written: 2015/04/25_13:04:01 | Entry: Pwd read for user go
-Time Written: 2015/04/25_13:04:01 | Entry: pwd authentication success for user go
-Time Written: 2015/04/25_13:04:01 | Entry: User data read for user go
-Time Written: 2015/04/25_13:04:01 | Entry: IV read for user go
-Time Written: 2015/04/25_13:04:26 | Entry: User data written for user go
-Time Written: 2015/04/25_13:04:26 | Entry: IV written for user go
-Time Written: 2015/04/25_13:04:26 | Entry: User go logged out.
-Time Written: 2015/04/25_13:04:32 | Entry: Pwd read for user go
-Time Written: 2015/04/25_13:04:32 | Entry: pwd authentication failed for user go
-Time Written: 2015/04/25_13:04:39 | Entry: Pwd read for user go
-Time Written: 2015/04/25_13:04:39 | Entry: pwd authentication success for user go
-Time Written: 2015/04/25_13:04:39 | Entry: User data read for user go
-Time Written: 2015/04/25_13:04:39 | Entry: IV read for user go
-Time Written: 2015/04/25_13:09:43 | Entry: User g Created
-Time Written: 2015/04/25_13:09:43 | Entry: pwd written for user g
-Time Written: 2015/04/25_13:09:46 | Entry: User data written for user g
-Time Written: 2015/04/25_13:09:46 | Entry: IV written for user g
-Time Written: 2015/04/25_13:09:46 | Entry: User g logged out.
-Time Written: 2015/04/25_13:09:54 | Entry: Pwd read for user g
-Time Written: 2015/04/25_13:09:54 | Entry: pwd authentication success for user g
-Time Written: 2015/04/25_13:09:54 | Entry: User data read for user g
-Time Written: 2015/04/25_13:09:54 | Entry: IV read for user g
-Time Written: 2015/04/25_13:10:12 | Entry: User data written for user g
-Time Written: 2015/04/25_13:10:12 | Entry: IV written for user g
-Time Written: 2015/04/25_13:10:12 | Entry: User g logged out.
-Time Written: 2015/04/25_13:10:19 | Entry: Pwd read for user g
-Time Written: 2015/04/25_13:10:19 | Entry: pwd authentication failed for user g
-Time Written: 2015/04/25_13:13:39 | Entry: User p Created
-Time Written: 2015/04/25_13:13:39 | Entry: pwd written for user p
-Time Written: 2015/04/25_13:13:42 | Entry: User data written for user p
-Time Written: 2015/04/25_13:13:42 | Entry: IV written for user p
-Time Written: 2015/04/25_13:13:42 | Entry: User p logged out.
-Time Written: 2015/04/25_13:13:51 | Entry: Pwd read for user p
-Time Written: 2015/04/25_13:13:51 | Entry: pwd authentication success for user p
-Time Written: 2015/04/25_13:13:51 | Entry: User data read for user p
-Time Written: 2015/04/25_13:13:51 | Entry: IV read for user p
-Time Written: 2015/04/25_13:14:01 | Entry: User data written for user p
-Time Written: 2015/04/25_13:14:01 | Entry: IV written for user p
-Time Written: 2015/04/25_13:14:01 | Entry: User p logged out.
-Time Written: 2015/04/25_13:14:07 | Entry: Pwd read for user p
-Time Written: 2015/04/25_13:14:08 | Entry: pwd authentication failed for user p
-Time Written: 2015/04/25_13:14:17 | Entry: Pwd read for user p
-Time Written: 2015/04/25_13:14:17 | Entry: pwd authentication success for user p
-Time Written: 2015/04/25_13:14:17 | Entry: User data read for user p
-Time Written: 2015/04/25_13:14:17 | Entry: IV read for user p
-Time Written: 2015/04/26_07:48:31 | Entry: User q Created
-Time Written: 2015/04/26_07:48:32 | Entry: pwd written for user q
-Time Written: 2015/04/26_07:50:38 | Entry: User m Created
-Time Written: 2015/04/26_07:50:38 | Entry: pwd written for user m
-Time Written: 2015/04/26_07:51:05 | Entry: Pwd read for user m
-Time Written: 2015/04/26_07:51:05 | Entry: pwd authentication success for user m
-Time Written: 2015/04/26_07:51:31 | Entry: User nate Created
-Time Written: 2015/04/26_07:51:31 | Entry: pwd written for user nate
-Time Written: 2015/04/26_07:52:47 | Entry: Pwd read for user nate
-Time Written: 2015/04/26_07:52:47 | Entry: pwd authentication success for user nate
-Time Written: 2015/04/26_07:55:07 | Entry: User j Created
-Time Written: 2015/04/26_07:55:07 | Entry: pwd written for user j
-Time Written: 2015/04/26_07:55:11 | Entry: User data written for user j
-Time Written: 2015/04/26_07:55:11 | Entry: IV written for user j
-Time Written: 2015/04/26_07:55:11 | Entry: User j logged out.
-Time Written: 2015/04/26_07:55:21 | Entry: Pwd read for user j
-Time Written: 2015/04/26_07:55:21 | Entry: pwd authentication success for user j
-Time Written: 2015/04/26_07:55:21 | Entry: User data read for user j
-Time Written: 2015/04/26_07:55:21 | Entry: IV read for user j
-Time Written: 2015/04/26_07:55:33 | Entry: User data written for user j
-Time Written: 2015/04/26_07:55:33 | Entry: IV written for user j
-Time Written: 2015/04/26_07:55:33 | Entry: User j logged out.
-Time Written: 2015/04/26_07:55:38 | Entry: Pwd read for user j
-Time Written: 2015/04/26_07:55:39 | Entry: pwd authentication failed for user j
-Time Written: 2015/04/26_07:55:47 | Entry: Pwd read for user j
-Time Written: 2015/04/26_07:55:47 | Entry: pwd authentication success for user j
-Time Written: 2015/04/26_07:55:47 | Entry: User data read for user j
-Time Written: 2015/04/26_07:55:47 | Entry: IV read for user j
-Time Written: 2015/04/26_07:56:37 | Entry: Pwd read for user j
-Time Written: 2015/04/26_07:56:37 | Entry: pwd authentication failed for user j
-Time Written: 2015/04/26_07:56:41 | Entry: Pwd read for user j
-Time Written: 2015/04/26_07:56:41 | Entry: pwd authentication failed for user j
-Time Written: 2015/04/26_08:21:07 | Entry: User nate Created
-Time Written: 2015/04/26_08:21:08 | Entry: pwd written for user nate
-Time Written: 2015/04/26_08:21:10 | Entry: User data written for user nate
-Time Written: 2015/04/26_08:21:10 | Entry: IV written for user nate
-Time Written: 2015/04/26_08:21:10 | Entry: User nate logged out.
-Time Written: 2015/04/26_08:21:18 | Entry: Pwd read for user nate
-Time Written: 2015/04/26_08:21:18 | Entry: pwd authentication success for user nate
-Time Written: 2015/04/26_08:21:18 | Entry: User data read for user nate
-Time Written: 2015/04/26_08:21:18 | Entry: IV read for user nate
-Time Written: 2015/04/26_08:23:39 | Entry: User p Created
-Time Written: 2015/04/26_08:23:39 | Entry: pwd written for user p
-Time Written: 2015/04/26_08:23:43 | Entry: User data written for user p
-Time Written: 2015/04/26_08:23:43 | Entry: IV written for user p
-Time Written: 2015/04/26_08:23:43 | Entry: User p logged out.
-Time Written: 2015/04/26_08:23:50 | Entry: Pwd read for user p
-Time Written: 2015/04/26_08:23:50 | Entry: pwd authentication success for user p
-Time Written: 2015/04/26_08:23:50 | Entry: User data read for user p
-Time Written: 2015/04/26_08:23:50 | Entry: IV read for user p
-Time Written: 2015/04/26_08:26:18 | Entry: User john Created
-Time Written: 2015/04/26_08:26:18 | Entry: pwd written for user john
-Time Written: 2015/04/26_08:26:21 | Entry: User data written for user john
-Time Written: 2015/04/26_08:26:21 | Entry: IV written for user john
-Time Written: 2015/04/26_08:26:21 | Entry: User john logged out.
-Time Written: 2015/04/26_08:26:27 | Entry: Pwd read for user john
-Time Written: 2015/04/26_08:26:27 | Entry: pwd authentication success for user john
-Time Written: 2015/04/26_08:26:27 | Entry: User data read for user john
-Time Written: 2015/04/26_08:26:27 | Entry: IV read for user john
+Database initialization time: 2015/05/02_15:55:42
+Time Written: 2015/05/02_16:01:08 | Entry: User john Created
+Time Written: 2015/05/02_16:01:08 | Entry: pwd written for user john
+Time Written: 2015/05/02_16:28:43 | Entry: User a Created
+Time Written: 2015/05/02_16:28:43 | Entry: pwd written for user a
+Time Written: 2015/05/02_16:28:50 | Entry: User data written for user a
+Time Written: 2015/05/02_16:28:50 | Entry: IV written for user a
+Time Written: 2015/05/02_16:28:50 | Entry: User a logged out.
+Time Written: 2015/05/02_16:28:57 | Entry: Pwd read for user a
+Time Written: 2015/05/02_16:28:57 | Entry: pwd authentication success for user a
+Time Written: 2015/05/02_16:28:57 | Entry: User data read for user a
+Time Written: 2015/05/02_16:28:57 | Entry: IV read for user a
+Time Written: 2015/05/02_16:29:12 | Entry: pwd written for user a
+Time Written: 2015/05/02_16:29:15 | Entry: User data written for user a
+Time Written: 2015/05/02_16:29:15 | Entry: IV written for user a
+Time Written: 2015/05/02_16:29:15 | Entry: User a logged out.
+Time Written: 2015/05/02_16:29:22 | Entry: Pwd read for user a
+Time Written: 2015/05/02_16:29:22 | Entry: pwd authentication failed for user a
+Time Written: 2015/05/02_16:29:25 | Entry: Pwd read for user a
+Time Written: 2015/05/02_16:29:25 | Entry: pwd authentication success for user a
+Time Written: 2015/05/02_16:29:25 | Entry: User data read for user a
+Time Written: 2015/05/02_16:29:25 | Entry: IV read for user a
+Time Written: 2015/05/02_16:29:34 | Entry: User data written for user a
+Time Written: 2015/05/02_16:29:34 | Entry: IV written for user a
+Time Written: 2015/05/02_16:29:34 | Entry: User a logged out.
+Time Written: 2015/05/02_16:30:44 | Entry: User j Created
+Time Written: 2015/05/02_16:30:44 | Entry: pwd written for user j
+Time Written: 2015/05/02_16:30:48 | Entry: User data written for user j
+Time Written: 2015/05/02_16:30:48 | Entry: IV written for user j
+Time Written: 2015/05/02_16:30:48 | Entry: User j logged out.
+Time Written: 2015/05/02_16:30:57 | Entry: Pwd read for user j
+Time Written: 2015/05/02_16:30:57 | Entry: pwd authentication success for user j
+Time Written: 2015/05/02_16:30:57 | Entry: User data read for user j
+Time Written: 2015/05/02_16:30:57 | Entry: IV read for user j
+Time Written: 2015/05/02_16:31:12 | Entry: User data written for user j
+Time Written: 2015/05/02_16:31:12 | Entry: IV written for user j
+Time Written: 2015/05/02_16:31:12 | Entry: User j logged out.
+Time Written: 2015/05/02_16:31:58 | Entry: Pwd read for user j
+Time Written: 2015/05/02_16:31:58 | Entry: pwd authentication success for user j
+Time Written: 2015/05/02_16:31:58 | Entry: User data read for user j
+Time Written: 2015/05/02_16:31:58 | Entry: IV read for user j
+Time Written: 2015/05/02_16:32:00 | Entry: User data written for user j
+Time Written: 2015/05/02_16:32:00 | Entry: IV written for user j
+Time Written: 2015/05/02_16:32:00 | Entry: User j logged out.
+Time Written: 2015/05/02_16:32:11 | Entry: User bob Created
+Time Written: 2015/05/02_16:32:11 | Entry: pwd written for user bob
+Time Written: 2015/05/02_16:32:13 | Entry: User data written for user bob
+Time Written: 2015/05/02_16:32:13 | Entry: IV written for user bob
+Time Written: 2015/05/02_16:32:13 | Entry: User bob logged out.
+Time Written: 2015/05/02_16:32:19 | Entry: Pwd read for user bob
+Time Written: 2015/05/02_16:32:19 | Entry: pwd authentication success for user bob
+Time Written: 2015/05/02_16:32:19 | Entry: User data read for user bob
+Time Written: 2015/05/02_16:32:19 | Entry: IV read for user bob
+Time Written: 2015/05/02_16:32:27 | Entry: pwd written for user bob
+Time Written: 2015/05/02_16:32:32 | Entry: User data written for user bob
+Time Written: 2015/05/02_16:32:32 | Entry: IV written for user bob
+Time Written: 2015/05/02_16:32:32 | Entry: User bob logged out.
+Time Written: 2015/05/02_16:32:38 | Entry: Pwd read for user bob
+Time Written: 2015/05/02_16:32:38 | Entry: pwd authentication success for user bob
+Time Written: 2015/05/02_16:32:38 | Entry: User data read for user bob
+Time Written: 2015/05/02_16:32:38 | Entry: IV read for user bob
+Time Written: 2015/05/02_16:32:41 | Entry: User data written for user bob
+Time Written: 2015/05/02_16:32:41 | Entry: IV written for user bob
+Time Written: 2015/05/02_16:32:41 | Entry: User bob logged out.

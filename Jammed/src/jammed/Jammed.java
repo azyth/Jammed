@@ -77,7 +77,7 @@ public class Jammed {
             // initialize the files on this machine and an empty place to store
             // data
             UserData.enroll(login.username, login.password, "keys/"); //TODO get proper filepath location to store key and IV
-            data = new UserData(login.username, login.password);
+            data = new UserData(login.username, login.password,"keys/");
           } else {
             // get the existing data
             server.send(new UserDataReq());
@@ -89,7 +89,7 @@ public class Jammed {
             }
 
             // TODO make sure this throws FNFException instead of IOException
-            data = new UserData(login.username, login.password);
+            data = new UserData(login.username, login.password, "keys/");
 
             // get the data in a usable form
             plaindata = data.decData(serverdata.getData(), serverdata.getIV());  //TODO GUI add file directory string
@@ -175,13 +175,14 @@ public class Jammed {
                 success = true;
               }	
         	  UserData.enroll(login.username, login.password, "keys/");			//creates new local key files TODO get proper filepath location to store keys
-              data = new UserData(login.username, login.password);		//updates teh current userdata instance 
+              data = new UserData(login.username, login.password, "keys/");		//updates teh current userdata instance 
               changes = true;
             break;
 
           case EXIT:
-        	  if (plaindata.toString().equalsIgnoreCase("")){  									//blank string crypto check
-      			plaindata = UserData.stringToList("default \n value \n here");
+        	  //Blank String Crypto check 
+        	  if (plaindata.toString().equalsIgnoreCase("")){  									
+      			plaindata = UserData.stringToList("default \n placeholder \n inserted");
       		}
         	  changes = true;
             break;
