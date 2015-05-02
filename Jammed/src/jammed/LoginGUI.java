@@ -10,13 +10,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.nio.file.Paths;
 
 public class LoginGUI extends JFrame {
 
     private JTextField usernameTF, passwordTF;
     private JLabel extraInfo = new JLabel(" ");
-    private File fileChosenToStoreKeys;
+    private String fileChosenToStoreKeys = Paths.get(".").toAbsolutePath().normalize().toString() + "/";
 
     public LoginGUI() { // the frame constructor method
         super("Jammed"); setBounds(300, 200, 600, 300);
@@ -97,7 +97,10 @@ public class LoginGUI extends JFrame {
         }
     }
 
-    private class ChooseKeyLocation implements ActionListener {
+    private class ChooseKeyLocation extends JPanel implements ActionListener {
+        /* TODO Bug: When a user selects a folder, opens another dialog for user to choose folder again
+         *  Not sure why this is happening
+         */
         private JFrame newFrame; private JFileChooser jf;
         public ChooseKeyLocation() {
             // show file browser for choosing where their key goes
@@ -112,10 +115,14 @@ public class LoginGUI extends JFrame {
             newFrame.setVisible(true);
         }
         public void actionPerformed(ActionEvent event) {
-            if (jf.showOpenDialog(newFrame) != JFileChooser.APPROVE_OPTION) {
+           if (jf.showOpenDialog(this) == JFileChooser.CANCEL_OPTION) {
+               jf.setVisible(false);
+               newFrame.setVisible(false);
                return;
             }
-            fileChosenToStoreKeys = jf.getSelectedFile();
+            if(jf.getSelectedFile() != null) {
+                fileChosenToStoreKeys = jf.getSelectedFile().toPath().normalize().toString()+"/";
+            }
             jf.setVisible(false);
             newFrame.setVisible(false);
             //System.out.println(fileChosenToStoreKeys);
@@ -142,7 +149,7 @@ public class LoginGUI extends JFrame {
         }
     }
 
-    public File getFileChosenByUserToStoreKeys() {
+    public String getFileChosenByUserToStoreKeys() {
         return fileChosenToStoreKeys;
     }
 
