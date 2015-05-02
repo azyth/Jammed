@@ -180,8 +180,9 @@ public class Jammed {
             break;
 
           case EXIT:
-        	  if (plaindata.toString().equalsIgnoreCase("")){  									//blank string crypto check
-      			plaindata = UserData.stringToList("default \n value \n here");
+        	  //Blank String Crypto check 
+        	  if (plaindata.toString().equalsIgnoreCase("")){  									
+      			plaindata = UserData.stringToList("default \n placeholder \n inserted");
       		}
         	  changes = true;
             break;

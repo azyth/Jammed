@@ -63,7 +63,10 @@ public class SecureLog {
 	//private byte[] c;
 	//private byte[] t;
 	//private byte[] entry;
-	
+	/**
+	 * CONTRUCTOR
+	 * initializes instance variables
+	 */
 	public SecureLog() throws InvalidKeyException, IllegalBlockSizeException, 
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, 
 			InvalidAlgorithmParameterException, IOException{
@@ -72,9 +75,26 @@ public class SecureLog {
 		
 		//instantiate ek
 		this.ek = this.encryptionKey(this.ak);
-		//
+		//load iv , saved to an iv file on closeing of the last session.
+		
 	}
 	
+	public boolean close() throws IOException{
+		//write ak to server ak file
+		return write(this.ak.getEncoded(), dir + LOGGINGKEYFILE);
+		//write last block of log file (current IV) to IV file
+		
+	}
+	
+	/********************ENROLMENT****************************/
+	//called to set up server key
+	public static void initLog(){
+			//TODO
+	}
+	
+	/*
+	 * 
+	 */
 	public static void generateLogKey() throws NoSuchAlgorithmException, IOException{
 		//gen key
 		KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");//TODO change to ???
@@ -82,15 +102,22 @@ public class SecureLog {
 //		System.out.println("key created");
 	    SecretKey k = keyGenerator.generateKey();
 		//write key to file
-	    writeKey(k,LOGGINGMASTERKEY); //server needs to send this to log server and then delete it. (this shoudl not remail in jelly
-	    writeKey(k, dir + LOGGINGKEYFILE); // OR server need to make a copy of this on log sever before ever using it. 
+	    write(k.getEncoded(),LOGGINGMASTERKEY); //TODO server needs to send this to log server and then delete it. (this shoudl not remail in jelly
+	    write(k.getEncoded(), dir + LOGGINGKEYFILE); // OR server need to make a copy of this on log sever before ever using it. 
 		//also write to "log server"?...no
 		
 	}
+	
+	
+	
+	/********************LOGGING****************************/
+	
+	//creates the entry to be recorded in the log.
 	public String createEntry(String logentry) throws InvalidKeyException, 
 			NoSuchAlgorithmException{
 		//take in logentry, secure it, and return encoded entry
-		byte[] c = this.encryptLogEntry(this.ek, logentry);
+		byte[] iv = UserData.generateIV();
+		byte[] c = this.encryptLogEntry(this.ek, iv, logentry);
 		byte[]  t = this.tagLogEntry(ak, c);
 		//combine c and t
 		
@@ -106,21 +133,29 @@ public class SecureLog {
 		
 	}
 	
-	public SecretKey getHashedLogServerKey(SecretKey serverkey, int numhash){
+	//this is the function for reading a secure log
+	public boolean checkSecureLog(String log){
+		//stuff
+		return false;
+	}
+	
+	/********************Housekeeping****************************/
+	
+	
+	//
+	private SecretKey getHashedLogServerKey(SecretKey serverkey, int numhash){
 		// iterate serverkey(origional ak)numhash number of times to be able to decode a log entry
 		// produces ek for log entry at numhashes location
 		SecretKey temp = serverkey;
 		
 		for (int x=0; x<numhash; x++){//itterate num hash times
 			temp = encryptionKey(temp);
+			
 		}
 		return temp;
 	}
 	
-	public boolean checkSecureLog(String log){
-		//stuff
-		return false;
-	}
+	
 	
 	//decrypts and loads secret key into this.dataSeckey
 	private void loadKey(String file) throws IllegalBlockSizeException, 
@@ -140,25 +175,25 @@ public class SecureLog {
 		this.ak = new SecretKeySpec(encoded,"HmacSHA1");
 	}
 	
-	public SecretKey encryptionKey(SecretKey ak){
+	private SecretKey encryptionKey(SecretKey ak){
 		//hash key to make "encryption key" "AES?"
 		
 		
 		return null;
 	}
 	
-	public SecretKey iterateKey(SecretKey ak){
+	private SecretKey iterateKey(SecretKey ak){
 		//hash key with "iterate"
 		return null;
 	}
 	
-	public byte[] encryptLogEntry(SecretKey ek, String entry){
-		//encrypt entry m with ek to prduce c
+	private byte[] encryptLogEntry(SecretKey ek, byte[] ivector, String entry){
+		//encrypt entry m with ek adn ivector to prduce c
 		
 		return null;//TODO change to string
 	}
 	
-	public byte[] tagLogEntry(SecretKey ak, byte[] encEntry) throws 
+	private byte[] tagLogEntry(SecretKey ak, byte[] encEntry) throws 
 			NoSuchAlgorithmException, InvalidKeyException{
 
 		// get an hmac_sha1 Mac instance and initialize with the signing key
@@ -174,10 +209,10 @@ public class SecureLog {
 		return rawHmac;//TODO change to string
 		
 	}
-
-	public static boolean writeKey(SecretKey k, String file) throws IOException{
-		FileOutputStream fout = new FileOutputStream(file);			//dir +"/"+
-		byte[] skey = k.getEncoded();
+	//writes a key or iv byte[] to a file. file must include filepath
+	private static boolean write(byte[] skey, String file) throws IOException{
+		FileOutputStream fout = new FileOutputStream(file);			
+		//byte[] skey = k.getEncoded();
 		try {
 			fout.write(skey);
 		} catch (Exception e) {
@@ -187,9 +222,5 @@ public class SecureLog {
 		}
 		return true;
 	}
-	public boolean close() throws IOException{
-		//write ak to server ak file
-		return writeKey(this.ak, dir + LOGGINGKEYFILE);
-		
-	}
+	
 }
