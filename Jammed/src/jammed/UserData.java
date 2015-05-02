@@ -42,6 +42,7 @@ public class UserData {
 
     // local file name key will be stored at
 	private final static String SECKEYFILE = "-ProtectedAESkey.txt";
+	private final static String IVFILE = "-sessionKey.txt";
 	private final static byte[] salt = {0x0};
 	//private final static byte[] iv = {0xc,0x0,0xf,0x0};
  	private String keyfile;
@@ -51,7 +52,7 @@ public class UserData {
 	
 	//CONSTRUCTOR
 	// Load Key and decrypt it with the users password
-	public UserData(String username, String password) throws GeneralSecurityException, 
+	public UserData(String username, String password, String filepath) throws GeneralSecurityException, 
 	 		IOException, InvalidKeyException {
 		this.keyfile = username+SECKEYFILE;
 		this.keyivfile = username+"-iv"+SECKEYFILE;
