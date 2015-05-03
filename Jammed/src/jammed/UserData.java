@@ -55,7 +55,7 @@ public class UserData {
 	public UserData(String username, String password, String filepath) throws GeneralSecurityException, 
 	 		IOException, InvalidKeyException {
 		this.keyfile = username+SECKEYFILE;
-		this.keyivfile = username+"-iv"+SECKEYFILE;
+		this.keyivfile = username+IVFILE;
 		//hash the password, 
 		SecretKey hashPass = hashPwd(password);
 		//load the encrypted key file, decrpyt with hashed password. load secret key to dataSecKey
@@ -216,7 +216,7 @@ public class UserData {
 		//Files.deleteIfExists(Paths.get(dir, username+"-iv"+SECKEYFILE));
 		
 		FileOutputStream fout = new FileOutputStream(filepath+username+SECKEYFILE);			//dir +"/"+
-		FileOutputStream iout = new FileOutputStream(filepath+username+"-iv"+SECKEYFILE);
+		FileOutputStream iout = new FileOutputStream(filepath+username+IVFILE);
 		byte[] skey = key.getEncoded();
 		//System.out.println(skey.toString());
 		Keys keys = encKey(skey,encryptionKey);

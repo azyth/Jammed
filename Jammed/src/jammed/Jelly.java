@@ -30,7 +30,7 @@ public class Jelly {
     }
 
     while (true) {
-      Communication comm = new Communication(Communication.Type.SERVER);
+      Communication comm = new Communication();
       System.out.println("Accepting client...");
       comm.accept();
 
