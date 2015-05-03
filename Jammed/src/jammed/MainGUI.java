@@ -15,10 +15,18 @@ import java.util.Collections;
 
 public class MainGUI extends JFrame {
 
+    public String ErrorMSG;
+
+    public boolean changesMade = false;
+    public LoginInfo pwdChange;
+    public String CurrentUser;
+
     private JTextArea userDataDisplay;
     private JTextField usernameTF, passwordTF, serviceTF;
     private ArrayList<LoginInfo> userDataArray;
     private boolean showPasswords = false;
+    private GActionType buttonClicked;
+
 
     public MainGUI(ArrayList<LoginInfo> ud) {
         super("Jammed"); setBounds(300, 100, 800, 600);
@@ -97,7 +105,8 @@ public class MainGUI extends JFrame {
     private class SaveButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             // Upload new userdata to server
-            // TODO
+            // TODO encrypt data and send to server
+            buttonClicked = GActionType.SAVE;
         }
     }
 
@@ -121,6 +130,7 @@ public class MainGUI extends JFrame {
                 } else {
                     userDataArray.set(index, chng);
                 }
+                changesMade = true;
                 refreshDisplay();
             }
         }
@@ -147,6 +157,7 @@ public class MainGUI extends JFrame {
                     Collections.sort(userDataArray);
                 }
                 refreshDisplay();
+                changesMade = true;
             }
         }
     }
@@ -216,9 +227,12 @@ public class MainGUI extends JFrame {
                 } else if(oldMatchesnew) {
                     msg = "Cannot make the new password the same as the old one";
                 } else {
-                    msg = "Password changed!";
                     // Do password change in here
                     // TODO
+
+                    pwdChange.password = conpwd;
+                    buttonClicked = GActionType.CHANGE_PWD;
+                    msg = "Password changed!";
                 }
                 pwdChangeInfo.setText(msg); pwdChangeInfo.setForeground(Color.RED);
                 pwdChangeInfo.setBounds(10, 185, 400, 30);
@@ -235,9 +249,17 @@ public class MainGUI extends JFrame {
     } // End chngpwd class
 
     /** Class to exit the program */
-    private class ExitButtonHandler implements ActionListener { // TODO
+    // TODO more comprehensive exit
+    private class ExitButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
+            buttonClicked = GActionType.EXIT;
             System.exit(0);
+        }
+    }
+
+    private class GetLogButtonHandler implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            buttonClicked = GActionType.LOG;
         }
     }
 
@@ -280,6 +302,18 @@ public class MainGUI extends JFrame {
         new MainGUI(ud);
     }
 
+
+    /* Everything that the user can do. Note that "ADD" covers both adding and
+    * modifying existing passwords, and "CHANGE" refers to modifying the overall
+    * account password. */
+    public enum GActionType {SAVE, CHANGE_PWD, LOG, EXIT};
+
+    public GActionType getAction() {
+        return buttonClicked;
+    }
+    public void resetActionType() {
+        buttonClicked = null;
+    }
 
 } // END CLASS
 

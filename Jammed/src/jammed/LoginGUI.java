@@ -18,6 +18,8 @@ public class LoginGUI extends JFrame {
     private JLabel extraInfo = new JLabel(" ");
     private String fileChosenToStoreKeys = Paths.get(".").toAbsolutePath().normalize().toString() + "/";
 
+    private LoginInfo login;
+
     public LoginGUI() { // the frame constructor method
         super("Jammed"); setBounds(300, 200, 600, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -76,12 +78,11 @@ public class LoginGUI extends JFrame {
             boolean notBS = !username.isEmpty() && !password.isEmpty();
 
             if(notBS) {
-                // try to register user
+                // TODO try to register user
+                setLogin("enroll", username, password);
+
                 boolean registration_successful = true;
                 if(registration_successful) {
-                    // register user
-
-                    // choose location to store keys
                     ChooseKeyLocation ckl = new ChooseKeyLocation();
 
                 } else {
@@ -138,7 +139,7 @@ public class LoginGUI extends JFrame {
 
             extraInfo.setText("Incorrect login credentials!");
             extraInfo.setForeground(Color.RED);
-            // Attempt to login
+            //TODO Attempt to login
         }
     }
 
@@ -151,6 +152,18 @@ public class LoginGUI extends JFrame {
 
     public String getFileChosenByUserToStoreKeys() {
         return fileChosenToStoreKeys;
+    }
+
+    public void setLogin(String website, String username, String password) {
+        login.website = website; login.username = username; login.password = password;
+    }
+
+    public LoginInfo getLogin() {
+        return login;
+    }
+
+    public void disable() {
+        setVisible(false);
     }
 
     /* Main method to run the gui*/
