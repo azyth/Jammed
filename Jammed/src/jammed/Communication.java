@@ -31,51 +31,31 @@ import java.security.cert.*;
  * @version Alpha (1.0) 3.20.15
  */
 public class Communication {
-  public enum Type{SERVER, CLIENT}
 
   private String hostname = "localHost";
   private int port = 54309;
 
-  private Communication.Type type = null;
-  private ServerSocket serverSocket; // = null;
-  private Socket socket; // = null;
-  private ObjectInputStream rx; // = null;
-  private ObjectOutputStream tx; // = null;
-  private boolean dummy = true;
+  private ServerSocket serverSocket = null;
+  private Socket socket = null;
+  private ObjectInputStream rx = null;
+  private ObjectOutputStream tx = null;
 
   /**
-   * Class Constructor given <code>type</code>, either SERVER or CLIENT
+   * Class Constructor
    * 
-   * @param type
    * @throws SocketException
    */
-  public Communication(Communication.Type type) throws SocketException{
+  public Communication() throws SocketException{
     try {
-      
-      if (type == Type.SERVER) {
-    	  SSLContext context = SSLContext.getInstance("SSL");
-    	  KeyStore ks = KeyStore.getInstance("JKS");
-    	  KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-    	  FileInputStream ksin = new FileInputStream("serverkeystore.jks");
-    	  ks.load(ksin, "cs5430".toCharArray());
-    	  kmf.init(ks, "cs5430".toCharArray());
-    	  context.init(kmf.getKeyManagers(), null, null);
-    	  //System.setProperty("javax.net.ssl.keyStore", "serverkeystore.jks");
-    	  //System.setProperty("javax.net.ssl.keyStorePassword", "cs5430");
-    	  ServerSocketFactory serverSocketFactory = context.getServerSocketFactory();
-    	  this.serverSocket = serverSocketFactory.createServerSocket(port);
-    	  this.dummy = false;
-      }
-      else if (type == Type.CLIENT) {
-    	//System.setProperty("javax.net.ssl.trustStore", "serverkeystore.jks");
-      	//System.setProperty("javax.net.ssl.trustStorePassword", "cs5430");
-        // Create a Client
-        // Dummy object, call .connect() method to use
-      }
-      else{
-        throw new SocketException("Invalid type!");
-      }
-      this.type = type;
+    	SSLContext context = SSLContext.getInstance("SSL");
+  	  	KeyStore ks = KeyStore.getInstance("JKS");
+  	  	KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+  	  	FileInputStream ksin = new FileInputStream("serverkeystore.jks");
+  	  	ks.load(ksin, "cs5430".toCharArray());
+  	  	kmf.init(ks, "cs5430".toCharArray());
+  	  	context.init(kmf.getKeyManagers(), null, null);
+  	  	ServerSocketFactory serverSocketFactory = context.getServerSocketFactory();
+  	  	this.serverSocket = serverSocketFactory.createServerSocket(port);
     }
     catch(RuntimeException re){
       throw re;
@@ -83,34 +63,6 @@ public class Communication {
     catch(Exception e){
       e.printStackTrace();
       throw new SocketException("Failure in Communicaiton constructor!");   
-    }
-  }
-
-  public void connect() throws SocketException{
-    if(this.type != Type.CLIENT){
-      throw new SocketException("Can't connect from a server!");
-    }
-    try{
-    	SSLContext context = SSLContext.getInstance("SSL");
-  	  KeyStore ks = KeyStore.getInstance("JKS");
-  	  TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
-  	  FileInputStream ksin = new FileInputStream("serverkeystore.jks");
-  	  ks.load(ksin, "cs5430".toCharArray());
-  	  tmf.init(ks);
-  	  context.init(null, tmf.getTrustManagers(), null);
-      SocketFactory ClientSocketFactory = context.getSocketFactory();
-      SSLSocket socket = (SSLSocket) ClientSocketFactory.createSocket(hostname, port);
-      socket.startHandshake(); //May not need?
-      this.tx = new ObjectOutputStream(socket.getOutputStream());
-      this.rx = new ObjectInputStream(socket.getInputStream());
-      this.dummy = false;
-    }
-    catch(RuntimeException re){
-      throw re;
-    }
-    catch(Exception e){
-      e.printStackTrace();
-      throw new SocketException("Failure in client construtor!");
     }
   }
 
@@ -150,25 +102,15 @@ public class Communication {
 
   public void close(){
     try{
-      if(this.dummy == true){
-        return; // Can't close a dummy
-      }
-      else if(this.type == Type.SERVER){
-        //this.tx.close();
-        //this.rx.close();
-        if (this.serverSocket != null) this.serverSocket.close();
-      }
-      else if(this.type == Type.CLIENT){
-        //this.tx.close();
-        //this.rx.close();
-        if(this.socket != null) this.socket.close();
-    	  //this.socket.close();
-      }
-      else{
-          //throw new SocketException("Invalid type!"); 
-    	  //Impossible to reach
-    	  // Commented out to avoid having close() throw an exception
-      }
+    	if(this.tx != null){
+    		this.tx.close();
+    	}
+    	if(this.rx != null){
+    		this.rx.close();
+    	}
+    	if(this.serverSocket != null){
+    		this.serverSocket.close();
+    	}
     }
     catch(RuntimeException re){
       throw re;
@@ -181,44 +123,26 @@ public class Communication {
 
   public void accept() throws SocketException{
     try{
-      if(this.type == Type.SERVER){
-        this.socket = this.serverSocket.accept();
-        this.tx = new ObjectOutputStream(this.socket.getOutputStream());
+    	this.socket = this.serverSocket.accept();
+    	this.tx = new ObjectOutputStream(this.socket.getOutputStream());
         this.rx = new ObjectInputStream(this.socket.getInputStream());
-      }
-      else if (this.type == Type.CLIENT){
-        throw new SocketException("Clients can't accept()!");
-      }
-      else{
-        throw new SocketException("Invalid type in accept!");
-        // Impossible to reach
-      }
     }
     catch(RuntimeException re){
       throw re;
     }
     catch(Exception e){
       e.printStackTrace();
-      throw new SocketException("Error in accept!!");
+      throw new SocketException("Error in server side accept!!");
     }
   }
 
   public int getPort() throws SocketException{
     try{
-      if(this.type == Type.SERVER){
-        return this.serverSocket.getLocalPort();
-      }
-      if(this.type == Type.CLIENT){
-        return this.socket.getLocalPort();
-      }
-      else{
-        throw new SocketException("Invalid type!");
-        // Impossible to reach
-      }
+    	return this.serverSocket.getLocalPort();
     }
     catch(Exception e){
       e.printStackTrace();
-      throw new SocketException("Error in getPort()!");
+      throw new SocketException("Error in server side getPort()!");
     }
   }
 
