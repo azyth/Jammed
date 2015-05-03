@@ -6,12 +6,17 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+
+import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
+
 import java.net.SocketException;
+
 import javax.net.ssl.*;
+
 import java.security.KeyStore;
 
 public class ClientCommunication{
@@ -42,8 +47,8 @@ public class ClientCommunication{
 			ks.load(ksin, "cs5430".toCharArray());
 			tmf.init(ks);
 			context.init(null, tmf.getTrustManagers(), null);
-			SSLSocketFactory ClientSocketFactory = context.getSocketFactory();
-			//SocketFactory ClientSocketFactory = context.getSocketFactory();
+			//SSLSocketFactory ClientSocketFactory = context.getSocketFactory();
+			SocketFactory ClientSocketFactory = context.getSocketFactory();
 			SSLSocket socket = (SSLSocket) ClientSocketFactory.createSocket(hostname, port);
 			socket.startHandshake();
 			this.tx = new ObjectOutputStream(socket.getOutputStream());
