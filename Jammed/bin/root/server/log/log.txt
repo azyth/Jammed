@@ -79,3 +79,15 @@ Time Written: 2015/05/03_14:37:16 | Entry: Pwd read for user e
 Time Written: 2015/05/03_14:37:16 | Entry: pwd authentication success for user e
 Time Written: 2015/05/03_14:37:16 | Entry: User data read for user e
 Time Written: 2015/05/03_14:37:16 | Entry: IV read for user e
+Time Written: 2015/05/03_17:09:17 | Entry: User mr Created
+Time Written: 2015/05/03_17:09:17 | Entry: pwd written for user mr
+Time Written: 2015/05/03_17:09:19 | Entry: User data written for user mr
+Time Written: 2015/05/03_17:09:19 | Entry: IV written for user mr
+Time Written: 2015/05/03_17:09:19 | Entry: User mr logged out.
+Time Written: 2015/05/03_17:09:25 | Entry: Pwd read for user mr
+Time Written: 2015/05/03_17:09:25 | Entry: pwd authentication success for user mr
+Time Written: 2015/05/03_17:09:25 | Entry: User data read for user mr
+Time Written: 2015/05/03_17:09:25 | Entry: IV read for user mr
+Time Written: 2015/05/03_17:09:36 | Entry: User data written for user mr
+Time Written: 2015/05/03_17:09:36 | Entry: IV written for user mr
+Time Written: 2015/05/03_17:09:36 | Entry: User mr logged out.

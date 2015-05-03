@@ -23,3 +23,4 @@ log.txt
 guest*
 #user data
 Jammed/bin/root/users/*
+*sessionKey.txt
