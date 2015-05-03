@@ -15,7 +15,7 @@ public class GuiJammed {
     public static final String LOGFILE = "log.txt";
 
     public static void main(String[] args) {
-
+    	String dir;
         String ErrorMSG = " ";
 
 
@@ -49,7 +49,8 @@ public class GuiJammed {
                 server.send(req);
 
                 LoginReq verif = (LoginReq) server.receive();
-
+                dir = LIG.getFileChosenByUserToStoreKeys(); //TODO replace keys/ with dir
+                
                 if (verif == null) {
 
                     // the server gave a null response--this probably means we should
@@ -58,11 +59,12 @@ public class GuiJammed {
 
                 } else if (verif.getSuccess()) {
                     success = true;
-
+                    
                     if (enroll) {
+                    	
                         // initialize the files on this machine and an empty place to store data
-                        UserData.enroll(login.username, login.password, "keys/"); //TODO get proper filepath location to store key and IV
-                        data = new UserData(login.username, login.password, "keys/");
+                        UserData.enroll(login.username, login.password, dir); //TODO get proper filepath location to store key and IV
+                        data = new UserData(login.username, login.password, dir);
                     } else {
                         // get the existing data
                         server.send(new UserDataReq());
@@ -75,7 +77,7 @@ public class GuiJammed {
                         }
 
                         // TODO make sure this throws FNFException instead of IOException
-                        data = new UserData(login.username, login.password, "keys/");
+                        data = new UserData(login.username, login.password, dir);
 
                         // get the data in a usable form
                         plaindata = data.decData(serverdata.getData(), serverdata.getIV());  //TODO GUI add file directory string
@@ -87,7 +89,7 @@ public class GuiJammed {
                     //ui.error(Request.errToString(verif.getError()));
                 }
             }
-
+            dir = LIG.getFileChosenByUserToStoreKeys();
             // Logging in was successful, create main display
             LIG.disable(); //LIG.setVisible(false);
             // (6) display the data
@@ -131,8 +133,8 @@ public class GuiJammed {
                         } else if (verif.getSuccess()) {
                             success = true;
                         }
-                        UserData.enroll(login.username, login.password, "keys/");			//creates new local key files TODO get proper filepath location to store keys
-                        data = new UserData(login.username, login.password, "keys/");		//updates teh current userdata instance
+                        UserData.enroll(login.username, login.password, dir);			//creates new local key files TODO get proper filepath location to store keys
+                        data = new UserData(login.username, login.password, dir);		//updates teh current userdata instance
                         MAG.changesMade = true;
                     case LOG:
                         server.send(new LogReq());

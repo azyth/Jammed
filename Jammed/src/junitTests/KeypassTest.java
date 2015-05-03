@@ -35,7 +35,7 @@ public class KeypassTest {
 //			//storeIV(,"string.txt")
 //		System.out.println("done, check the files");
 		//test the password decoding once you hav already enrolled
-		UserData ud = new UserData("guest","password");
+		UserData ud = new UserData("guest","password","keys/");
 		byte[] cryptodata = Files.readAllBytes(Paths.get("guest_USERDATA.txt"));
 		ArrayList<LoginInfo> udata;
 		byte[] iv = Files.readAllBytes(Paths.get("guest_IV.txt"));
