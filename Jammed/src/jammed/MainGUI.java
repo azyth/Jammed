@@ -13,20 +13,18 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
+// TODO display error messages to user
 public class MainGUI extends JFrame {
 
-    public String ErrorMSG;
-
-    public boolean changesMade = false;
-    public LoginInfo pwdChange;
+    private boolean changesMade = false;
     public String CurrentUser;
 
     private JTextArea userDataDisplay;
     private JTextField usernameTF, passwordTF, serviceTF;
     private ArrayList<LoginInfo> userDataArray;
     private boolean showPasswords = false;
-    private GActionType buttonClicked;
 
+    private ActionClass action = new ActionClass();
 
     public MainGUI(ArrayList<LoginInfo> ud) {
         super("Jammed"); setBounds(300, 100, 800, 600);
@@ -35,7 +33,7 @@ public class MainGUI extends JFrame {
         con.setBackground(Color.WHITE);
         con.setLayout(null);
         userDataArray = ud;
-
+        action.type = GActionType.NULL;
         /* Display File */
         userDataDisplay = new JTextArea();
         userDataDisplay.setSize(400, 450); userDataDisplay.setLocation(30, 30); userDataDisplay.setBackground(Color.LIGHT_GRAY);
@@ -104,9 +102,14 @@ public class MainGUI extends JFrame {
     /** Class to save changes */
     private class SaveButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            // Upload new userdata to server
-            // TODO encrypt data and send to server
-            buttonClicked = GActionType.SAVE;
+            if(changesMade) {
+                synchronized (action) {
+                    action.userData = userDataArray;
+                    action.type = GActionType.SAVE;
+                }
+                action.notify();
+            }
+            changesMade = false;
         }
     }
 
@@ -164,41 +167,35 @@ public class MainGUI extends JFrame {
 
     /** Class to handle a password change */
     private class ChangePWDButtonHandler implements ActionListener {
-        private JTextField oldpwdTF, newpwdTF, confirmpwdTF;
+        private JTextField newpwdTF, confirmpwdTF;
         private JFrame newWindow;
         private JLabel pwdChangeInfo = new JLabel(" ");
 
         public void actionPerformed(ActionEvent event) {
             newWindow = new JFrame("Change Password");
-            newWindow.setBounds(500, 250, 400, 250);
+            newWindow.setBounds(500, 250, 400, 225);
 
             Container con2 = newWindow.getContentPane(); // inherit main frame
             con2.setBackground(Color.WHITE);
             con2.setLayout(null);
 
-            JLabel oldpwdLabel = new JLabel("Old Password: ");
-            oldpwdLabel.setSize(100, 30); oldpwdLabel.setLocation(10, 10);
             JLabel newpwdLabel = new JLabel("New Password: ");
-            newpwdLabel.setSize(100, 30); newpwdLabel.setLocation(10, 40);
+            newpwdLabel.setSize(100, 30); newpwdLabel.setLocation(10, 10);
             JLabel confirmpwdLabel = new JLabel("Confirm Password: ");
-            confirmpwdLabel.setSize(150, 30); confirmpwdLabel.setLocation(10, 70);
+            confirmpwdLabel.setSize(150, 30); confirmpwdLabel.setLocation(10, 40);
 
-            oldpwdTF = new JPasswordField(10);
-            oldpwdTF.setBounds(140, 10, 150, 30);
             newpwdTF = new JPasswordField(10);
-            newpwdTF.setBounds(140, 40, 150, 30);
+            newpwdTF.setBounds(140, 10, 150, 30);
             confirmpwdTF = new JPasswordField(10);
-            confirmpwdTF.setBounds(140, 70, 150, 30);
+            confirmpwdTF.setBounds(140, 40, 150, 30);
 
-            JButton chngpwdB = new JButton("Confirm Change"); chngpwdB.setBounds(10, 120, 150, 50);
+            JButton chngpwdB = new JButton("Confirm Change"); chngpwdB.setBounds(10, 80, 150, 50);
             chngpwdB.addActionListener(new ConfirmButtonHandler());
-            JButton exitB = new JButton("Cancel"); exitB.setBounds(170, 120, 100, 50);
+            JButton exitB = new JButton("Cancel"); exitB.setBounds(170, 80, 100, 50);
             exitB.addActionListener(new ExitCHNGPWDButtonHandler());
 
-            con2.add(oldpwdLabel);
             con2.add(newpwdLabel);
             con2.add(confirmpwdLabel);
-            con2.add(oldpwdTF);
             con2.add(newpwdTF);
             con2.add(confirmpwdTF);
             con2.add(chngpwdB);
@@ -210,33 +207,29 @@ public class MainGUI extends JFrame {
         /** Class to handle what happens when user presses "Confirm Change" Button */
         private class ConfirmButtonHandler implements ActionListener {
             public void actionPerformed(ActionEvent event) {
-                String oldpwd = oldpwdTF.getText();
                 String newpwd = newpwdTF.getText();
                 String conpwd = confirmpwdTF.getText();
 
-                boolean pwdAreEmpty = oldpwd.isEmpty() || newpwd.isEmpty() || conpwd.isEmpty();
+                boolean pwdAreEmpty = newpwd.isEmpty() || conpwd.isEmpty();
                 boolean newMatchesCon = newpwd.equals(conpwd);
-                boolean oldMatchesnew = oldpwd.equals(newpwd);
-
                 String msg = " ";
 
                 if(pwdAreEmpty) { // Make sure the attempted change isn't blatant bs
                     msg = "Cannot have an empty password";
                 } else if(!newMatchesCon) {
                     msg = "New password must match confirmation field";
-                } else if(oldMatchesnew) {
-                    msg = "Cannot make the new password the same as the old one";
                 } else {
-                    // Do password change in here
-                    // TODO
-
-                    pwdChange.password = conpwd;
-                    buttonClicked = GActionType.CHANGE_PWD;
+                    synchronized (action) {
+                        LoginInfo newpwdInfo = new LoginInfo();
+                        newpwdInfo.password = conpwd; newpwdInfo.username = CurrentUser; newpwdInfo.website = "changepwd";
+                        action.pwdChange = newpwdInfo;
+                        action.type = GActionType.CHANGE_PWD;
+                    }
+                    action.notify();
                     msg = "Password changed!";
                 }
                 pwdChangeInfo.setText(msg); pwdChangeInfo.setForeground(Color.RED);
-                pwdChangeInfo.setBounds(10, 185, 400, 30);
-
+                pwdChangeInfo.setBounds(10, 140, 400, 30);
             }
         }
 
@@ -249,17 +242,25 @@ public class MainGUI extends JFrame {
     } // End chngpwd class
 
     /** Class to exit the program */
-    // TODO more comprehensive exit
     private class ExitButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            buttonClicked = GActionType.EXIT;
-            System.exit(0);
+            synchronized (action) {
+                if(changesMade) {
+                    action.userData = userDataArray;
+                }
+                action.type = GActionType.EXIT;
+                action.notify();
+            }
+            changesMade = false;
         }
     }
 
     private class GetLogButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            buttonClicked = GActionType.LOG;
+            synchronized (action) {
+                action.type = GActionType.LOG;
+            }
+            action.notify();
         }
     }
 
@@ -302,17 +303,27 @@ public class MainGUI extends JFrame {
         new MainGUI(ud);
     }
 
+    public enum GActionType {SAVE, CHANGE_PWD, LOG, EXIT, NULL};
 
-    /* Everything that the user can do. Note that "ADD" covers both adding and
-    * modifying existing passwords, and "CHANGE" refers to modifying the overall
-    * account password. */
-    public enum GActionType {SAVE, CHANGE_PWD, LOG, EXIT};
-
-    public GActionType getAction() {
-        return buttonClicked;
+    public class ActionClass {
+        ArrayList<LoginInfo> userData;
+        LoginInfo pwdChange;
+        GActionType type;
     }
-    public void resetActionType() {
-        buttonClicked = null;
+
+    public ActionClass getAction() throws InterruptedException {
+        synchronized (action) {
+            while(action.type == GActionType.NULL) {
+                action.wait();
+            }
+            ActionClass copy = new ActionClass();
+            copy.type = action.type; copy.pwdChange = action.pwdChange;
+            copy.userData = action.userData;
+            action.userData = null;
+            action.pwdChange = null;
+            action.type = GActionType.NULL;
+        }
+        return action;
     }
 
 } // END CLASS
