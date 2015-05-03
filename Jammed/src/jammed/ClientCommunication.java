@@ -59,17 +59,17 @@ public class ClientCommunication{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public void send(Request thing) throws SocketException {
 		try {
+			assert(this.tx!=null);
 			this.tx.writeObject(thing);
 			this.tx.flush();
 		} catch (RuntimeException re) {
 			throw re;
 		} catch (Exception e) {
-			throw new SocketException("Error in Communication.send!");
+			throw new SocketException("Error in ClientCommunication.send!");
 		}
 	}
 

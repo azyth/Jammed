@@ -18,7 +18,7 @@ public class LoginGUI extends JFrame {
     private JLabel extraInfo = new JLabel(" ");
     private String fileChosenToStoreKeys = Paths.get(".").toAbsolutePath().normalize().toString() + "/";
 
-    private LoginInfo login;
+    private LoginInfo login = new LoginInfo();
 
     public LoginGUI() { // the frame constructor method
         super("Jammed"); setBounds(300, 200, 600, 300);
@@ -47,7 +47,7 @@ public class LoginGUI extends JFrame {
         JButton exitB = new JButton("Exit"); exitB.setBounds(395, 140, 150, 50);
         exitB.addActionListener(new ExitButtonHandler());
 
-        String infoMessage = "Passwords must be alphanumeric";
+        String infoMessage = "Usernames must be alphanumeric";
         JLabel info = new JLabel(infoMessage);
         info.setSize(300, 30); info.setLocation(20, 200);
 
@@ -70,6 +70,7 @@ public class LoginGUI extends JFrame {
     /** Class to handle user registration */
     private class RegisterButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
+            cleartext();
             String username, password;
             username = usernameTF.getText();
             password = passwordTF.getText();
@@ -79,8 +80,12 @@ public class LoginGUI extends JFrame {
 
             if(notBS) {
                 // TODO try to register user
-                setLogin("enroll", username, password);
+                synchronized (login) {
+                    setLogin("enroll", username, password);
+                }
+                login.notify();
 
+                /*
                 boolean registration_successful = true;
                 if(registration_successful) {
                     ChooseKeyLocation ckl = new ChooseKeyLocation();
@@ -90,6 +95,7 @@ public class LoginGUI extends JFrame {
                     extraInfo.setText("Username already exists!");
                     extraInfo.setForeground(Color.RED);
                 }
+                */
 
             } else {
                 extraInfo.setText("Invalid username or password!");
@@ -133,13 +139,26 @@ public class LoginGUI extends JFrame {
     /** Class to handle when the user presses the loging button */
     private class LoginButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
+            cleartext();
+
             String username, password;
             username = usernameTF.getText();
             password = passwordTF.getText();
 
-            extraInfo.setText("Incorrect login credentials!");
-            extraInfo.setForeground(Color.RED);
-            //TODO Attempt to login
+
+            boolean notBS = !username.isEmpty() && !password.isEmpty();
+
+            if(notBS) {
+                // TODO try to register user
+                synchronized (login) {
+                    setLogin("", username, password);
+                }
+                login.notify();
+
+            } else {
+                extraInfo.setText("Invalid username or password!");
+                extraInfo.setForeground(Color.RED);
+            }
         }
     }
 
@@ -159,11 +178,32 @@ public class LoginGUI extends JFrame {
     }
 
     public LoginInfo getLogin() {
-        return login;
+        LoginInfo copy = new LoginInfo();
+        synchronized (login) {
+            // check if this has been set yet -- if it has, username should be
+            // nonempty
+            if (login.username.equals("")) {
+                login.wait();
+            }
+            copy.website = login.website;
+            copy.username = login.username;
+            copy.password = login.password;
+        }
+        return copy;
     }
 
     public void disableGui() {
         setVisible(false);
+    }
+
+    public void error(String message) {
+        extraInfo.setText(message);
+        extraInfo.setForeground(Color.RED);
+    }
+
+    private void cleartext() {
+        extraInfo.setText("");
+        extraInfo.setForeground(Color.WHITE);
     }
 
     /* Main method to run the gui*/
