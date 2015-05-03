@@ -47,6 +47,7 @@ public class Jammed {
 
     try {
       server.connect();
+      System.out.println("Jammed connected sending login");
 
       // keep out here in case we need to re-send after some timeout???
       LoginInfo login = null;

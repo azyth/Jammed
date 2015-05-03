@@ -64,6 +64,7 @@ public class ClientCommunication{
 
 	public void send(Request thing) throws SocketException {
 		try {
+			assert(this.tx!=null);
 			this.tx.writeObject(thing);
 			this.tx.flush();
 		} catch (RuntimeException re) {
