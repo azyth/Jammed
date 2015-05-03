@@ -132,7 +132,6 @@ public class LoginGUI extends JFrame {
             }
             jf.setVisible(false);
             newFrame.setVisible(false);
-            //System.out.println(fileChosenToStoreKeys);
         }
     }
 
