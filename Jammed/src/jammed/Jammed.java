@@ -37,9 +37,9 @@ public class Jammed {
     // (1) display a user interface
     UserInterface ui = new UserInterface();
 
-    Communication server = null;
+    ClientCommunication server = null;
     try {
-      server = new Communication(Communication.Type.CLIENT);
+      server = new ClientCommunication();
     } catch (SocketException e) {
       // should never happen: does not throw exception in client case
       return;

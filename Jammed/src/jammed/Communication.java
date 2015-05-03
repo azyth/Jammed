@@ -2,7 +2,6 @@ package jammed;
 
 
 // TODO: Fix all of the exceptions!
-// TODO: Certificates
 // TODO: Soft code host name and port
 
 import java.io.EOFException;
@@ -11,18 +10,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.ServerSocket;
-
-import javax.net.SocketFactory;
 import javax.net.ServerSocketFactory;
-import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.SSLSocketFactory;
-
 import java.net.SocketException;
-
 import javax.net.ssl.*;
-
 import java.security.KeyStore;
-import java.security.cert.*;
 
 /**
  * Provides a wrapper class abstraction for socket communications.
@@ -32,7 +23,6 @@ import java.security.cert.*;
  */
 public class Communication {
 
-  private String hostname = "localHost";
   private int port = 54309;
 
   private ServerSocket serverSocket = null;
