@@ -18,6 +18,9 @@ public class GuiJammed {
 
         String ErrorMSG = " ";
 
+
+        
+
         Communication server = null;
         try {
             server = new Communication(Communication.Type.CLIENT);
