@@ -177,7 +177,7 @@ public class LoginGUI extends JFrame {
         login.website = website; login.username = username; login.password = password;
     }
 
-    public LoginInfo getLogin() {
+    public LoginInfo getLogin() throws InterruptedException {
         LoginInfo copy = new LoginInfo();
         synchronized (login) {
             // check if this has been set yet -- if it has, username should be
