@@ -1,12 +1,12 @@
 package jammed;
 
-/*
- * Created by Marcos on 5/2/15.
- */
-
-import java.net.SocketException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.SocketException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 
 
@@ -15,169 +15,168 @@ public class GuiJammed {
     public static final String LOGFILE = "log.txt";
 
     public static void main(String[] args) {
-    	String dir;
-        String ErrorMSG = " ";
-
-
-        
-
-        ClientCommunication server = null;
-        try {
-            server = new ClientCommunication();
-        } catch (SocketException e) {
-            // should never happen: does not throw exception in client case
-            return;
-        }
 
         LoginGUI LIG = new LoginGUI();
 
+        ClientCommunication server = new ClientCommunication();
+
         try {
             server.connect();
+            LoginInfo login;
+            ArrayList<LoginInfo> plaindata = new ArrayList<>();
+            UserData data;
+            boolean enroll;
 
-            LoginInfo login = null;
-            while(login == null) {
+            while (true) {
+
                 login = LIG.getLogin();
-            }
 
-            ArrayList<LoginInfo> plaindata = new ArrayList<LoginInfo>();
-            UserData data = null;
-            boolean success = false;
-
-            while (!success) {
-                boolean enroll = login.website.equals("enroll");
+                enroll = login.website.equals("enroll");
                 Request req = new LoginReq(login, enroll);
                 server.send(req);
 
                 LoginReq verif = (LoginReq) server.receive();
-                dir = LIG.getFileChosenByUserToStoreKeys(); //TODO replace keys/ with dir
-                
+
                 if (verif == null) {
-
-                    // the server gave a null response--this probably means we should
-                    // exit...
-                    ErrorMSG = "Server gave a null response";
-
+                    // the server gave a null response--this probably means we should exit...
+                    LIG.error("Server gave a null response ;(");
                 } else if (verif.getSuccess()) {
-                    success = true;
-                    
-                    if (enroll) {
-                    	
-                        // initialize the files on this machine and an empty place to store data
-                        UserData.enroll(login.username, login.password, dir); //TODO get proper filepath location to store key and IV
-                        data = new UserData(login.username, login.password, dir);
-                    } else {
-                        // get the existing data
-                        server.send(new UserDataReq());
-                        UserDataReq serverdata = (UserDataReq) server.receive();
-
-                        if (!serverdata.getSuccess()) {
-                            ErrorMSG = "Could not get your data from the server";
-                            //System.out.println("here");
-                            //throw new UserDataException(serverdata.getError());
-                        }
-
-                        // TODO make sure this throws FNFException instead of IOException
-                        data = new UserData(login.username, login.password, dir);
-
-                        // get the data in a usable form
-                        plaindata = data.decData(serverdata.getData(), serverdata.getIV());  //TODO GUI add file directory string
-                    }
-
+                    break; // break and create main gui
                 } else {
-                    ErrorMSG = "There was an error logging in!";
                     // display the appropriate error message and try again
                     //ui.error(Request.errToString(verif.getError()));
+                    LIG.error(Request.errToString(verif.getError()));
                 }
             }
-            dir = LIG.getFileChosenByUserToStoreKeys();
-            // Logging in was successful, create main display
-            LIG.disableGui(); //LIG.setVisible(false);
-            // (6) display the data
-            // (7) track any changes that were made
-            MainGUI.GActionType action = null;
-            MainGUI MAG = new MainGUI(plaindata);
-            MAG.CurrentUser = login.username;
 
-            while (action == null || action != MainGUI.GActionType.EXIT) {
+            String dirForKeys = LIG.getFileChosenByUserToStoreKeys();
+            if (enroll) {
+                // initialize the files on this machine and an empty place to store data
+                UserData.enroll(login.username, login.password, dirForKeys);
+                data = new UserData(login.username, login.password, dirForKeys);
+            } else {
+                // get the existing data
+                server.send(new UserDataReq());
+                UserDataReq serverdata = (UserDataReq) server.receive();
 
-                action = MAG.getAction();
-                switch (action) {
+                if (serverdata.getSuccess()) {
+                    data = new UserData(login.username, login.password, dirForKeys);
+                    // get the data in a usable form
+                    plaindata = data.decData(serverdata.getData(), serverdata.getIV());
+
+                } else {
+
+                    LIG.error(serverdata.errToString(serverdata.getError()));
+                    server.close();
+                    return; // at this point restart server and client.
+                }
+            }
+
+            LIG.disableGui();
+            MainGUI MG = new MainGUI(plaindata);
+
+            while(true) {
+                MainGUI.ActionClass action = MG.getAction();
+
+                switch( action.type) {
                     case SAVE:
-                        if (MAG.changesMade) {																// OR empty!
-                            if (plaindata.toString().equalsIgnoreCase("")) {  									//blank string crypto check
-                                plaindata = UserData.stringToList("default \n value \n here");
-                            }
-                            // (8) if changes were made, send updated data to server for storage
-                            byte[] iv = UserData.generateIV();
-                            byte[] encdata = data.encData(plaindata, iv);
-                            server.send(new UserDataReq(encdata,iv));					//send upload request
+                        ArrayList<LoginInfo> ud = action.userData;
+                        byte[] iv = UserData.generateIV();
+                        byte[] encdata = data.encData(ud, iv);
+                        server.send(new UserDataReq(encdata,iv));					//send upload request
 
-                            //receive upload resonse with success of error message
-                            UserDataReq uploadresp = (UserDataReq) server.receive();
-                            if (!uploadresp.getSuccess()){
-                                // something terrible happened
-                                ErrorMSG = "Could not save data";
-                            }
-                            MAG.changesMade = false;
+                        //receive upload resonse with success of error message
+                        UserDataReq uploadresp = (UserDataReq) server.receive();
+                        if (!uploadresp.getSuccess()){
+                            // something terrible happened
+                            throw new UserDataException(uploadresp.getError());
                         }
+                        break;
                     case CHANGE_PWD:
-                        login = MAG.pwdChange;
+                        login = action.pwdChange;
                         Request req = new LoginReq(login, true, true); //enroll , update
                         server.send(req);
+
                         LoginReq verif = (LoginReq) server.receive();
 
                         if (verif == null) {
-                            // the server gave a null response--this probably means we should
-                            // exit...
-                            ErrorMSG = "Could not verify password change";
+                            // the server gave a null response--this probably means we should exit...
+                            //ui.error("verification was null");
+
                         } else if (verif.getSuccess()) {
-                            success = true;
+                            UserData.enroll(login.username, login.password, dirForKeys);
+                            data = new UserData(login.username, login.password, dirForKeys);
                         }
-                        UserData.enroll(login.username, login.password, dir);			//creates new local key files TODO get proper filepath location to store keys
-                        data = new UserData(login.username, login.password, dir);		//updates teh current userdata instance
-                        MAG.changesMade = true;
+                        break;
                     case LOG:
                         server.send(new LogReq());
                         LogReq log = (LogReq) server.receive();
 
                         if (log.getSuccess()) {
                             Files.write(Paths.get(LOGFILE), log.getLog().getBytes("UTF-8"));
-                            // TODO this might need to change; if this is just a text display
-                            // method this is OK though
-                            ErrorMSG = "Wrote log to file " + LOGFILE;
-                        } else {
-                            ErrorMSG = "Could not get log: Error " + log.getError();
+
                         }
+                        break;
                     case EXIT:
-                        if (plaindata.toString().equalsIgnoreCase("")){
-                            plaindata = UserData.stringToList("default \n placeholder \n inserted");
-                        }
-                        if (MAG.changesMade) {                                                                // OR empty!
-                            // (8) if changes were made, send updated data to server for storage
-                            byte[] iv = UserData.generateIV();
-                            byte[] encdata = data.encData(plaindata, iv);
-                            server.send(new UserDataReq(encdata, iv));                    //send upload request
+                        ArrayList<LoginInfo> ude = action.userData;
+                        if(ude != null) {
+                            byte[] ive = UserData.generateIV();
+                            byte[] encdatae = data.encData(ude, ive);
+                            server.send(new UserDataReq(encdatae, ive));                    //send upload request
 
                             //receive upload resonse with success of error message
-                            UserDataReq uploadresp = (UserDataReq) server.receive();
-                            if (!uploadresp.getSuccess()) {
+                            UserDataReq uploadrespe = (UserDataReq) server.receive();
+                            if (!uploadrespe.getSuccess()) {
                                 // something terrible happened
-                                ErrorMSG = "Could not save data";
+                                throw new UserDataException(uploadrespe.getError());
                             }
                         }
-                }
+                        // close the connection...
+                        server.send(new TerminationReq(TerminationReq.Term.USER_REQUEST));
+                        server.close();
+                        System.exit(0);
+                        break;
+                    case NULL:
+                        // do nothing
+                        break;
+                    default:
+                        // do nothing
+                        break;
+                }// end switch
+            } // end while
 
-            }
-
-        } catch(Exception e) {
-            ErrorMSG = "There was an error";
+            // TODO Display error messages to user
+        } catch (FileNotFoundException e) {
+            //ui.error("No key files found - have you enrolled yet?");
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+            //ui.error("Something went wrong with the cryptography - exiting...");
+        } catch (UnsupportedEncodingException e) {
+            //ui.error("Does your system not support UTF8? That's dumb.");
+        } catch (ClassCastException e) {
+            //ui.error("Bad response from server - exiting...");
+        } catch (SocketException e) {
+            //ui.error("Server suffered fatal DNE error - exiting. Any changes you " +
+                    //"made to your data may be unsaved.");
+        } catch (UserDataException e) {
+            //ui.error(Request.errToString(e.error));
+        } catch (IOException e) {
+            e.printStackTrace();
+            //ui.error("Something bad happened with IO. Exiting.");
+            e.printStackTrace();
+        } catch(InterruptedException e) {
+            e.printStackTrace();
         }
-    } // END MAIN
 
+        server.close();
+        System.exit(0);
+    }
 
+    private static class UserDataException extends Exception {
+        Request.ErrorMessage error;
+        UserDataException(Request.ErrorMessage e) {
+            error = e;
+        }
+    }
 
-
-
-
-
-} // END CLASS
+}

@@ -37,13 +37,7 @@ public class Jammed {
     // (1) display a user interface
     UserInterface ui = new UserInterface();
 
-    ClientCommunication server = null;
-    try {
-      server = new ClientCommunication();
-    } catch (SocketException e) {
-      // should never happen: does not throw exception in client case
-      return;
-    }
+    ClientCommunication server = new ClientCommunication();
 
     try {
       server.connect();
@@ -190,7 +184,7 @@ public class Jammed {
 
           default:
 
-            ui.error("Unknown action type.");
+            ui.error("Unknown type type.");
         }
       }
 

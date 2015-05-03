@@ -28,14 +28,10 @@ public class ClientCommunication{
 	private ObjectOutputStream tx = null;
 	private boolean dummy = true;
 
-	public ClientCommunication() throws SocketException{
-		try {
+	public ClientCommunication() {
 			// Ensures dummy ClientCommunication object is returned
 			this.dummy = true;
 
-		} catch (Exception e) {
-			throw new SocketException("Error in ClientCommunication constructor!");
-		}
 	}
 
 	public void connect() {

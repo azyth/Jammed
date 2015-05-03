@@ -129,7 +129,7 @@ public class UserInterface {
     System.out.println();
   }
 
-  /* Gets the next user action. Actions are chosen from the enum ActionType and
+  /* Gets the next user type. Actions are chosen from the enum ActionType and
    * returned in an Action object. */
   public Action getAction() throws IOException, UnsupportedEncodingException {
     String help = "Possible operations:\n" +
@@ -148,7 +148,7 @@ public class UserInterface {
     System.out.println(help);
 
     while (!success) {
-      System.out.print("Enter action: ");
+      System.out.print("Enter type: ");
 
       String choice = br.readLine();
       if (choice == null) {
@@ -247,7 +247,7 @@ public class UserInterface {
   public enum ActionType {ADD, REMOVE, LOG, CHANGE, EXIT};
 
   /* Holds an ActionType and a LoginInfo containing information pertaining to
-   * that action. */
+   * that type. */
   public class Action {
     public ActionType type;
     public LoginInfo info;

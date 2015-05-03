@@ -182,12 +182,13 @@ public class LoginGUI extends JFrame {
         synchronized (login) {
             // check if this has been set yet -- if it has, username should be
             // nonempty
-            if (login.username.equals("")) {
+            while (login.username.equals("")) {
                 login.wait();
             }
             copy.website = login.website;
             copy.username = login.username;
             copy.password = login.password;
+            login.website = ""; login.username = ""; login.password = "";
         }
         return copy;
     }
