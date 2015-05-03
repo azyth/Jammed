@@ -62,3 +62,20 @@ Time Written: 2015/05/02_16:32:38 | Entry: IV read for user bob
 Time Written: 2015/05/02_16:32:41 | Entry: User data written for user bob
 Time Written: 2015/05/02_16:32:41 | Entry: IV written for user bob
 Time Written: 2015/05/02_16:32:41 | Entry: User bob logged out.
+Time Written: 2015/05/03_14:35:50 | Entry: User e Created
+Time Written: 2015/05/03_14:35:50 | Entry: pwd written for user e
+Time Written: 2015/05/03_14:35:52 | Entry: User data written for user e
+Time Written: 2015/05/03_14:35:52 | Entry: IV written for user e
+Time Written: 2015/05/03_14:35:52 | Entry: User e logged out.
+Time Written: 2015/05/03_14:36:17 | Entry: Pwd read for user e
+Time Written: 2015/05/03_14:36:17 | Entry: pwd authentication success for user e
+Time Written: 2015/05/03_14:36:17 | Entry: User data read for user e
+Time Written: 2015/05/03_14:36:17 | Entry: IV read for user e
+Time Written: 2015/05/03_14:36:34 | Entry: pwd written for user e
+Time Written: 2015/05/03_14:36:36 | Entry: User data written for user e
+Time Written: 2015/05/03_14:36:36 | Entry: IV written for user e
+Time Written: 2015/05/03_14:36:36 | Entry: User e logged out.
+Time Written: 2015/05/03_14:37:16 | Entry: Pwd read for user e
+Time Written: 2015/05/03_14:37:16 | Entry: pwd authentication success for user e
+Time Written: 2015/05/03_14:37:16 | Entry: User data read for user e
+Time Written: 2015/05/03_14:37:16 | Entry: IV read for user e

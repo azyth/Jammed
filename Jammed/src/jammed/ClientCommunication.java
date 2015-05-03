@@ -20,7 +20,7 @@ import javax.net.ssl.*;
 import java.security.KeyStore;
 
 public class ClientCommunication{
-	private String hostname = "localhost";
+	private String hostname = "10.148.6.250"; //THIS IS THE ADRESS TO CONECT TO
 	private int port = 54309;
 
 	private Socket socket = null;
