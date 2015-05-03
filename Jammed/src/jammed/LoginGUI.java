@@ -162,7 +162,7 @@ public class LoginGUI extends JFrame {
         return login;
     }
 
-    public void disable() {
+    public void disableGui() {
         setVisible(false);
     }
 

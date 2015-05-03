@@ -21,9 +21,9 @@ public class GuiJammed {
 
         
 
-        Communication server = null;
+        ClientCommunication server = null;
         try {
-            server = new Communication(Communication.Type.CLIENT);
+            server = new ClientCommunication();
         } catch (SocketException e) {
             // should never happen: does not throw exception in client case
             return;
@@ -91,7 +91,7 @@ public class GuiJammed {
             }
             dir = LIG.getFileChosenByUserToStoreKeys();
             // Logging in was successful, create main display
-            LIG.disable(); //LIG.setVisible(false);
+            LIG.disableGui(); //LIG.setVisible(false);
             // (6) display the data
             // (7) track any changes that were made
             MainGUI.GActionType action = null;
