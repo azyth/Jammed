@@ -40,7 +40,7 @@ public class Communication {
     	SSLContext context = SSLContext.getInstance("SSL");
   	  	KeyStore ks = KeyStore.getInstance("JKS");
   	  	KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-  	  	FileInputStream ksin = new FileInputStream("serverkeystore.jks");
+  	  	FileInputStream ksin = new FileInputStream("jammedkeystore.jks");
   	  	ks.load(ksin, "cs5430".toCharArray());
   	  	kmf.init(ks, "cs5430".toCharArray());
   	  	context.init(kmf.getKeyManagers(), null, null);
