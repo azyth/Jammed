@@ -19,6 +19,16 @@ public class Jammed {
 
   public static final String LOGFILE = "log.txt";
 
+  // server for the connection duration
+  private static ClientCommunication server = new ClientCommunication();
+
+  // userdata object that we can use to encrypt/decrypt the data
+  private static UserData data;
+
+  // client's data
+  private static ArrayList<LoginInfo> plaindata = new ArrayList<LoginInfo>();
+  private static boolean changes = false;
+
   /**
    * Main client application: This should do the following:
    *  (1) Display a user interface
@@ -37,7 +47,9 @@ public class Jammed {
     // (1) display a user interface
     UserInterface ui = new UserInterface();
     String dir = "keys/";
-    ClientCommunication server = new ClientCommunication();
+
+    // add shutdown hook to send the "close" command
+    Runtime.getRuntime().addShutdownHook(new Shutdown());
 
     try {
       server.connect();
@@ -45,8 +57,6 @@ public class Jammed {
 
       // keep out here in case we need to re-send after some timeout???
       LoginInfo login = null;
-      ArrayList<LoginInfo> plaindata = new ArrayList<LoginInfo>();
-      UserData data = null;
       boolean success = false;
 
       while (!success) {
@@ -71,7 +81,7 @@ public class Jammed {
           if (enroll) {
             // initialize the files on this machine and an empty place to store
             // data
-            UserData.enroll(login.username, login.password, dir); //TODO get proper filepath location to store key and IV
+            UserData.enroll(login.username, login.password, dir);
             data = new UserData(login.username, login.password, dir);
           } else {
             // get the existing data
@@ -87,7 +97,7 @@ public class Jammed {
             data = new UserData(login.username, login.password, dir);
 
             // get the data in a usable form
-            plaindata = data.decData(serverdata.getData(), serverdata.getIV());  //TODO GUI add file directory string
+            plaindata = data.decData(serverdata.getData(), serverdata.getIV());
           }
 
         } else {
@@ -100,7 +110,6 @@ public class Jammed {
 
       // (6) display the data
       // (7) track any changes that were made
-      boolean changes = false;
       Action action = null;
       ui.display(plaindata);
 
@@ -151,35 +160,33 @@ public class Jammed {
             break;
 
           case CHANGE:
-        	  
-        	  login.password = action.info.password;	
-        	  					// update password?
-              Request req = new LoginReq(login, true, true); //enroll , update
-              server.send(req);
 
-              LoginReq verif = (LoginReq) server.receive();
+            login.password = action.info.password;
+            // update password?
+            Request req = new LoginReq(login, true, true); //enroll , update
+            server.send(req);
 
-              if (verif == null) {
+            LoginReq verif = (LoginReq) server.receive();
 
-                // the server gave a null response--this probably means we should
-                // exit...
-                ui.error("verification was null");
+            if (verif == null) {
 
-              } else if (verif.getSuccess()) {
+              // the server gave a null response--this probably means we should
+              // exit...
+              ui.error("verification was null");
 
-                success = true;
-              }	
-        	  UserData.enroll(login.username, login.password, dir);			//creates new local key files TODO get proper filepath location to store keys
-              data = new UserData(login.username, login.password, dir);		//updates teh current userdata instance 
-              changes = true;
+            } else if (verif.getSuccess()) {
+
+              success = true;
+            }
+
+            //creates new local key files
+            UserData.enroll(login.username, login.password, dir);
+            //updates the current userdata instance 
+            data = new UserData(login.username, login.password, dir);
+            changes = true;
             break;
 
           case EXIT:
-        	  //Blank String Crypto check 
-        	  if (plaindata.toString().equalsIgnoreCase("")){  									
-      			plaindata = UserData.stringToList("default \n placeholder \n inserted");
-      		}
-        	  changes = true;
             break;
 
           default:
@@ -188,23 +195,7 @@ public class Jammed {
         }
       }
 
-      if (changes ) {																// OR empty! 
-        // (8) if changes were made, send updated data to server for storage
-        byte[] iv = UserData.generateIV();
-        byte[] encdata = data.encData(plaindata, iv); 
-        server.send(new UserDataReq(encdata,iv));					//send upload request
-
-        //receive upload resonse with success of error message
-        UserDataReq uploadresp = (UserDataReq) server.receive();
-        if (!uploadresp.getSuccess()){
-          // something terrible happened
-          throw new UserDataException(uploadresp.getError());
-        }
-      }
-
-      // close the connection...
-      server.send(new TerminationReq(TerminationReq.Term.USER_REQUEST));
-      server.close();
+      ui.close();
 
     } catch (FileNotFoundException e) {
       ui.error("No key files found - have you enrolled yet?");
@@ -225,11 +216,46 @@ public class Jammed {
       ui.error("Something bad happened with IO. Exiting.");
       e.printStackTrace();
     }
+  }
 
-    // (9) close the connection with the server
-    //TODO TerminationReq is there if we want to use it for this step.
-    server.close();
-    ui.close();
+  // shuts down server so that something like C^c won't hang the server
+  public static class Shutdown extends Thread {
+    @Override
+    public void run() {
+      System.out.println("In shutdown hook.");
+      if (server.connected()) {
+        System.out.println("conencted server");
+        try {
+          //Blank String Crypto check 
+          if (UserData.listToString(plaindata).equals("")){
+            System.out.println("blank string crypto here");
+            plaindata =
+              UserData.stringToList("default\nplaceholder\ninserted");
+            changes = true;
+          }
+
+          if (changes && data != null) {
+            // (8) if changes were made, send updated data to server for storage
+            byte[] iv = UserData.generateIV();
+            byte[] encdata = data.encData(plaindata, iv); 
+            server.send(new UserDataReq(encdata,iv)); //send upload request
+
+            //receive upload resonse with success of error message
+            UserDataReq uploadresp = (UserDataReq) server.receive();
+            if (!uploadresp.getSuccess()){
+              // something terrible happened
+              System.out.println("Passwords could not be stored!");
+            }
+          }
+
+          // close the connection...
+          server.send(new TerminationReq(TerminationReq.Term.USER_REQUEST));
+          server.close();
+        } catch (GeneralSecurityException | IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
   }
 
   private static class UserDataException extends Exception {

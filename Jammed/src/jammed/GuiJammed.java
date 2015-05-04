@@ -15,8 +15,18 @@ public class GuiJammed {
     public static final String DEFAULT_KEY_LOCATION = "defaultKeyLocation.txt";
     private static String catchallLocation = "keys/";
 
+    // server for connection duration
+    private static ClientCommunication server = new ClientCommunication();
+
+    // userdata object that we can use to encrypt/decrypt the data
+    private static UserData data;
+
+    // GUI where passwords are stored
+    private static MainGUI MG;
+
     public static void main(String[] args) {
 
+        Runtime.getRuntime().addShutdownHook(new Shutdown());
         File defaultKeyDirLocation = new File(DEFAULT_KEY_LOCATION);
         String dirForKeys = catchallLocation;
         try{
@@ -31,15 +41,11 @@ public class GuiJammed {
         }
 
         LoginGUI LIG = new LoginGUI();
-        MainGUI MG;
-
-        ClientCommunication server = new ClientCommunication();
 
         try {
             server.connect();
             LoginInfo login;
-            ArrayList<LoginInfo> plaindata = new ArrayList<>();
-            UserData data;
+            ArrayList<LoginInfo> plaindata = new ArrayList<LoginInfo>();
             boolean enroll;
 
             while (true) {
@@ -227,13 +233,54 @@ public class GuiJammed {
         }
 
         server.close();
-        System.exit(0);
     }
 
-    private static class UserDataException extends Exception {
-        Request.ErrorMessage error;
-        UserDataException(Request.ErrorMessage e) {
-            error = e;
+    // shuts down the connection so that exiting unexpectedly won't hang the
+    // server
+    public static class Shutdown extends Thread {
+      @Override
+      public void run() {
+        if (server.connected() && MG != null) {
+          try {
+            ArrayList<LoginInfo> plaindata = MG.getUserDataArray();
+            boolean changes = MG.getChangesMade();
+
+            //Blank String Crypto check 
+            if (UserData.listToString(plaindata).equals("")){
+              plaindata =
+                UserData.stringToList("default\nplaceholder\ninserted");
+              changes = true;
+            }
+
+            if (changes && data != null) {
+              // (8) if changes were made, send updated data to server for storage
+              byte[] iv = UserData.generateIV();
+              byte[] encdata = data.encData(plaindata, iv); 
+              server.send(new UserDataReq(encdata,iv)); //send upload request
+
+              //receive upload resonse with success of error message
+              UserDataReq uploadresp = (UserDataReq) server.receive();
+              if (!uploadresp.getSuccess()){
+                // something terrible happened
+                System.out.println("Passwords could not be stored!");
+              }
+            }
+
+            // close the connection...
+            server.send(new TerminationReq(TerminationReq.Term.USER_REQUEST));
+            server.close();
+          } catch (GeneralSecurityException | IOException e) {
+            e.printStackTrace();
+          }
         }
+      }
+    }
+
+
+    private static class UserDataException extends Exception {
+      Request.ErrorMessage error;
+      UserDataException(Request.ErrorMessage e) {
+        error = e;
+      }
     }
 } // END CLASS

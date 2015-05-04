@@ -53,6 +53,7 @@ public class MainGUI extends JFrame {
         JLabel passwordLabel = new JLabel("Password: ");
         passwordLabel.setSize(300, 30); passwordLabel.setLocation(440, 80);
 
+
         serverInfoLabel = new JLabel(" ");
         serverInfoLabel.setSize(300, 30); serverInfoLabel.setLocation(440, 230);
 
@@ -210,7 +211,7 @@ public class MainGUI extends JFrame {
             con2.add(chngpwdB);
             con2.add(exitB);
             con2.add(pwdChangeInfo);
-            newWindow.setVisible(true);
+            newWindow.setVisible(false);
         }
 
         /** Class to handle what happens when user presses "Confirm Change" Button */
@@ -305,6 +306,9 @@ public class MainGUI extends JFrame {
     }
     public ArrayList<LoginInfo> getUserDataArray() {
         return userDataArray;
+    }
+    public boolean getChangesMade() {
+        return changesMade;
     }
 
     public void setServerInfoLabel(String msg) {
