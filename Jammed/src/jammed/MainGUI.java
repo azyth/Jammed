@@ -46,22 +46,23 @@ public class MainGUI extends JFrame {
         udScroller.setBounds(30,30, 400, 450);
         /* End Display File */
         //////////////////////////////////////////////////////////////////////////////////
-        JLabel usernameLabel = new JLabel("Username: ");
-        usernameLabel.setSize(320, 30); usernameLabel.setLocation(440, 20);
-        JLabel passwordLabel = new JLabel("Password: ");
-        passwordLabel.setSize(320, 30); passwordLabel.setLocation(440, 50);
         JLabel ServiceLabel = new JLabel("Website: ");
-        ServiceLabel.setSize(320, 30); ServiceLabel.setLocation(440, 80);
+        ServiceLabel.setSize(300, 30); ServiceLabel.setLocation(440, 20);
+        JLabel usernameLabel = new JLabel("Username: ");
+        usernameLabel.setSize(300, 30); usernameLabel.setLocation(440, 50);
+        JLabel passwordLabel = new JLabel("Password: ");
+        passwordLabel.setSize(300, 30); passwordLabel.setLocation(440, 80);
+
 
         serverInfoLabel = new JLabel(" ");
         serverInfoLabel.setSize(300, 30); serverInfoLabel.setLocation(440, 230);
 
-        usernameTF = new JTextField(10);
-        usernameTF.setBounds(510, 20, 150, 30);
-        passwordTF = new JPasswordField(10);
-        passwordTF.setBounds(510, 50, 150, 30);
         serviceTF = new JTextField(10);
-        serviceTF.setBounds(510, 80, 150, 30);
+        serviceTF.setBounds(510, 20, 150, 30);
+        usernameTF = new JTextField(10);
+        usernameTF.setBounds(510, 50, 150, 30);
+        passwordTF = new JPasswordField(10);
+        passwordTF.setBounds(510, 80, 150, 30);
         ////////////////////////////////////////////////////////////////////////
         JButton addDataB = new JButton("Add Data"); addDataB.setBounds(440, 120, 100, 50);
         addDataB.addActionListener(new AddDataButtonHandler());
@@ -156,14 +157,12 @@ public class MainGUI extends JFrame {
      * */
     private class DeleteDataButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            boolean fieldsAreValid = !(usernameTF.getText().isEmpty() ||
-                    passwordTF.getText().isEmpty() || serviceTF.getText().isEmpty());
+            boolean fieldsAreValid = !(usernameTF.getText().isEmpty() || serviceTF.getText().isEmpty());
 
             if(fieldsAreValid) {
                 LoginInfo chng = new LoginInfo();
                 chng.website = serviceTF.getText();
                 chng.username = usernameTF.getText();
-                chng.password = passwordTF.getText();
                 int index = userDataArray.indexOf(chng);
 
                 if (index != -1) {
