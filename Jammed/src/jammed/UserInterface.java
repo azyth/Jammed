@@ -51,6 +51,14 @@ public class UserInterface {
       new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
 
     LoginInfo login = new LoginInfo();
+    
+    System.out.print("Please enter the directory your keys are located in \n" +
+    		"or if enrolling, the directory you wish to save your key file in \n " +
+    		"or hit enter to store them to the program 'keys' folder.\n ");
+    
+    String dir = br.readLine();
+    if (dir.isEmpty()){}
+    else{login.directory = dir+"/";}
 
     System.out.println("Enter \"*\" in the username field in order to enroll " +
         "yourself as a new user.\nUsernames should be chosen from the " +

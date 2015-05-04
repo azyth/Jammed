@@ -36,7 +36,7 @@ public class Jammed {
     //System.setProperty("java.net.ssl.trustStorePassword", "cs5430");
     // (1) display a user interface
     UserInterface ui = new UserInterface();
-
+    String dir = "keys/";
     ClientCommunication server = new ClientCommunication();
 
     try {
@@ -51,7 +51,7 @@ public class Jammed {
 
       while (!success) {
         login = ui.getLoginInfo();
-
+        dir = login.directory;
         boolean enroll = login.website.equals("enroll");
         Request req = new LoginReq(login, enroll);
         server.send(req);
@@ -71,8 +71,8 @@ public class Jammed {
           if (enroll) {
             // initialize the files on this machine and an empty place to store
             // data
-            UserData.enroll(login.username, login.password, "keys/"); //TODO get proper filepath location to store key and IV
-            data = new UserData(login.username, login.password,"keys/");
+            UserData.enroll(login.username, login.password, dir); //TODO get proper filepath location to store key and IV
+            data = new UserData(login.username, login.password, dir);
           } else {
             // get the existing data
             server.send(new UserDataReq());
@@ -84,7 +84,7 @@ public class Jammed {
             }
 
             // TODO make sure this throws FNFException instead of IOException
-            data = new UserData(login.username, login.password, "keys/");
+            data = new UserData(login.username, login.password, dir);
 
             // get the data in a usable form
             plaindata = data.decData(serverdata.getData(), serverdata.getIV());  //TODO GUI add file directory string
@@ -169,8 +169,8 @@ public class Jammed {
 
                 success = true;
               }	
-        	  UserData.enroll(login.username, login.password, "keys/");			//creates new local key files TODO get proper filepath location to store keys
-              data = new UserData(login.username, login.password, "keys/");		//updates teh current userdata instance 
+        	  UserData.enroll(login.username, login.password, dir);			//creates new local key files TODO get proper filepath location to store keys
+              data = new UserData(login.username, login.password, dir);		//updates teh current userdata instance 
               changes = true;
             break;
 

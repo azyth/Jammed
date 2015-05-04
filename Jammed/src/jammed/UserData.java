@@ -56,6 +56,7 @@ public class UserData {
 	 		IOException, InvalidKeyException {
 		this.keyfile = username+SECKEYFILE;
 		this.keyivfile = username+IVFILE;
+		this.dir = filepath;
 		//hash the password, 
 		SecretKey hashPass = hashPwd(password);
 		//load the encrypted key file, decrpyt with hashed password. load secret key to dataSecKey
@@ -260,7 +261,7 @@ public class UserData {
 	private void decKey(SecretKey hashPass, String file, String ivfile) throws IllegalBlockSizeException, 
 			BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, 
 			NoSuchPaddingException, IOException, InvalidAlgorithmParameterException {
-		
+		System.out.println(file);
 		byte[] encoded = Files.readAllBytes(Paths.get(file));
 		byte[] iv = Files.readAllBytes(Paths.get(ivfile));
 		Cipher pwc = Cipher.getInstance("AES/CBC/PKCS5Padding"); //AES/CBC/PKCS5Padding

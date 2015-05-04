@@ -8,6 +8,7 @@ public class LoginInfo implements Comparable<LoginInfo> {
   public String website = "";
   public String username = "";
   public String password = "";
+  public String directory = "keys/";
 
   @Override
   public String toString() {
