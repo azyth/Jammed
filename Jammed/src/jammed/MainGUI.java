@@ -53,7 +53,6 @@ public class MainGUI extends JFrame {
         JLabel passwordLabel = new JLabel("Password: ");
         passwordLabel.setSize(300, 30); passwordLabel.setLocation(440, 80);
 
-
         serverInfoLabel = new JLabel(" ");
         serverInfoLabel.setSize(300, 30); serverInfoLabel.setLocation(440, 230);
 

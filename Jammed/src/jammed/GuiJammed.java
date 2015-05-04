@@ -13,7 +13,6 @@ public class GuiJammed {
 
     public static final String LOGFILE = "log.txt";
     public static final String DEFAULT_KEY_LOCATION = "defaultKeyLocation.txt";
-    private static String catchallLocation = "keys/";
 
     // server for connection duration
     private static ClientCommunication server = new ClientCommunication();
@@ -27,6 +26,7 @@ public class GuiJammed {
     public static void main(String[] args) {
 
         Runtime.getRuntime().addShutdownHook(new Shutdown());
+        String catchallLocation = "keys/";
         File defaultKeyDirLocation = new File(DEFAULT_KEY_LOCATION);
         String dirForKeys = catchallLocation;
         try{
@@ -76,8 +76,7 @@ public class GuiJammed {
             dirForKeys = LIG.getDirChosenToStoreKeys();
             try {
                 List<String> defaultPathList = Files.readAllLines(Paths.get(DEFAULT_KEY_LOCATION), Charset.defaultCharset());
-                String defPathAsString = defaultPathList.get(0);
-                dirForKeys = defPathAsString;
+                dirForKeys = defaultPathList.get(0);
             } catch(Exception e) {
                 dirForKeys = LIG.getDirChosenToStoreKeys(); // if something goes wrong use default "keys/" dir
             }
