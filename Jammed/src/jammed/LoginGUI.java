@@ -10,19 +10,21 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.file.Paths;
 
 public class LoginGUI extends JFrame {
 
     private JTextField usernameTF, passwordTF;
     private JLabel extraInfo = new JLabel(" ");
-    private String fileChosenToStoreKeys="";//= Paths.get(".").toAbsolutePath().normalize().toString() + "/keys/";
-    //private theDirectory td;
+    private String fileChosenToStoreKeys="keys/";
+    private String defaultDirForKeys="keys/";
 
     private LoginInfo login = new LoginInfo();
 
     public LoginGUI() { // the frame constructor method
-        super("Jammed"); setBounds(300, 200, 600, 300);
+        super("Jammed"); setBounds(300, 200, 600, 350);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container con = getContentPane(); // inherit main frame
         con.setBackground(Color.WHITE);
@@ -50,12 +52,20 @@ public class LoginGUI extends JFrame {
         JButton exitB = new JButton("Exit"); exitB.setBounds(395, 140, 150, 50);
         exitB.addActionListener(new ExitButtonHandler());
 
+        JButton fileChooserB = new JButton("Choose Dir"); fileChooserB.setBounds(395, 200, 150, 50);
+        fileChooserB.addActionListener(new FChooserButtonHandler());
+
+        JButton defaultFileChooserB = new JButton("Default Dir"); defaultFileChooserB.setBounds(395, 260, 150, 50);
+        defaultFileChooserB.addActionListener(new DefaultFChooserButtonHandler());
+
         String infoMessage = "Usernames must be alphanumeric";
         JLabel info = new JLabel(infoMessage);
         info.setSize(300, 30); info.setLocation(20, 200);
 
         extraInfo.setSize(300, 30); extraInfo.setLocation(20, 230);
 
+        con.add(defaultFileChooserB);
+        con.add(fileChooserB);
         con.add(headerLabel);
         con.add(usernameLabel);
         con.add(usernameTF);
@@ -86,17 +96,6 @@ public class LoginGUI extends JFrame {
                     setLogin("enroll", username, password);
                     login.notify();
                 }
-                /*
-                boolean registration_successful = true;
-                if(registration_successful) {
-                    ChooseKeyLocation ckl = new ChooseKeyLocation();
-
-                } else {
-                    // display error
-                    extraInfo.setText("Username already exists!");
-                    extraInfo.setForeground(Color.RED);
-                }
-                */
             } else {
                 extraInfo.setText("Invalid username or password!");
                 extraInfo.setForeground(Color.RED);
@@ -135,8 +134,6 @@ public class LoginGUI extends JFrame {
         }
     }
 
-    //public String getFileChosenByUserToStoreKeys() {return fileChosenToStoreKeys;}
-
     public void setLogin(String website, String username, String password) {
         login.website = website; login.username = username; login.password = password;
     }
@@ -171,59 +168,53 @@ public class LoginGUI extends JFrame {
         extraInfo.setForeground(Color.WHITE);
     }
 
-    // CLASS TO CHOOSE THE DIRECTORY FOR THE KEYS
-    /*private class ChooseKeyLocation extends JPanel implements ActionListener {
-        // TODO Bug: When a user selects a folder, opens another dialog for user to choose folder again
-          // Not sure why this is happening
-
-        private JFrame newFrame; private JFileChooser jf;
-        public ChooseKeyLocation() {
-            // show file browser for choosing where their key goes
-            jf = new JFileChooser();
-            jf.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            jf.setAcceptAllFileFilterUsed(false);
-            jf.addActionListener(this);
-            newFrame = new JFrame("Choose where to store you keys");
-            newFrame.setBounds(500, 250, 500, 400);
-            newFrame.add(jf);
-
-            newFrame.setVisible(true);
-        }
+    private class FChooserButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            if (jf.showOpenDialog(this) == JFileChooser.CANCEL_OPTION) {
-                jf.setVisible(false);
-                newFrame.setVisible(false);
-                return;
-            }
-            if(jf.getSelectedFile() != null) {
-                synchronized (td) {
-                    td.chosenDir = jf.getSelectedFile().toPath().normalize().toString() + "/";
-                    td.notify();
-                }
-            }
-            jf.setVisible(false);
-            newFrame.setVisible(false);
-        }
 
-    } */
-
-    /*public theDirectory getDirForKeys() throws InterruptedException {
-        theDirectory copy;
-        synchronized (td) {
-            // check if this has been set yet -- if it has, username should be
-            // nonempty
-            while (td.chosenDir.isEmpty()) {
-                td.wait();
+            JFrame frame = new JFrame("Choose Key Location");
+            frame.setLayout(new FlowLayout());
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fileChooser.setAcceptAllFileFilterUsed(false);
+            int returnValue = fileChooser.showOpenDialog(null);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                fileChosenToStoreKeys = fileChooser.getSelectedFile().toPath().normalize().toString()+"/";
             }
-            copy = td;
-            td.chosenDir="";
         }
-        return copy;
     }
 
-    public class theDirectory {
-        String chosenDir="";
-    } */
+    private class DefaultFChooserButtonHandler implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+
+            JFrame frame = new JFrame("Set Default Key Location");
+            frame.setLayout(new FlowLayout());
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fileChooser.setAcceptAllFileFilterUsed(false);
+            int returnValue = fileChooser.showOpenDialog(null);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                defaultDirForKeys = fileChooser.getSelectedFile().toPath().normalize().toString()+"/";
+
+                try {
+                    FileOutputStream fileOut = new FileOutputStream(GuiJammed.DEFAULT_KEY_LOCATION);
+
+                    fileOut.write(defaultDirForKeys.getBytes());
+                    fileOut.close();
+                } catch (Exception e) {
+
+                }
+
+
+            }
+        }
+    }
+
+    public String getDirChosenToStoreKeys() {
+        return fileChosenToStoreKeys;
+    }
+    public String getDefaultDirForKeys() { return defaultDirForKeys; }
 
     /* Main method to run the gui*/
     public static void main(String args[]) {
