@@ -13,7 +13,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
-// TODO display error messages to user
 public class MainGUI extends JFrame {
 
     private boolean changesMade = false;
@@ -34,6 +33,8 @@ public class MainGUI extends JFrame {
         con.setBackground(Color.WHITE);
         con.setLayout(null);
         userDataArray = ud;
+
+
         action.type = GActionType.NULL;
         /* Display File */
         userDataDisplay = new JTextArea();
@@ -257,9 +258,7 @@ public class MainGUI extends JFrame {
     private class ExitButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             synchronized (action) {
-                if(changesMade) {
-                    action.userData = userDataArray;
-                }
+                action.userData = userDataArray;
                 action.type = GActionType.EXIT;
                 action.notify();
             }

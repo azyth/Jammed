@@ -152,19 +152,18 @@ public class GuiJammed {
                         break;
                     case EXIT:
                         ArrayList<LoginInfo> ude = action.userData;
-                        if(ude != null) {
-                            MG.setServerInfoLabel("Saving Changes...");
-                            byte[] ive = UserData.generateIV();
-                            byte[] encdatae = data.encData(ude, ive);
-                            server.send(new UserDataReq(encdatae, ive)); //send upload request
 
-                            //receive upload resonse with success of error message
-                            UserDataReq uploadrespe = (UserDataReq) server.receive();
-                            if (!uploadrespe.getSuccess()) {
-                                // something terrible happened
-                                MG.setServerInfoLabel("Could not save changes");
-                                throw new UserDataException(uploadrespe.getError());
-                            }
+                        MG.setServerInfoLabel("Saving Changes...");
+                        byte[] ive = UserData.generateIV();
+                        byte[] encdatae = data.encData(ude, ive);
+                        server.send(new UserDataReq(encdatae, ive)); //send upload request
+
+                        //receive upload resonse with success of error message
+                        UserDataReq uploadrespe = (UserDataReq) server.receive();
+                        if (!uploadrespe.getSuccess()) {
+                            // something terrible happened
+                            MG.setServerInfoLabel("Could not save changes");
+                            throw new UserDataException(uploadrespe.getError());
                         }
                         // close the connection...
                         MG.resetAction();
