@@ -233,6 +233,7 @@ public class MainGUI extends JFrame {
                         LoginInfo newpwdInfo = new LoginInfo();
                         newpwdInfo.password = conpwd; newpwdInfo.username = CurrentUser; newpwdInfo.website = "changepwd";
                         action.pwdChange = newpwdInfo;
+                        action.userData = userDataArray;
                         action.type = GActionType.CHANGE_PWD;
                         action.notify();
                     }
@@ -272,7 +273,6 @@ public class MainGUI extends JFrame {
                 action.type = GActionType.LOG;
                 action.notify();
             }
-
         }
     }
 
@@ -323,18 +323,21 @@ public class MainGUI extends JFrame {
     }
 
     public ActionClass getAction() throws InterruptedException {
+        ActionClass copy = new ActionClass();
         synchronized (action) {
             while(action.type == GActionType.NULL) {
                 action.wait();
             }
-            ActionClass copy = new ActionClass();
             copy.type = action.type; copy.pwdChange = action.pwdChange;
             copy.userData = action.userData;
             action.userData = null;
             action.pwdChange = null;
-            action.type = GActionType.NULL;
         }
-        return action;
+        return copy;
+    }
+
+    public void resetAction() {
+        action.type = GActionType.NULL;
     }
 
     public static void main(String[] args) {

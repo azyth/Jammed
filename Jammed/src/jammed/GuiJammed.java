@@ -55,7 +55,12 @@ public class GuiJammed {
                 }
             } // END WHILE
 
-            String dirForKeys = LIG.getFileChosenByUserToStoreKeys();
+            //LoginGUI.theDirectory theDir = LIG.getDirForKeys(); //getFileChosenByUserToStoreKeys();
+            //String dirForKeys = theDir.chosenDir;
+            //if(dirForKeys.isEmpty()) {
+            //    dirForKeys = Paths.get(".").toAbsolutePath().normalize().toString() + "/keys/";
+            //}
+            String dirForKeys = "keys/";
             if (enroll) {
                 // initialize the files on this machine and an empty place to store data
                 UserData.enroll(login.username, login.password, dirForKeys);
@@ -87,6 +92,7 @@ public class GuiJammed {
                 switch( action.type) {
                     case SAVE:
                         ArrayList<LoginInfo> ud = action.userData;
+
                         byte[] iv = UserData.generateIV();
                         byte[] encdata = data.encData(ud, iv);
                         server.send(new UserDataReq(encdata,iv)); //send upload request
@@ -99,9 +105,10 @@ public class GuiJammed {
                             throw new UserDataException(uploadresp.getError());
                         }
                         MG.setServerInfoLabel("Data Saved!");
+                        MG.resetAction();
                         break;
                     case CHANGE_PWD:
-                        login = action.pwdChange;
+                        login.password = action.pwdChange.password;
                         Request req = new LoginReq(login, true, true); //enroll , update
                         server.send(req);
                         LoginReq verif = (LoginReq) server.receive();
@@ -112,8 +119,24 @@ public class GuiJammed {
                         } else if (verif.getSuccess()) {
                             UserData.enroll(login.username, login.password, dirForKeys);
                             data = new UserData(login.username, login.password, dirForKeys);
+                            MG.setServerInfoLabel("Password changed!");
+                            ArrayList<LoginInfo> udpwd = action.userData;
+
+                            byte[] ivpwd = UserData.generateIV();
+                            byte[] encdatapwd = data.encData(udpwd, ivpwd);
+                            server.send(new UserDataReq(encdatapwd,ivpwd)); //send upload request
+
+                            //receive upload resonse with success of error message
+                            UserDataReq uploadresppwd = (UserDataReq) server.receive();
+                            if (!uploadresppwd.getSuccess()){
+                                // something terrible happened
+                                MG.setServerInfoLabel("Your data could not be saved");
+                                throw new UserDataException(uploadresppwd.getError());
+                            }
+                            MG.setServerInfoLabel("Data Saved!");
+                            MG.resetAction();
                         }
-                        MG.setServerInfoLabel("Password changed!");
+                        MG.resetAction();
                         break;
                     case LOG:
                         server.send(new LogReq());
@@ -125,6 +148,7 @@ public class GuiJammed {
                         } else {
                             MG.setServerInfoLabel("Could not get log!");
                         }
+                        MG.resetAction();
                         break;
                     case EXIT:
                         ArrayList<LoginInfo> ude = action.userData;
@@ -143,6 +167,7 @@ public class GuiJammed {
                             }
                         }
                         // close the connection...
+                        MG.resetAction();
                         server.send(new TerminationReq(TerminationReq.Term.USER_REQUEST));
                         server.close();
                         System.exit(0);
@@ -150,10 +175,12 @@ public class GuiJammed {
                     case NULL:
                         // do nothing
                         MG.setServerInfoLabel("Not a valid action");
+                        MG.resetAction();
                         break;
                     default:
                         // do nothing
                         MG.setServerInfoLabel("Default");
+                        MG.resetAction();
                         break;
                 }// end switch
             } // end while

@@ -56,6 +56,7 @@ public class UserData {
 	 		IOException, InvalidKeyException {
 		this.keyfile = username+SECKEYFILE;
 		this.keyivfile = username+IVFILE;
+		//setDir(filepath);
 		//hash the password, 
 		SecretKey hashPass = hashPwd(password);
 		//load the encrypted key file, decrpyt with hashed password. load secret key to dataSecKey
