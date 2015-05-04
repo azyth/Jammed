@@ -7,13 +7,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
-
 import java.net.SocketException;
 
 import javax.net.ssl.*;
@@ -109,7 +106,9 @@ public class ClientCommunication{
     }
   }
 
+  // check to see if this is a dummy or not
   public boolean connected() {
     return !this.dummy;
   }
+
 }

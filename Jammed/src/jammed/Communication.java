@@ -114,6 +114,9 @@ public class Communication {
   public void accept() throws SocketException{
     try{
     	this.socket = this.serverSocket.accept();
+    	//this.socket.setSoTimeout(60000); // 60s timeout
+    	// For timeouts, set timeoutsEnable = true/false 
+    	// on timeout, catch exception, close thread and remove user name from logged in
     	this.tx = new ObjectOutputStream(this.socket.getOutputStream());
         this.rx = new ObjectInputStream(this.socket.getInputStream());
     }

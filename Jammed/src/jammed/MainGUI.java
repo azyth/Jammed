@@ -202,7 +202,7 @@ public class MainGUI extends JFrame {
 
             JButton chngpwdB = new JButton("Confirm Change"); chngpwdB.setBounds(10, 80, 150, 50);
             chngpwdB.addActionListener(new ConfirmButtonHandler());
-            JButton exitB = new JButton("Cancel"); exitB.setBounds(170, 80, 100, 50);
+            JButton exitB = new JButton("Close"); exitB.setBounds(170, 80, 100, 50);
             exitB.addActionListener(new ExitCHNGPWDButtonHandler());
 
             con2.add(newpwdLabel);

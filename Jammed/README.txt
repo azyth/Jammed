@@ -1,6 +1,48 @@
 README for jammed
 
+4 MAY 2015
 
+To run the Jammed application:(detailed commands below)
+0. set server ip address or localhost(for testing) at ClientCommunication.hostname, line 23 ClientCommunication.java.
+1. compile code 
+2. start server
+3. run client application
+4. preserve your passwords
+
+
+
+All commands should be run from the directory: Jammed/bin
+
+To compile code: run compile.sh
+
+To start a server: run server.sh
+
+(Note: a server must be running before a client is opened.)
+To start a command line client node: run client.sh
+
+To start the client GUI app: run guiclient.sh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+******************************DELETE BELOW?
 Running the code from the command line (as of 4/11/15):
 
 File structure should look like:

@@ -1,18 +1,19 @@
 package jammed;
 
+import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.SocketException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
-
+import java.util.List;
 
 public class GuiJammed {
 
     public static final String LOGFILE = "log.txt";
+    public static final String DEFAULT_KEY_LOCATION = "defaultKeyLocation.txt";
+    private static String catchallLocation = "keys/";
 
     // server for connection duration
     private static ClientCommunication server = new ClientCommunication();
@@ -26,6 +27,19 @@ public class GuiJammed {
     public static void main(String[] args) {
 
         Runtime.getRuntime().addShutdownHook(new Shutdown());
+        File defaultKeyDirLocation = new File(DEFAULT_KEY_LOCATION);
+        String dirForKeys = catchallLocation;
+        try{
+            if(!defaultKeyDirLocation.exists()) {
+                defaultKeyDirLocation.createNewFile();
+                FileOutputStream dkdlFos = new FileOutputStream(DEFAULT_KEY_LOCATION);
+                dkdlFos.write("keys/".getBytes());
+                dkdlFos.close();
+            }
+        } catch(IOException e) {
+            dirForKeys = catchallLocation;
+        }
+
         LoginGUI LIG = new LoginGUI();
 
         try {
@@ -43,8 +57,6 @@ public class GuiJammed {
                 if(req == null) {
                     continue;
                 } else {
-                    //System.out.println(server);
-                    //System.out.println(req);
                     server.send(req);
                 }
                 LoginReq verif = (LoginReq) server.receive();
@@ -61,12 +73,14 @@ public class GuiJammed {
                 }
             } // END WHILE
 
-            //LoginGUI.theDirectory theDir = LIG.getDirForKeys(); //getFileChosenByUserToStoreKeys();
-            //String dirForKeys = theDir.chosenDir;
-            //if(dirForKeys.isEmpty()) {
-            //    dirForKeys = Paths.get(".").toAbsolutePath().normalize().toString() + "/keys/";
-            //}
-            String dirForKeys = "keys/";
+            dirForKeys = LIG.getDirChosenToStoreKeys();
+            try {
+                List<String> defaultPathList = Files.readAllLines(Paths.get(DEFAULT_KEY_LOCATION), Charset.defaultCharset());
+                String defPathAsString = defaultPathList.get(0);
+                dirForKeys = defPathAsString;
+            } catch(Exception e) {
+                dirForKeys = LIG.getDirChosenToStoreKeys(); // if something goes wrong use default "keys/" dir
+            }
             if (enroll) {
                 // initialize the files on this machine and an empty place to store data
                 UserData.enroll(login.username, login.password, dirForKeys);
