@@ -56,7 +56,9 @@ public class UserData {
 	 		IOException, InvalidKeyException {
 		this.keyfile = username+SECKEYFILE;
 		this.keyivfile = username+IVFILE;
+
 		this.dir = filepath;
+
 		//hash the password, 
 		SecretKey hashPass = hashPwd(password);
 		//load the encrypted key file, decrpyt with hashed password. load secret key to dataSecKey
@@ -67,11 +69,7 @@ public class UserData {
 //		this.keyfile = username+SECKEYFILE;
 //		loadKey(this.keyfile);
 	}
-	
-	public void setDir(String directoryFileStructure){
-		//add check to make sure ends with "/"
-		this.dir = directoryFileStructure;
-	}
+
 	/*
 	 * creates a new userdata file and IV pair from scratch to replace out of sync
 	 * pairs

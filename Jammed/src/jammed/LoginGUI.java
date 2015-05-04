@@ -16,7 +16,8 @@ public class LoginGUI extends JFrame {
 
     private JTextField usernameTF, passwordTF;
     private JLabel extraInfo = new JLabel(" ");
-    private String fileChosenToStoreKeys = Paths.get(".").toAbsolutePath().normalize().toString() + "/";
+    private String fileChosenToStoreKeys="";//= Paths.get(".").toAbsolutePath().normalize().toString() + "/keys/";
+    //private theDirectory td;
 
     private LoginInfo login = new LoginInfo();
 
@@ -26,7 +27,9 @@ public class LoginGUI extends JFrame {
         Container con = getContentPane(); // inherit main frame
         con.setBackground(Color.WHITE);
         con.setLayout(null);
-
+        //
+        //td = new theDirectory();
+        //
         JLabel headerLabel = new JLabel("Welcome to Jammed! Please login or register!", JLabel.CENTER);
         headerLabel.setSize(300, 30); headerLabel.setLocation(150, 5);
 
@@ -75,11 +78,10 @@ public class LoginGUI extends JFrame {
             username = usernameTF.getText();
             password = passwordTF.getText();
 
-
             boolean notBS = !username.isEmpty() && !password.isEmpty();
 
             if(notBS) {
-                // TODO try to register user
+                //ChooseKeyLocation ckl = new ChooseKeyLocation(); // Make it wait on this
                 synchronized (login) {
                     setLogin("enroll", username, password);
                     login.notify();
@@ -95,42 +97,10 @@ public class LoginGUI extends JFrame {
                     extraInfo.setForeground(Color.RED);
                 }
                 */
-
             } else {
                 extraInfo.setText("Invalid username or password!");
                 extraInfo.setForeground(Color.RED);
             }
-        }
-    }
-
-    private class ChooseKeyLocation extends JPanel implements ActionListener {
-        /* TODO Bug: When a user selects a folder, opens another dialog for user to choose folder again
-         *  Not sure why this is happening
-         */
-        private JFrame newFrame; private JFileChooser jf;
-        public ChooseKeyLocation() {
-            // show file browser for choosing where their key goes
-            jf = new JFileChooser();
-            jf.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            jf.setAcceptAllFileFilterUsed(false);
-            jf.addActionListener(this);
-            newFrame = new JFrame("Choose where to store you keys");
-            newFrame.setBounds(500, 250, 500, 400);
-            newFrame.add(jf);
-
-            newFrame.setVisible(true);
-        }
-        public void actionPerformed(ActionEvent event) {
-           if (jf.showOpenDialog(this) == JFileChooser.CANCEL_OPTION) {
-               jf.setVisible(false);
-               newFrame.setVisible(false);
-               return;
-            }
-            if(jf.getSelectedFile() != null) {
-                fileChosenToStoreKeys = jf.getSelectedFile().toPath().normalize().toString()+"/";
-            }
-            jf.setVisible(false);
-            newFrame.setVisible(false);
         }
     }
 
@@ -142,12 +112,10 @@ public class LoginGUI extends JFrame {
             String username, password;
             username = usernameTF.getText();
             password = passwordTF.getText();
-
-
             boolean notBS = !username.isEmpty() && !password.isEmpty();
 
             if(notBS) {
-                // TODO try to register user
+                //ChooseKeyLocation ckl = new ChooseKeyLocation(); // Make it wait on this
                 synchronized (login) {
                     setLogin("", username, password);
                     login.notify();
@@ -167,9 +135,7 @@ public class LoginGUI extends JFrame {
         }
     }
 
-    public String getFileChosenByUserToStoreKeys() {
-        return fileChosenToStoreKeys;
-    }
+    //public String getFileChosenByUserToStoreKeys() {return fileChosenToStoreKeys;}
 
     public void setLogin(String website, String username, String password) {
         login.website = website; login.username = username; login.password = password;
@@ -204,6 +170,60 @@ public class LoginGUI extends JFrame {
         extraInfo.setText("");
         extraInfo.setForeground(Color.WHITE);
     }
+
+    // CLASS TO CHOOSE THE DIRECTORY FOR THE KEYS
+    /*private class ChooseKeyLocation extends JPanel implements ActionListener {
+        // TODO Bug: When a user selects a folder, opens another dialog for user to choose folder again
+          // Not sure why this is happening
+
+        private JFrame newFrame; private JFileChooser jf;
+        public ChooseKeyLocation() {
+            // show file browser for choosing where their key goes
+            jf = new JFileChooser();
+            jf.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            jf.setAcceptAllFileFilterUsed(false);
+            jf.addActionListener(this);
+            newFrame = new JFrame("Choose where to store you keys");
+            newFrame.setBounds(500, 250, 500, 400);
+            newFrame.add(jf);
+
+            newFrame.setVisible(true);
+        }
+        public void actionPerformed(ActionEvent event) {
+            if (jf.showOpenDialog(this) == JFileChooser.CANCEL_OPTION) {
+                jf.setVisible(false);
+                newFrame.setVisible(false);
+                return;
+            }
+            if(jf.getSelectedFile() != null) {
+                synchronized (td) {
+                    td.chosenDir = jf.getSelectedFile().toPath().normalize().toString() + "/";
+                    td.notify();
+                }
+            }
+            jf.setVisible(false);
+            newFrame.setVisible(false);
+        }
+
+    } */
+
+    /*public theDirectory getDirForKeys() throws InterruptedException {
+        theDirectory copy;
+        synchronized (td) {
+            // check if this has been set yet -- if it has, username should be
+            // nonempty
+            while (td.chosenDir.isEmpty()) {
+                td.wait();
+            }
+            copy = td;
+            td.chosenDir="";
+        }
+        return copy;
+    }
+
+    public class theDirectory {
+        String chosenDir="";
+    } */
 
     /* Main method to run the gui*/
     public static void main(String args[]) {

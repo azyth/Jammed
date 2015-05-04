@@ -17,6 +17,7 @@ public class GuiJammed {
     public static void main(String[] args) {
 
         LoginGUI LIG = new LoginGUI();
+        MainGUI MG;
 
         ClientCommunication server = new ClientCommunication();
 
@@ -36,8 +37,8 @@ public class GuiJammed {
                 if(req == null) {
                     continue;
                 } else {
-                    System.out.println(server);
-                    System.out.println(req);
+                    //System.out.println(server);
+                    //System.out.println(req);
                     server.send(req);
                 }
                 LoginReq verif = (LoginReq) server.receive();
@@ -50,10 +51,16 @@ public class GuiJammed {
                 } else {
                     // display the appropriate error message and try again
                     LIG.error(Request.errToString(verif.getError()));
+                    continue;
                 }
-            }
+            } // END WHILE
 
-            String dirForKeys = LIG.getFileChosenByUserToStoreKeys();
+            //LoginGUI.theDirectory theDir = LIG.getDirForKeys(); //getFileChosenByUserToStoreKeys();
+            //String dirForKeys = theDir.chosenDir;
+            //if(dirForKeys.isEmpty()) {
+            //    dirForKeys = Paths.get(".").toAbsolutePath().normalize().toString() + "/keys/";
+            //}
+            String dirForKeys = "keys/";
             if (enroll) {
                 // initialize the files on this machine and an empty place to store data
                 UserData.enroll(login.username, login.password, dirForKeys);
@@ -77,7 +84,7 @@ public class GuiJammed {
             }
 
             LIG.disableGui();
-            MainGUI MG = new MainGUI(plaindata);
+            MG = new MainGUI(plaindata);
 
             while(true) {
                 MainGUI.ActionClass action = MG.getAction();
@@ -85,32 +92,51 @@ public class GuiJammed {
                 switch( action.type) {
                     case SAVE:
                         ArrayList<LoginInfo> ud = action.userData;
+
                         byte[] iv = UserData.generateIV();
                         byte[] encdata = data.encData(ud, iv);
-                        server.send(new UserDataReq(encdata,iv));					//send upload request
+                        server.send(new UserDataReq(encdata,iv)); //send upload request
 
                         //receive upload resonse with success of error message
                         UserDataReq uploadresp = (UserDataReq) server.receive();
                         if (!uploadresp.getSuccess()){
                             // something terrible happened
+                            MG.setServerInfoLabel("Your data could not be saved");
                             throw new UserDataException(uploadresp.getError());
                         }
+                        MG.setServerInfoLabel("Data Saved!");
+                        MG.resetAction();
                         break;
                     case CHANGE_PWD:
-                        login = action.pwdChange;
+                        login.password = action.pwdChange.password;
                         Request req = new LoginReq(login, true, true); //enroll , update
                         server.send(req);
-
                         LoginReq verif = (LoginReq) server.receive();
-
                         if (verif == null) {
                             // the server gave a null response--this probably means we should exit...
-                            //ui.error("verification was null");
-
+                            MG.setServerInfoLabel("Your password could not be changed");
+                            continue;
                         } else if (verif.getSuccess()) {
                             UserData.enroll(login.username, login.password, dirForKeys);
                             data = new UserData(login.username, login.password, dirForKeys);
+                            MG.setServerInfoLabel("Password changed!");
+                            ArrayList<LoginInfo> udpwd = action.userData;
+
+                            byte[] ivpwd = UserData.generateIV();
+                            byte[] encdatapwd = data.encData(udpwd, ivpwd);
+                            server.send(new UserDataReq(encdatapwd,ivpwd)); //send upload request
+
+                            //receive upload resonse with success of error message
+                            UserDataReq uploadresppwd = (UserDataReq) server.receive();
+                            if (!uploadresppwd.getSuccess()){
+                                // something terrible happened
+                                MG.setServerInfoLabel("Your data could not be saved");
+                                throw new UserDataException(uploadresppwd.getError());
+                            }
+                            MG.setServerInfoLabel("Data Saved!");
+                            MG.resetAction();
                         }
+                        MG.resetAction();
                         break;
                     case LOG:
                         server.send(new LogReq());
@@ -118,57 +144,72 @@ public class GuiJammed {
 
                         if (log.getSuccess()) {
                             Files.write(Paths.get(LOGFILE), log.getLog().getBytes("UTF-8"));
-
+                            MG.setServerInfoLabel("Log written to: " + LOGFILE);
+                        } else {
+                            MG.setServerInfoLabel("Could not get log!");
                         }
+                        MG.resetAction();
                         break;
                     case EXIT:
                         ArrayList<LoginInfo> ude = action.userData;
                         if(ude != null) {
+                            MG.setServerInfoLabel("Saving Changes...");
                             byte[] ive = UserData.generateIV();
                             byte[] encdatae = data.encData(ude, ive);
-                            server.send(new UserDataReq(encdatae, ive));                    //send upload request
+                            server.send(new UserDataReq(encdatae, ive)); //send upload request
 
                             //receive upload resonse with success of error message
                             UserDataReq uploadrespe = (UserDataReq) server.receive();
                             if (!uploadrespe.getSuccess()) {
                                 // something terrible happened
+                                MG.setServerInfoLabel("Could not save changes");
                                 throw new UserDataException(uploadrespe.getError());
                             }
                         }
                         // close the connection...
+                        MG.resetAction();
                         server.send(new TerminationReq(TerminationReq.Term.USER_REQUEST));
                         server.close();
                         System.exit(0);
                         break;
                     case NULL:
                         // do nothing
+                        MG.setServerInfoLabel("Not a valid action");
+                        MG.resetAction();
                         break;
                     default:
                         // do nothing
+                        MG.setServerInfoLabel("Default");
+                        MG.resetAction();
                         break;
                 }// end switch
             } // end while
-
-            // TODO Display error messages to user
         } catch (FileNotFoundException e) {
-            //ui.error("No key files found - have you enrolled yet?");
+            System.out.println("No key files found - have you enrolled yet?");
+            e.printStackTrace();
         } catch (GeneralSecurityException e) {
+            System.out.println("Something went wrong with the cryptography - exiting...");
             e.printStackTrace();
-            //ui.error("Something went wrong with the cryptography - exiting...");
         } catch (UnsupportedEncodingException e) {
-            //ui.error("Does your system not support UTF8? That's dumb.");
-        } catch (ClassCastException e) {
-            //ui.error("Bad response from server - exiting...");
-        } catch (SocketException e) {
-            //ui.error("Server suffered fatal DNE error - exiting. Any changes you " +
-                    //"made to your data may be unsaved.");
-        } catch (UserDataException e) {
-            //ui.error(Request.errToString(e.error));
-        } catch (IOException e) {
+            System.out.println("Does your system not support UTF8? That's dumb.");
             e.printStackTrace();
-            //ui.error("Something bad happened with IO. Exiting.");
+        } catch (ClassCastException e) {
+            System.out.println("Bad response from server - exiting...");
+            e.printStackTrace();
+        } catch (SocketException e) {
+            System.out.println("Server suffered fatal DNE error - exiting. Any changes you made to your data may be unsaved.");
+            e.printStackTrace();
+        } catch (UserDataException e) {
+            System.out.println(Request.errToString(e.error));
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Something bad happened with IO. Exiting.");
             e.printStackTrace();
         } catch(InterruptedException e) {
+            System.out.println("Something got interrupted.");
+            e.printStackTrace();
+        } catch(Exception e) {
+            System.out.println("Something unplanned happened.");
             e.printStackTrace();
         }
 
@@ -182,5 +223,4 @@ public class GuiJammed {
             error = e;
         }
     }
-
-}
+} // END CLASS

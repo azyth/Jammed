@@ -19,6 +19,7 @@ public class MainGUI extends JFrame {
     private boolean changesMade = false;
     public String CurrentUser;
 
+    private JLabel serverInfoLabel;
     private JTextArea userDataDisplay;
     private JTextField usernameTF, passwordTF, serviceTF;
     private ArrayList<LoginInfo> userDataArray;
@@ -51,6 +52,9 @@ public class MainGUI extends JFrame {
         JLabel ServiceLabel = new JLabel("Website: ");
         ServiceLabel.setSize(300, 30); ServiceLabel.setLocation(440, 80);
 
+        serverInfoLabel = new JLabel(" ");
+        serverInfoLabel.setSize(300, 30); serverInfoLabel.setLocation(440, 230);
+
         usernameTF = new JTextField(10);
         usernameTF.setBounds(510, 20, 150, 30);
         passwordTF = new JPasswordField(10);
@@ -80,6 +84,10 @@ public class MainGUI extends JFrame {
         saveButton.setBounds(30, 500, 100, 50);
         saveButton.addActionListener(new SaveButtonHandler());
 
+        JButton getLogButton = new JButton("Get Log");
+        getLogButton.setBounds(135, 500, 100, 50);
+        getLogButton.addActionListener(new GetLogButtonHandler());
+
         // Display items
         con.add(udScroller); // Text Area
         con.add(usernameLabel); // Labels
@@ -88,7 +96,9 @@ public class MainGUI extends JFrame {
         con.add(passwordTF);
         con.add(ServiceLabel);
         con.add(serviceTF);
+        con.add(serverInfoLabel);
         con.add(saveButton); // Buttons
+        con.add(getLogButton);
         con.add(addDataB);
         con.add(deleteDataB);
         con.add(exitB);
@@ -223,6 +233,7 @@ public class MainGUI extends JFrame {
                         LoginInfo newpwdInfo = new LoginInfo();
                         newpwdInfo.password = conpwd; newpwdInfo.username = CurrentUser; newpwdInfo.website = "changepwd";
                         action.pwdChange = newpwdInfo;
+                        action.userData = userDataArray;
                         action.type = GActionType.CHANGE_PWD;
                         action.notify();
                     }
@@ -262,7 +273,6 @@ public class MainGUI extends JFrame {
                 action.type = GActionType.LOG;
                 action.notify();
             }
-
         }
     }
 
@@ -300,9 +310,8 @@ public class MainGUI extends JFrame {
         return userDataArray;
     }
 
-    public static void main(String[] args) {
-        ArrayList<LoginInfo> ud = new ArrayList<LoginInfo>();
-        new MainGUI(ud);
+    public void setServerInfoLabel(String msg) {
+        serverInfoLabel.setText(msg);
     }
 
     public enum GActionType {SAVE, CHANGE_PWD, LOG, EXIT, NULL};
@@ -314,18 +323,26 @@ public class MainGUI extends JFrame {
     }
 
     public ActionClass getAction() throws InterruptedException {
+        ActionClass copy = new ActionClass();
         synchronized (action) {
             while(action.type == GActionType.NULL) {
                 action.wait();
             }
-            ActionClass copy = new ActionClass();
             copy.type = action.type; copy.pwdChange = action.pwdChange;
             copy.userData = action.userData;
             action.userData = null;
             action.pwdChange = null;
-            action.type = GActionType.NULL;
         }
-        return action;
+        return copy;
+    }
+
+    public void resetAction() {
+        action.type = GActionType.NULL;
+    }
+
+    public static void main(String[] args) {
+        ArrayList<LoginInfo> ud = new ArrayList<LoginInfo>();
+        new MainGUI(ud);
     }
 
 } // END CLASS
