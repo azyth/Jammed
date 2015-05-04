@@ -47,11 +47,11 @@ public class MainGUI extends JFrame {
         /* End Display File */
         //////////////////////////////////////////////////////////////////////////////////
         JLabel usernameLabel = new JLabel("Username: ");
-        usernameLabel.setSize(300, 30); usernameLabel.setLocation(440, 20);
+        usernameLabel.setSize(320, 30); usernameLabel.setLocation(440, 20);
         JLabel passwordLabel = new JLabel("Password: ");
-        passwordLabel.setSize(300, 30); passwordLabel.setLocation(440, 50);
+        passwordLabel.setSize(320, 30); passwordLabel.setLocation(440, 50);
         JLabel ServiceLabel = new JLabel("Website: ");
-        ServiceLabel.setSize(300, 30); ServiceLabel.setLocation(440, 80);
+        ServiceLabel.setSize(320, 30); ServiceLabel.setLocation(440, 80);
 
         serverInfoLabel = new JLabel(" ");
         serverInfoLabel.setSize(300, 30); serverInfoLabel.setLocation(440, 230);
@@ -212,7 +212,7 @@ public class MainGUI extends JFrame {
             con2.add(chngpwdB);
             con2.add(exitB);
             con2.add(pwdChangeInfo);
-            newWindow.setVisible(true);
+            newWindow.setVisible(false);
         }
 
         /** Class to handle what happens when user presses "Confirm Change" Button */
@@ -307,6 +307,9 @@ public class MainGUI extends JFrame {
     }
     public ArrayList<LoginInfo> getUserDataArray() {
         return userDataArray;
+    }
+    public boolean getChangesMade() {
+        return changesMade;
     }
 
     public void setServerInfoLabel(String msg) {
