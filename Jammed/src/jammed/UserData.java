@@ -20,6 +20,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
+import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -43,31 +44,53 @@ public class UserData {
     // local file name key will be stored at
 	private final static String SECKEYFILE = "-ProtectedAESkey.txt";
 	private final static String IVFILE = "-sessionKey.txt";
+	private final static String IVTAG = "-IVtag.txt";
+	private final static String DATATAG = "-Datatag.txt";
 	private final static byte[] salt = {0x0};
 	//private final static byte[] iv = {0xc,0x0,0xf,0x0};
- 	private String keyfile;
- 	private String keyivfile;
+ 	//private String keyfile;
+ 	//private String keyivfile;
 	private SecretKey dataSecKey;
 	private String dir = "keys/";
+	private String uname = "";
+
 	
 	//CONSTRUCTOR
 	// Load Key and decrypt it with the users password
 	public UserData(String username, String password, String filepath) throws GeneralSecurityException, 
 	 		IOException, InvalidKeyException {
-		this.keyfile = username+SECKEYFILE;
-		this.keyivfile = username+IVFILE;
-
+//		this.keyfile = username+SECKEYFILE;
+//		this.keyivfile = username+IVFILE;
+		this.uname = username;
 		this.dir = filepath;
 
 		//hash the password, 
 		SecretKey hashPass = hashPwd(password);
 		//load the encrypted key file, decrpyt with hashed password. load secret key to dataSecKey
-		this.decKey(hashPass,dir+this.keyfile, dir+this.keyivfile);
+		this.decKey(hashPass,dir+username+SECKEYFILE, dir+username+IVFILE);
 		
 		
 		//Load SecretKey and IV
 //		this.keyfile = username+SECKEYFILE;
 //		loadKey(this.keyfile);
+	}
+	
+	//creates a mac tag of the supplied byte[]
+	public byte[] tagdata(byte[] encEntry) throws 
+			NoSuchAlgorithmException, InvalidKeyException{
+		
+		// get an hmac_sha1 Mac instance and initialize with the signing key
+		Mac mac = Mac.getInstance("HmacSHA1");
+		mac.init(this.dataSecKey);
+		
+		// compute the hmac on input data bytes
+		byte[] hmac = mac.doFinal(encEntry);
+		
+		// base64-encode the hmac ???
+		//String result = Encoding.EncodeBase64(rawHmac);
+		
+		return hmac;//TODO change to string
+		
 	}
 
 	/*
@@ -102,6 +125,13 @@ public class UserData {
 		IvParameterSpec ips = new IvParameterSpec(iv);
 		aes.init(Cipher.DECRYPT_MODE, this.dataSecKey, ips);
 				
+		byte[] tag = loadIV(dir+this.uname+DATATAG);
+	    byte[] newtag = tagdata(data);
+	    if (!tag.equals(newtag)){
+	    	System.out.println("Integrety has been comprimised, Data is not reliable.");
+	    	//TODO throw error??
+	    }
+		
 		byte[] text = aes.doFinal(data);
 		String userdata = new String(text, "UTF8");	
 		//System.out.println("data decrypted");
@@ -131,6 +161,9 @@ public class UserData {
 		byte[] block = aes.doFinal(textbyte);
 		//System.out.println("data encrypted");
 		//System.out.println(block);
+		
+		storeIV(tagdata(iv), dir+this.uname+IVTAG);
+		storeIV(tagdata(block), dir+this.uname+DATATAG);
 
 		return block;
 	}
@@ -271,13 +304,13 @@ public class UserData {
 		
 	}
 
-//	These functions would only be used if we are not passing in the IV with userdata
+
 	
 
-	//	private void loadIV(String file) throws IOException {
-//		iv = Files.readAllBytes(Paths.get(file));
-//	}
-	private void storeIV(byte[] iv, String ivfile) throws IOException {
+	public byte[] loadIV(String file) throws IOException {
+		return Files.readAllBytes(Paths.get(file));
+	}
+	public void storeIV(byte[] iv, String ivfile) throws IOException {
 		FileOutputStream ivout = new FileOutputStream(ivfile);
 		ivout.write(iv);
 		ivout.close();

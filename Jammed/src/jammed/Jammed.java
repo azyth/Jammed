@@ -97,6 +97,9 @@ public class Jammed {
             data = new UserData(login.username, login.password, dir);
 
             // get the data in a usable form
+          
+            
+            
             plaindata = data.decData(serverdata.getData(), serverdata.getIV());
           }
 
@@ -236,8 +239,12 @@ public class Jammed {
 
           if (changes && data != null) {
             // (8) if changes were made, send updated data to server for storage
+        	  
             byte[] iv = UserData.generateIV();
             byte[] encdata = data.encData(plaindata, iv); 
+          
+            
+            
             server.send(new UserDataReq(encdata,iv)); //send upload request
 
             //receive upload resonse with success of error message
