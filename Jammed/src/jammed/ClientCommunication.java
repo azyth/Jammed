@@ -6,31 +6,32 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
-
 import java.net.SocketException;
-
-import javax.net.ssl.*;
-
 import java.security.KeyStore;
 
 public class ClientCommunication{
 	private String hostname = "localhost";//"10.148.9.15"; //THIS IS THE ADRESS TO CONECT TO
 	private int port = 54309;
-
+	private String trustStoreFile = "5430ts.jks";
+	private String trustStorePwd = "cs5430";
 	private Socket socket = null;
 	private ObjectInputStream rx = null;
 	private ObjectOutputStream tx = null;
 	private boolean dummy = true;
 
 	public ClientCommunication() {
+<<<<<<< Updated upstream
 			// Ensures dummy ClientCommunication object is returned
 			this.dummy = true;
+=======
+		// Read in configuration files for host name and port
+		// Ensures dummy ClientCommunication object is returned
+		this.dummy = true;
+>>>>>>> Stashed changes
 	}
 
 	public void connect() {
@@ -38,11 +39,10 @@ public class ClientCommunication{
 			SSLContext context = SSLContext.getInstance("SSL");
 			KeyStore ks = KeyStore.getInstance("JKS");
 			TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
-			FileInputStream ksin = new FileInputStream("5430ts.jks");
-			ks.load(ksin, "cs5430".toCharArray());
+			FileInputStream ksin = new FileInputStream(this.trustStoreFile);
+			ks.load(ksin, this.trustStorePwd.toCharArray());
 			tmf.init(ks);
 			context.init(null, tmf.getTrustManagers(), null);
-			//SSLSocketFactory ClientSocketFactory = context.getSocketFactory();
 			SocketFactory ClientSocketFactory = context.getSocketFactory();
 			SSLSocket socket = (SSLSocket) ClientSocketFactory.createSocket(hostname, port);
 			socket.startHandshake();
@@ -93,15 +93,9 @@ public class ClientCommunication{
 			return;
 		}
 		try {
-			if (this.tx != null) {
-				this.tx.close();
-			}
-			if (this.rx != null) {
-				this.rx.close();
-			}
-			if (this.socket != null) {
-				this.socket.close();
-			}
+			if (this.tx != null) this.tx.close();
+			if (this.rx != null) this.rx.close();
+			if (this.socket != null) this.socket.close();
 		} catch (RuntimeException re) {
 			throw re;
 		} catch (Exception e) {
