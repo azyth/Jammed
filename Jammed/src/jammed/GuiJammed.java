@@ -37,8 +37,6 @@ public class GuiJammed {
                 if(req == null) {
                     continue;
                 } else {
-                    //System.out.println(server);
-                    //System.out.println(req);
                     server.send(req);
                 }
                 LoginReq verif = (LoginReq) server.receive();
@@ -55,12 +53,8 @@ public class GuiJammed {
                 }
             } // END WHILE
 
-            //LoginGUI.theDirectory theDir = LIG.getDirForKeys(); //getFileChosenByUserToStoreKeys();
-            //String dirForKeys = theDir.chosenDir;
-            //if(dirForKeys.isEmpty()) {
-            //    dirForKeys = Paths.get(".").toAbsolutePath().normalize().toString() + "/keys/";
-            //}
-            String dirForKeys = "keys/";
+            String dirForKeys = LIG.getDirChosenToStoreKeys();
+            System.out.println(dirForKeys);
             if (enroll) {
                 // initialize the files on this machine and an empty place to store data
                 UserData.enroll(login.username, login.password, dirForKeys);
