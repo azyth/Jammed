@@ -259,7 +259,7 @@ public class UserData {
 	private void decKey(SecretKey hashPass, String file, String ivfile) throws IllegalBlockSizeException, 
 			BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, 
 			NoSuchPaddingException, IOException, InvalidAlgorithmParameterException {
-		System.out.println(file);
+		//System.out.println(file);
 		byte[] encoded = Files.readAllBytes(Paths.get(file));
 		byte[] iv = Files.readAllBytes(Paths.get(ivfile));
 		Cipher pwc = Cipher.getInstance("AES/CBC/PKCS5Padding"); //AES/CBC/PKCS5Padding

@@ -52,9 +52,13 @@ public class UserInterface {
 
     LoginInfo login = new LoginInfo();
     
-    System.out.print("Please enter the directory your keys are located in \n" +
-    		"or if enrolling, the directory you wish to save your key file in \n " +
-    		"or hit enter to store them to the program 'keys' folder.\n ");
+    System.out.print("\n" +
+    		"Please enter the directory your keys are located in. \n" +
+    		"If Registering, where you wish to save your key files \n" +
+    		"or hit enter to use the program 'keys' folder. \n" +
+    		"hints:(use '../' to jump up a folder) \n" +
+    		"      (end with dir name, DO NOT end the path with a '/')\n \n" +
+    		"Jammed/bin/: ");
     
     String dir = br.readLine();
     if (dir.isEmpty()){}
