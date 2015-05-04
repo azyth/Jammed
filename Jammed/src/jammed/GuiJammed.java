@@ -33,18 +33,22 @@ public class GuiJammed {
 
                 enroll = login.website.equals("enroll");
                 Request req = new LoginReq(login, enroll);
-                server.send(req);
-
+                if(req == null) {
+                    continue;
+                } else {
+                    System.out.println(server);
+                    System.out.println(req);
+                    server.send(req);
+                }
                 LoginReq verif = (LoginReq) server.receive();
 
                 if (verif == null) {
                     // the server gave a null response--this probably means we should exit...
                     LIG.error("Server gave a null response ;(");
                 } else if (verif.getSuccess()) {
-                    break; // break and create main gui
+                    break; // break and finish logging in
                 } else {
                     // display the appropriate error message and try again
-                    //ui.error(Request.errToString(verif.getError()));
                     LIG.error(Request.errToString(verif.getError()));
                 }
             }
