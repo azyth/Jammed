@@ -1,12 +1,14 @@
 package jammed;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.net.SocketException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class GuiJammed {
@@ -68,14 +70,12 @@ public class GuiJammed {
 
             String dirForKeys = LIG.getDirChosenToStoreKeys();
             try {
-                byte[] defaultpathAsbytes = Files.readAllBytes(Paths.get(DEFAULT_KEY_LOCATION));
-                String defPathAsString = defaultpathAsbytes.toString();
-                System.out.println(defPathAsString);
+                List<String> defaultPathList = Files.readAllLines(Paths.get(DEFAULT_KEY_LOCATION), Charset.defaultCharset());
+                String defPathAsString = defaultPathList.get(0);
+                dirForKeys = defPathAsString;
             } catch(Exception e) {
-                dirForKeys = LIG.getDirChosenToStoreKeys();
+                dirForKeys = LIG.getDirChosenToStoreKeys(); // if something goes wrong use default "keys/" dir
             }
-            //String defaultDirForKeys =
-            //System.out.println(dirForKeys);
             if (enroll) {
                 // initialize the files on this machine and an empty place to store data
                 UserData.enroll(login.username, login.password, dirForKeys);
