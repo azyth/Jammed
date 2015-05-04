@@ -3,13 +3,11 @@ package jammed;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.net.SocketException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class GuiJammed {
 
@@ -20,6 +18,7 @@ public class GuiJammed {
     public static void main(String[] args) {
 
         File defaultKeyDirLocation = new File(DEFAULT_KEY_LOCATION);
+        String dirForKeys = catchallLocation;
         try{
             if(!defaultKeyDirLocation.exists()) {
                 defaultKeyDirLocation.createNewFile();
@@ -28,7 +27,7 @@ public class GuiJammed {
                 dkdlFos.close();
             }
         } catch(IOException e) {
-            catchallLocation = "keys/";
+            dirForKeys = catchallLocation;
         }
 
         LoginGUI LIG = new LoginGUI();
@@ -68,7 +67,7 @@ public class GuiJammed {
                 }
             } // END WHILE
 
-            String dirForKeys = LIG.getDirChosenToStoreKeys();
+            dirForKeys = LIG.getDirChosenToStoreKeys();
             try {
                 List<String> defaultPathList = Files.readAllLines(Paths.get(DEFAULT_KEY_LOCATION), Charset.defaultCharset());
                 String defPathAsString = defaultPathList.get(0);
