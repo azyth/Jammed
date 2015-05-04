@@ -72,13 +72,10 @@ public class GuiJammed {
             try {
                 List<String> defaultPathList = Files.readAllLines(Paths.get(DEFAULT_KEY_LOCATION), Charset.defaultCharset());
                 String defPathAsString = defaultPathList.get(0);
-                //System.out.println(defPathAsString);
                 dirForKeys = defPathAsString;
             } catch(Exception e) {
-                dirForKeys = LIG.getDirChosenToStoreKeys();
+                dirForKeys = LIG.getDirChosenToStoreKeys(); // if something goes wrong use default "keys/" dir
             }
-            //String defaultDirForKeys =
-            //System.out.println(dirForKeys);
             if (enroll) {
                 // initialize the files on this machine and an empty place to store data
                 UserData.enroll(login.username, login.password, dirForKeys);
