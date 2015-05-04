@@ -24,14 +24,11 @@ public class ClientCommunication{
 	private boolean dummy = true;
 
 	public ClientCommunication() {
-<<<<<<< Updated upstream
 			// Ensures dummy ClientCommunication object is returned
 			this.dummy = true;
-=======
 		// Read in configuration files for host name and port
 		// Ensures dummy ClientCommunication object is returned
 		this.dummy = true;
->>>>>>> Stashed changes
 	}
 
 	public void connect() {
