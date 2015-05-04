@@ -106,8 +106,8 @@ public class MainGUI extends JFrame {
                 synchronized (action) {
                     action.userData = userDataArray;
                     action.type = GActionType.SAVE;
+                    action.notify();
                 }
-                action.notify();
             }
             changesMade = false;
         }
@@ -224,8 +224,9 @@ public class MainGUI extends JFrame {
                         newpwdInfo.password = conpwd; newpwdInfo.username = CurrentUser; newpwdInfo.website = "changepwd";
                         action.pwdChange = newpwdInfo;
                         action.type = GActionType.CHANGE_PWD;
+                        action.notify();
                     }
-                    action.notify();
+
                     msg = "Password changed!";
                 }
                 pwdChangeInfo.setText(msg); pwdChangeInfo.setForeground(Color.RED);
@@ -259,8 +260,9 @@ public class MainGUI extends JFrame {
         public void actionPerformed(ActionEvent event) {
             synchronized (action) {
                 action.type = GActionType.LOG;
+                action.notify();
             }
-            action.notify();
+
         }
     }
 

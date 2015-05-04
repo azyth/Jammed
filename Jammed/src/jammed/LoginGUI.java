@@ -82,9 +82,8 @@ public class LoginGUI extends JFrame {
                 // TODO try to register user
                 synchronized (login) {
                     setLogin("enroll", username, password);
+                    login.notify();
                 }
-                login.notify();
-
                 /*
                 boolean registration_successful = true;
                 if(registration_successful) {
@@ -132,7 +131,6 @@ public class LoginGUI extends JFrame {
             }
             jf.setVisible(false);
             newFrame.setVisible(false);
-            //System.out.println(fileChosenToStoreKeys);
         }
     }
 
@@ -152,8 +150,8 @@ public class LoginGUI extends JFrame {
                 // TODO try to register user
                 synchronized (login) {
                     setLogin("", username, password);
+                    login.notify();
                 }
-                login.notify();
 
             } else {
                 extraInfo.setText("Invalid username or password!");
