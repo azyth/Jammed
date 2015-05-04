@@ -25,5 +25,8 @@ guest*
 #user data
 Jammed/bin/root/users/*
 *sessionKey.txt
-defaultKeyLocation.txt
 keystore.jks
+defaultKeyLocation.txt
+
+# .directory files (??? what are these?)
+.directory
