@@ -28,14 +28,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-// TODO: Add proper system logging
-// TODO: Add more verbose error handling and reporting
 
 /**
  * The server class of the <code>Jammed</code> password management system.
  * 
- * @Author Daniel Etter (dje67)
- * @version Alpha (1.0) 3.20.15
+ * @version Final (3.0) 5.5.15
  */
 public class Jelly {
 
@@ -49,7 +46,7 @@ public class Jelly {
       System.exit(1);
     }
     
-    // Network Information (default)
+    // Network Information (default information)
     int port = 54309;
     String keyStoreFile = "jammedkeystore.jks";
 	String keyStorePwd = "cs5430";
@@ -66,6 +63,7 @@ public class Jelly {
 		keyStorePwd = read.readLine();
 	}
 	catch(IOException io){
+		System.err.println("Error in intializing server configuration files");
 		io.printStackTrace();
 	}
 	finally{
@@ -73,6 +71,7 @@ public class Jelly {
 			if(read != null) read.close();
 		}
 		catch(IOException io){
+			System.err.println("Error in intializing server configuration files");
 			io.printStackTrace();
 		}
 	}
@@ -91,6 +90,7 @@ public class Jelly {
 		serverSocket = serverSocketFactory.createServerSocket(port);
 	}
 	catch(Exception e){
+		System.err.println("Error in intializing server SSL configuration");
 		e.printStackTrace();
 	}
 	
