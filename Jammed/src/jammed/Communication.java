@@ -32,285 +32,300 @@ import java.io.BufferedReader;
  * @version Alpha (1.0) 3.20.15
  */
 public class Communication implements Runnable{	
-	private Socket socket = null;
-	private ObjectInputStream rx = null;
-	private ObjectOutputStream tx = null;
-	
-	private Set<String> userHash = null;
-	private String username = null;
+  private Socket socket = null;
+  private ObjectInputStream rx = null;
+  private ObjectOutputStream tx = null;
 
-	/**
-	 * Class Constructor
-	 * 
-	 * @throws SocketException
-	 */
-	public Communication(Socket socket, Set<String> users) throws SocketException {
-		this.socket = socket;
-		this.userHash = users;
-		
-		try{
-			this.tx = new ObjectOutputStream(this.socket.getOutputStream());
-			this.rx = new ObjectInputStream(this.socket.getInputStream());
-		}
-		catch(IOException io){
-			io.printStackTrace();
-			throw new SocketException("Error creating a new communication handler");
-		}
-	}
+  private String username;
+  private Set<String> userHash = null;
 
-	public void send(Request thing) throws SocketException {
-		try {
-			this.tx.writeObject(thing);
-			this.tx.flush();
-		} catch (Exception e) {
-			System.err.println(e.getClass());
-			e.printStackTrace();
-			throw new SocketException("Error in Communication.send!");
-		}
-	}
+  /**
+   * Class Constructor
+   * 
+   * @throws SocketException
+   */
+  public Communication(Socket socket, Set<String> users) throws SocketException {
+    this.socket = socket;
+    this.userHash = users;
 
-	public Request receive() throws SocketException {
-		while (true) {
-			try {
-				Request got = (Request) this.rx.readObject();
-				return got;
-			} catch (EOFException e) {
-				// FIXME: Determine if this is a hack fix or properly ignoring
-				// this exception.
-				continue;
-			} catch (Exception e) {
-				System.err.println(e.getClass());
-				e.printStackTrace();
-				throw new SocketException("Error in Communication.receive!");
-			}
-		}
-	}
+    try{
+      this.tx = new ObjectOutputStream(this.socket.getOutputStream());
+      this.rx = new ObjectInputStream(this.socket.getInputStream());
+    }
+    catch(IOException io){
+      io.printStackTrace();
+      throw new SocketException("Error creating a new communication handler");
+    }
+  }
 
-	public void close() {
-		System.out.println("Closing connection...");
-		this.userHash.remove(this.username);
-		try {
-			if (this.tx != null) this.tx.close();
-			if (this.rx != null) this.rx.close();
-			if (this.socket != null) this.socket.close();
-		} catch (Exception e) {
-			//e.printStackTrace();
-			// Ignore since we don't care about this connection anymore anyway
-			System.err.println("Error in Communication.close!");
-		}
-	}
+  public void send(Request thing) throws SocketException {
+    try {
+      this.tx.writeObject(thing);
+      this.tx.flush();
+    } catch (Exception e) {
+      System.err.println(e.getClass());
+      e.printStackTrace();
+      throw new SocketException("Error in Communication.send!");
+    }
+  }
 
-	@Override
-	public void run() {
-		try{
-			
-		System.out.println("Accepting a new client...");
-		// we have got a connection now, because we have called this function...
-	    System.out.println("Handling connection...");
+  public Request receive() throws SocketException {
+    while (true) {
+      try {
+        Request got = (Request) this.rx.readObject();
+        return got;
+      } catch (EOFException e) {
+        // FIXME: Determine if this is a hack fix or properly ignoring
+        // this exception.
+        continue;
+      } catch (Exception e) {
+        System.err.println(e.getClass());
+        // TODO?e.printStackTrace();
+        throw new SocketException("Error in Communication.receive!");
+      }
+    }
+  }
 
-	    Request req;
-	    boolean loginsuccess = false;
-	    String username = null;
+  public void close() {
+    System.out.println("Closing connection...");
+    synchronized (this.userHash) {
+      System.out.println("removing " + username + " from hashtable");
+      this.userHash.remove(this.username);
+    }
+    try {
+      if (this.tx != null) this.tx.close();
+      if (this.rx != null) this.rx.close();
+      if (this.socket != null) this.socket.close();
+    } catch (Exception e) {
+      //e.printStackTrace();
+      // Ignore since we don't care about this connection anymore anyway
+      System.err.println("Error in Communication.close!");
+    }
+  }
 
-	    while (!loginsuccess) {
-	      req = receive();
+  @Override
+  public void run() {
+    try{
 
-	      switch (req.getEvent()) {
-	        case LOGIN:
-	          // this is the only one we want to handle at this time...
-	          // TODO check logging throughout
-	          LoginReq login = (LoginReq) req;
-	          LoginReq loginResponse;
+      System.out.println("Accepting a new client...");
+      // we have got a connection now, because we have called this function...
+      System.out.println("Handling connection...");
 
-	          if (!login.getUsername().matches("[a-zA-Z0-9]+")) {					// Add user name checks for prohibited names or chars
+      Request req;
+      boolean loginsuccess = false;
+      String username = null;
+      //String toLog = "";
 
-	        	  loginResponse = new LoginReq(false, ErrorMessage.BAD_USERNAME);
+      while (!loginsuccess) {
+        req = receive();
 
-	          } else if (login.getEnrolling()) {										//enrolling == true
+        switch (req.getEvent()) {
+          case LOGIN:
+            // this is the only one we want to handle at this time...
+            // TODO check logging throughout
+            LoginReq login = (LoginReq) req;
+            LoginReq loginResponse;
 
-					// try to enroll the new user...
-					if (!DB.searchUser(login.getUsername())) { 							// user does not exist
-						  if (DB.newUser(login.getUsername(), login.getPassword())) {	 //enroll the user
-							    loginResponse = new LoginReq(true, ErrorMessage.NONE);
-							    username = login.getUsername();
-							    this.username = username;
-							    loginsuccess = true;
-							    this.userHash.add(this.username);
-						  } else {														//failure to enroll
-							    loginResponse =
-							      new LoginReq(false, ErrorMessage.DATABASE_FAILURE);
-						  }
-					} else {
-						  loginResponse =
-						    new LoginReq(false, ErrorMessage.DUPLICATE_USERNAME);
-						  // TODO anything to log here?
-					}
+            if (!login.getUsername().matches("[a-zA-Z0-9]+")) {					// Add user name checks for prohibited names or chars
 
-	          } else {
+              loginResponse = new LoginReq(false, ErrorMessage.BAD_USERNAME);
 
-	            // try to authenticate the user...
-	        	  //TODO: I was right here
-	            if (DB.searchUser(login.getUsername())) {
-	              if (DB.checkUserPWD(login.getUsername(), login.getPassword())) {
-	                loginResponse = new LoginReq(true, ErrorMessage.NONE);
-	                username = login.getUsername();
-	                this.username = username;
-	                loginsuccess = true;
-	                this.userHash.add(this.username);
-	              } else {
+            } else if (login.getEnrolling()) {										//enrolling == true
 
-	                // have to make sure that logging is ok...
-	                //writeLogs(login.getUsername(), "Attempt made on user " +
-	                //    username + "'s account");
+              // try to enroll the new user...
+              synchronized (this.userHash) {
+                if (!DB.searchUser(login.getUsername())) { 							// user does not exist
+                  if (DB.newUser(login.getUsername(), login.getPassword())) {	 //enroll the user
+                    loginResponse = new LoginReq(true, ErrorMessage.NONE);
+                    username = login.getUsername();
+                    this.username = username;
+                    //toLog = username + " enrolled";
+                    loginsuccess = true;
+                    // user won't be in the hash already if it didn't exist
+                    this.userHash.add(username);
+                  } else {														//failure to enroll
+                    loginResponse =
+                      new LoginReq(false, ErrorMessage.DATABASE_FAILURE);
+                  }
+                } else {
+                  loginResponse =
+                    new LoginReq(false, ErrorMessage.DUPLICATE_USERNAME);
+                  // TODO anything to log here?
+                }
+              }
 
-	                loginResponse =
-	                  new LoginReq(false, ErrorMessage.BAD_CREDENTIALS);
-	              }
-	            } else {
-	              loginResponse = new LoginReq(false, ErrorMessage.NO_SUCH_USER);
-	            }
+            } else {
 
-	          }
+              // try to authenticate the new user...
+              synchronized (this.userHash) {
+                if (DB.searchUser(login.getUsername())) {
+                  if (DB.checkUserPWD(login.getUsername(), login.getPassword())) {
+                    if (!this.userHash.contains(login.getUsername())) {
+                      loginResponse = new LoginReq(true, ErrorMessage.NONE);
+                      username = login.getUsername();
+                      this.username = username;
+                      //toLog = username + " logged in";
+                      loginsuccess = true;
+                      this.userHash.add(username);
+                    } else {
+                      loginResponse =
+                        new LoginReq(false, ErrorMessage.DUPLICATE_LOGIN);
+                    }
+                  } else {
 
-	          send(loginResponse);
-	          break;
+                    // have to make sure that logging is ok...
+                    //writeLogs(login.getUsername(), "Attempt made on user " +
+                    //    username + "'s account");
 
-	        // TODO is there anything to log in these bad cases?
-	        case LOG:
-	          LogReq loginLogResponse = new LogReq(ErrorMessage.BAD_REQUEST);
-	          send(loginLogResponse);
-	          close();
+                    loginResponse =
+                      new LoginReq(false, ErrorMessage.BAD_CREDENTIALS);
+                  }
+                } else {
+                  loginResponse = new LoginReq(false, ErrorMessage.NO_SUCH_USER);
+                }
+              }
 
-	        case USER_DATA_OP:
-	          UserDataReq loginUDResponse = new UserDataReq(false,
-	              ErrorMessage.BAD_REQUEST);
-	          send(loginUDResponse);
-	          close();
+            }
 
-	        case TERMINATION:
-	          close();
+            send(loginResponse);
+            break;
 
-	        default:
-	          System.out.println("Unknown request type received in login loop of " +
-	              "server.");
-	          close();
-	      }
-	    }
+            // TODO is there anything to log in these bad cases?
+          case LOG:
+            LogReq loginLogResponse = new LogReq(ErrorMessage.BAD_REQUEST);
+            send(loginLogResponse);
+            close();
 
-	    // We have now successfully authenticated the user! The username parameter
-	    // should be set, and we know that this session has permission to access
-	    // that username's files
+          case USER_DATA_OP:
+            UserDataReq loginUDResponse = new UserDataReq(false,
+                ErrorMessage.BAD_REQUEST);
+            send(loginUDResponse);
+            close();
 
-	    //if (!toLog.equals("")) {
-	    //  writeLogs(username, toLog);
-	    //}
+          case TERMINATION:
+            close();
 
-	    boolean sessionover = false;
+          default:
+            System.out.println("Unknown request type received in login loop of " +
+                "server.");
+            close();
+        }
+      }
 
-	    while (!sessionover) {
-	      req = receive();
+      // We have now successfully authenticated the user! The username parameter
+      // should be set, and we know that this session has permission to access
+      // that username's files
 
-	      switch (req.getEvent()) {
-	        case LOGIN:
-	        	LoginReq sessionloginresp;
-	        	if (((LoginReq) req).getUpdating()) {									
-	        		boolean sucess = DB.storeUserPWD(((LoginReq) req).getUsername(), ((LoginReq) req).getPassword());
-	        		System.out.println(sucess);
-	        		sessionloginresp = new LoginReq(sucess, ErrorMessage.NONE);
-				}else{
-					sessionloginresp =
-							new LoginReq(false, ErrorMessage.BAD_REQUEST);}
-	        	send(sessionloginresp);
-	        	break;
+      //if (!toLog.equals("")) {
+      //  writeLogs(username, toLog);
+      //}
 
-	        case LOG:
-	          String log = DB.readUserLog(username);
-	          LogReq logResponse = null;
+      boolean sessionover = false;
 
-	          if (log == null) {
-	            logResponse = new LogReq(ErrorMessage.DATABASE_FAILURE);
-	            System.out.println("log is null");
-	          } else {
-	            logResponse = new LogReq(log);
-	          }
+      while (!sessionover) {
+        req = receive();
 
-	          send(logResponse);
-	          break;
+        switch (req.getEvent()) {
+          case LOGIN:
+            LoginReq sessionloginresp;
+            if (((LoginReq) req).getUpdating()) {									
+              boolean sucess = DB.storeUserPWD(((LoginReq) req).getUsername(), ((LoginReq) req).getPassword());
+              System.out.println(sucess);
+              sessionloginresp = new LoginReq(sucess, ErrorMessage.NONE);
+            }else{
+              sessionloginresp =
+                new LoginReq(false, ErrorMessage.BAD_REQUEST);}
+            send(sessionloginresp);
+            break;
 
-	        case USER_DATA_OP:
-	          UserDataReq datareq = (UserDataReq) req;
-	          UserDataReq UDResponse = null;
-	          
-	          if (datareq.getDirection() == ReqType.DOWNLOAD) {
-	            // send the data to the user
-	            byte[] cyphertext = DB.readUserData(username);
-	            byte[] iv = DB.readUserIV(username);
+          case LOG:
+            String log = DB.readUserLog(username);
+            LogReq logResponse = null;
 
-	            if (cyphertext == null || iv == null) {
-	              UDResponse =
-	                new UserDataReq(false, ErrorMessage.DATABASE_FAILURE);
-	              System.out.println("cypher/iv are null");
-	              System.out.println("Ciphertext: " + cyphertext);
-	              System.out.println("IV: " + iv);
-	            } else {
-	              UDResponse =
-	                new UserDataReq(true, ErrorMessage.NONE, cyphertext, iv);
-	            }
-	          } else {
-	            // replace the data with what is in the request
-	            if (!DB.writeUserData(username, datareq.getData())) {
-	              UDResponse =
-	                new UserDataReq(false, ErrorMessage.DATABASE_FAILURE);
-	              System.out.println("could not write user data");
-	            } else {
-	              if (!DB.writeUserIV(username, datareq.getIV())) {
-	                UDResponse =
-	                  new UserDataReq(false, ErrorMessage.DATABASE_FAILURE);
-	                System.out.println("could not write user iv");
-	              } else {
-	                UDResponse = new UserDataReq(true, ErrorMessage.NONE);
-	              }
-	            }
-	          }
+            if (log == null) {
+              logResponse = new LogReq(ErrorMessage.DATABASE_FAILURE);
+              System.out.println("log is null");
+            } else {
+              logResponse = new LogReq(log);
+            }
 
-	          send(UDResponse);
-	          break;
+            send(logResponse);
+            break;
 
-	        case TERMINATION:
-	          sessionover = true;
-	          writeLogs(username, "User " + username + " logged out.");
-	          break;
+          case USER_DATA_OP:
+            UserDataReq datareq = (UserDataReq) req;
+            UserDataReq UDResponse = null;
 
-	        default:
-	          System.out.println("Session loop got unexpected request type... " +
-	              "exiting.");
-	          close();
-	      }
-	    }
-	    close();
-		}
-		catch(SocketException se){
-			close();
-		}
-	}
-	
-	public void setTimeout(int seconds){
-		try{
-			this.socket.setSoTimeout(seconds*1000);
-		}
-		catch(SocketException se){
-			se.printStackTrace();
-		}
-	}
+            if (datareq.getDirection() == ReqType.DOWNLOAD) {
+              // send the data to the user
+              byte[] cyphertext = DB.readUserData(username);
+              byte[] iv = DB.readUserIV(username);
 
-	/* Writes the given string to the server log and the specified user's log.
-	   */
-	  private static void writeLogs(String username, String text) {
-	    if (!DB.writeServerLog(text)) {
-	      System.out.println("Could not write to server log...");
-	    }
-	    if (!DB.writeUserLog(username, text)) {
-	      System.out.println("Could not write to user " + username + "'s log...");
-	    }
-	  }
+              if (cyphertext == null || iv == null) {
+                UDResponse =
+                  new UserDataReq(false, ErrorMessage.DATABASE_FAILURE);
+                System.out.println("cypher/iv are null");
+                System.out.println("Ciphertext: " + cyphertext);
+                System.out.println("IV: " + iv);
+              } else {
+                UDResponse =
+                  new UserDataReq(true, ErrorMessage.NONE, cyphertext, iv);
+              }
+            } else {
+              // replace the data with what is in the request
+              if (!DB.writeUserData(username, datareq.getData())) {
+                UDResponse =
+                  new UserDataReq(false, ErrorMessage.DATABASE_FAILURE);
+                System.out.println("could not write user data");
+              } else {
+                if (!DB.writeUserIV(username, datareq.getIV())) {
+                  UDResponse =
+                    new UserDataReq(false, ErrorMessage.DATABASE_FAILURE);
+                  System.out.println("could not write user iv");
+                } else {
+                  UDResponse = new UserDataReq(true, ErrorMessage.NONE);
+                }
+              }
+            }
+
+            send(UDResponse);
+            break;
+
+          case TERMINATION:
+            sessionover = true;
+            writeLogs(username, "User " + username + " logged out.");
+            break;
+
+          default:
+            System.out.println("Session loop got unexpected request type... " +
+                "exiting.");
+            close();
+        }
+      }
+      close();
+    }
+    catch(SocketException se){
+      close();
+    }
+  }
+
+  public void setTimeout(int seconds){
+    try{
+      this.socket.setSoTimeout(seconds*1000);
+    }
+    catch(SocketException se){
+      se.printStackTrace();
+    }
+  }
+
+  /* Writes the given string to the server log and the specified user's log.
+  */
+  private static void writeLogs(String username, String text) {
+    if (!DB.writeServerLog(text)) {
+      System.out.println("Could not write to server log...");
+    }
+    if (!DB.writeUserLog(username, text)) {
+      System.out.println("Could not write to user " + username + "'s log...");
+    }
+  }
 }
