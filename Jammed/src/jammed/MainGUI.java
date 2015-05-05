@@ -81,6 +81,9 @@ public class MainGUI extends JFrame {
         JButton changePWDB = new JButton("Change Password"); changePWDB.setBounds(545, 500, 150, 50);
         changePWDB.addActionListener(new ChangePWDButtonHandler());
 
+        JButton deleteAccountB = new JButton("Delete Account"); deleteAccountB.setBounds(390, 500, 150, 50);
+        deleteAccountB.addActionListener(new DeleteAccountButtonHandler());
+
         JButton saveButton = new JButton("Save Changes");
         saveButton.setBounds(30, 500, 100, 50);
         saveButton.addActionListener(new SaveButtonHandler());
@@ -106,6 +109,7 @@ public class MainGUI extends JFrame {
         con.add(changePWDB);
         con.add(chngDataB);
         con.add(showPWDB);
+        con.add(deleteAccountB);
         // Display all
         setVisible(true);
     }
@@ -210,7 +214,7 @@ public class MainGUI extends JFrame {
             con2.add(chngpwdB);
             con2.add(exitB);
             con2.add(pwdChangeInfo);
-            newWindow.setVisible(false);
+            newWindow.setVisible(true);
         }
 
         /** Class to handle what happens when user presses "Confirm Change" Button */
@@ -284,6 +288,56 @@ public class MainGUI extends JFrame {
         }
     }
 
+    private class DeleteAccountButtonHandler implements ActionListener {
+        private JFrame delWindow;
+
+        public void actionPerformed(ActionEvent event) {
+            delWindow = new JFrame("Delete Account");
+            delWindow.setBounds(500, 250, 400, 200);
+
+            Container con2 = delWindow.getContentPane(); // inherit main frame
+            con2.setBackground(Color.WHITE);
+            con2.setLayout(null);
+
+            JLabel warningMsg = new JLabel("This is permanent, all of your data will be gone forever.");
+            warningMsg.setBounds(10, 10, 400, 30);
+            JLabel warningMsgPart2 = new JLabel("Also remember to delete your keys.");
+            warningMsgPart2.setBounds(10, 40, 400, 30);
+
+            JButton confirmDelete = new JButton("Confirm Deletion"); confirmDelete.setBounds(10, 100, 150, 50);
+            confirmDelete.addActionListener(new ConfirmDeleteAccount());
+            JButton exitB = new JButton("Close"); exitB.setBounds(170, 100, 100, 50);
+            exitB.addActionListener(new ExitButtonHandler());
+
+            con2.add(warningMsg);
+            con2.add(warningMsgPart2);
+            con2.add(confirmDelete);
+            con2.add(exitB);
+
+            delWindow.setVisible(true);
+        }
+
+        private class ConfirmDeleteAccount implements ActionListener {
+            public void actionPerformed(ActionEvent event) {
+                synchronized (action) {
+                    LoginInfo userToDelete = new LoginInfo();
+                    userToDelete.username = CurrentUser; userToDelete.website = "DELETE";
+                    action.pwdChange = userToDelete;
+                    action.DELETE_ACCOUNT = true;
+                    action.type = GActionType.DEL_ACCOUNT;
+                    action.notify();
+                }
+                delWindow.setVisible(false);
+            }
+        }
+        private class ExitButtonHandler implements ActionListener {
+            public void actionPerformed(ActionEvent event) {
+                delWindow.setVisible(false);
+            }
+        }
+
+    }
+
     public void displayUserData(ArrayList<LoginInfo> ud) {
         for(LoginInfo l : ud) {
             userDataDisplay.append(l.secureToString(showPasswords) + "\n");
@@ -314,12 +368,13 @@ public class MainGUI extends JFrame {
         serverInfoLabel.setText(msg);
     }
 
-    public enum GActionType {SAVE, CHANGE_PWD, LOG, EXIT, NULL};
+    public enum GActionType {SAVE, CHANGE_PWD, LOG, EXIT, DEL_ACCOUNT, NULL};
 
     public class ActionClass {
         ArrayList<LoginInfo> userData;
         LoginInfo pwdChange;
         GActionType type;
+        boolean DELETE_ACCOUNT;
     }
 
     public ActionClass getAction() throws InterruptedException {

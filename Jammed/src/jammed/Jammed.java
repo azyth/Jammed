@@ -115,8 +115,9 @@ public class Jammed {
       // (7) track any changes that were made
       Action action = null;
       ui.display(plaindata);
+      boolean sessionover = false;
 
-      while (action == null || action.type != ActionType.EXIT) {
+      while (!sessionover) {
 
         action = ui.getAction();
 
@@ -158,7 +159,8 @@ public class Jammed {
               // method this is OK though
               ui.error("Wrote log to file " + LOGFILE);
             } else {
-              ui.error("Could not get log: Error " + log.getError());
+              ui.error("Could not get log: Error " +
+                  Request.errToString(log.getError()));
             }
             break;
 
@@ -189,7 +191,27 @@ public class Jammed {
             changes = true;
             break;
 
+          case DELETE:
+
+            Request deletereq = new AccountDeletionReq();
+            server.send(deletereq);
+
+            AccountDeletionReq deletesuccess =
+              (AccountDeletionReq) server.receive();
+            if (deletesuccess.getSuccess()) {
+              ui.error("Account successfully deleted.");
+              // TODO delete keys?
+              sessionover = true;
+            } else {
+              ui.error("Could not delete account: " +
+                  Request.errToString(deletesuccess.getError()));
+            }
+
+            break;
+
           case EXIT:
+
+            sessionover = true;
             break;
 
           default:

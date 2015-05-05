@@ -12,8 +12,9 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-# swp files (yay vim)
+# swp/swo files (yay vim)
 *.swp
+*.swo
 
 .idea/*
 *.iml
@@ -27,3 +28,9 @@ Jammed/bin/root/users/*
 *KeyLocaton.txt
 *Datatag.txt
 *IVtag.txt
+keystore.jks
+defaultKeyLocation.txt
+
+
+.directory
+
