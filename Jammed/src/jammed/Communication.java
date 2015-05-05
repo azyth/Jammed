@@ -36,8 +36,8 @@ public class Communication implements Runnable{
 	private ObjectInputStream rx = null;
 	private ObjectOutputStream tx = null;
 	
-	private String username;
 	private Set<String> userHash = null;
+	private String username = null;
 
 	/**
 	 * Class Constructor
@@ -88,6 +88,7 @@ public class Communication implements Runnable{
 
 	public void close() {
 		System.out.println("Closing connection...");
+		this.userHash.remove(this.username);
 		try {
 			if (this.tx != null) this.tx.close();
 			if (this.rx != null) this.rx.close();
@@ -110,7 +111,6 @@ public class Communication implements Runnable{
 	    Request req;
 	    boolean loginsuccess = false;
 	    String username = null;
-	    //String toLog = "";
 
 	    while (!loginsuccess) {
 	      req = receive();
@@ -133,8 +133,9 @@ public class Communication implements Runnable{
 						  if (DB.newUser(login.getUsername(), login.getPassword())) {	 //enroll the user
 							    loginResponse = new LoginReq(true, ErrorMessage.NONE);
 							    username = login.getUsername();
-							    //toLog = username + " enrolled";
+							    this.username = username;
 							    loginsuccess = true;
+							    this.userHash.add(this.username);
 						  } else {														//failure to enroll
 							    loginResponse =
 							      new LoginReq(false, ErrorMessage.DATABASE_FAILURE);
@@ -147,13 +148,15 @@ public class Communication implements Runnable{
 
 	          } else {
 
-	            // try to authenticate the new user...
+	            // try to authenticate the user...
+	        	  //TODO: I was right here
 	            if (DB.searchUser(login.getUsername())) {
 	              if (DB.checkUserPWD(login.getUsername(), login.getPassword())) {
 	                loginResponse = new LoginReq(true, ErrorMessage.NONE);
 	                username = login.getUsername();
-	                //toLog = username + " logged in";
+	                this.username = username;
 	                loginsuccess = true;
+	                this.userHash.add(this.username);
 	              } else {
 
 	                // have to make sure that logging is ok...
