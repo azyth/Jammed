@@ -193,7 +193,6 @@ public class Jammed {
 
           case DELETE:
 
-            /*
             Request deletereq = new AccountDeletionReq();
             server.send(deletereq);
 
@@ -205,11 +204,9 @@ public class Jammed {
               sessionover = true;
             } else {
               ui.error("Could not delete account: " +
-                  Request.errToString(deletesuccess.getError));
+                  Request.errToString(deletesuccess.getError()));
             }
-            */
-            ui.error("would delete here but can't yet");
-            sessionover = true;
+
             break;
 
           case EXIT:

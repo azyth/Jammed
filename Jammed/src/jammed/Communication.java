@@ -195,20 +195,28 @@ public class Communication implements Runnable{
             LogReq loginLogResponse = new LogReq(ErrorMessage.BAD_REQUEST);
             send(loginLogResponse);
             close();
+            return;
 
           case USER_DATA_OP:
             UserDataReq loginUDResponse = new UserDataReq(false,
                 ErrorMessage.BAD_REQUEST);
             send(loginUDResponse);
             close();
+            return;
+
+          case DELETION:
+            close();
+            return;
 
           case TERMINATION:
             close();
+            return;
 
           default:
             System.out.println("Unknown request type received in login loop of " +
                 "server.");
             close();
+            return;
         }
       }
 
@@ -221,6 +229,7 @@ public class Communication implements Runnable{
       //}
 
       boolean sessionover = false;
+      boolean userDeleted = false;
 
       while (!sessionover) {
         req = receive();
@@ -291,15 +300,30 @@ public class Communication implements Runnable{
             send(UDResponse);
             break;
 
+          case DELETION:
+            AccountDeletionReq deleteResponse;
+            if (DB.deleteUser(username)) {
+              deleteResponse = new AccountDeletionReq(true, ErrorMessage.NONE);
+              userDeleted = true;
+            } else {
+              deleteResponse =
+                new AccountDeletionReq(false, ErrorMessage.DATABASE_FAILURE);
+            }
+            send(deleteResponse);
+            break;
+
           case TERMINATION:
             sessionover = true;
-            writeLogs(username, "User " + username + " logged out.");
+            if (!userDeleted) {
+              writeLogs(username, "User " + username + " logged out.");
+            }
             break;
 
           default:
             System.out.println("Session loop got unexpected request type... " +
                 "exiting.");
             close();
+            return;
         }
       }
       close();
