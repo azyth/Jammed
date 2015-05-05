@@ -7,12 +7,27 @@ import jammed.Request.ErrorMessage;
 import jammed.Request.EventType;
 import jammed.UserDataReq.ReqType;
 
+import java.io.EOFException;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.ServerSocket;
 
-// TODO: Add multi-threading class Toast(Server)/Crumb(Connection Handler)
-// TODO: Add actual authentication
+import javax.net.ServerSocketFactory;
+
+import java.net.SocketException;
+
+import javax.net.ssl.*;
+
+import java.security.KeyStore;
+import java.util.HashSet;
+import java.io.FileReader;
+import java.io.BufferedReader;
+
 // TODO: Add proper system logging
 // TODO: Add more verbose error handling and reporting
-// TODO: Figure out System.SetProperty issues, fix KeyStore/Trusted Store
 
 /**
  * The server class of the <code>Jammed</code> password management system.
@@ -23,20 +38,74 @@ import jammed.UserDataReq.ReqType;
 public class Jelly {
 
   public static void main(String[] args) throws SocketException {
+	  
+	  BufferedReader read = null;
+	  ServerSocket serverSocket = null;
 
     if (!DB.initialize()) {
       System.err.println("DB Initialization Failure");
       System.exit(1);
     }
+    
+    // Network Information (default)
+    int port = 54309;
+    String keyStoreFile = "jammedkeystore.jks";
+	String keyStorePwd = "cs5430";
+    
+    // **** CONFIG INITIALIZATION ****
+	// Server config settings
+	// Line 0: port
+	// Line 1: KeyStoreFile
+	// Line 2: KeyStorePwd
+	try{
+		read = new BufferedReader(new FileReader("client.config"));
+		port = Integer.parseInt(read.readLine());
+		keyStoreFile = read.readLine();
+		keyStorePwd = read.readLine();
+	}
+	catch(IOException io){
+		io.printStackTrace();
+	}
+	finally{
+		try{
+			if(read != null) read.close();
+		}
+		catch(IOException io){
+			io.printStackTrace();
+		}
+	}
+	
+	// **** SSL INITIALIZATION ****
+	try{
+		SSLContext context = SSLContext.getInstance("SSL");
+		KeyStore ks = KeyStore.getInstance("JKS");
+		KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+		FileInputStream ksin = new FileInputStream(keyStoreFile);
+		ks.load(ksin, keyStorePwd.toCharArray());
+		kmf.init(ks, keyStorePwd.toCharArray());
+		context.init(kmf.getKeyManagers(), null, null);
+		ServerSocketFactory serverSocketFactory = context
+				.getServerSocketFactory();
+		serverSocket = serverSocketFactory.createServerSocket(port);
+	}
+	catch(Exception e){
+		e.printStackTrace();
+	}
 
+	// Main Server Loop
     while (true) {
-      Communication comm = new Communication();
-      System.out.println("Accepting client...");
-      comm.accept();
+    	try{
+    		Communication comm = new Communication(serverSocket.accept());
+    	      System.out.println("Accepting client...");
+    	}
+    	catch(IOException io){
+    		io.printStackTrace();
+    	}
+      //comm.accept();
 
-      handle_connection(comm);
+      //handle_connection(comm); MOVE ME TO COMMUNICATION
 
-      comm.close();
+      //comm.close();
     }
   }
 
@@ -228,7 +297,7 @@ public class Jelly {
   }
 
   /* Writes the given string to the server log and the specified user's log.
-   * Does NOT crash the program on failure... TODO is this OK? */
+   */
   private static void writeLogs(String username, String text) {
     if (!DB.writeServerLog(text)) {
       System.out.println("Could not write to server log...");
@@ -237,5 +306,4 @@ public class Jelly {
       System.out.println("Could not write to user " + username + "'s log...");
     }
   }
-
 }
