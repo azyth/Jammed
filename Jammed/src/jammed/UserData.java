@@ -154,7 +154,7 @@ public class UserData {
 
 		String text = listToString(data);
 		if (text.equalsIgnoreCase("")){  									//blank string crypto check
-			text = "default \n value \n here";
+			text = "default\nvalue\nhere";
 		}
 		byte[] textbyte = text.getBytes("UTF8");
 		

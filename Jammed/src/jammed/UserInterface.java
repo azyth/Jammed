@@ -149,7 +149,8 @@ public class UserInterface {
       "\t\"remove\" deletes an entry\n" +
       "\t\"log\" obtains log files for your account\n" +
       "\t\"change\" changes the password to your account\n" +
-      "\t\"exit\" saves changes and exits the program";
+      "\t\"exit\" saves changes and exits the program\n" +
+      "\t\"delete\" deletes your user account";
 
     BufferedReader br =
       new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
@@ -244,6 +245,16 @@ public class UserInterface {
           action.type = ActionType.EXIT;
           break;
 
+        case "delete":
+
+          System.out.print("Really delete? [yes/no]: ");
+          String really = br.readLine();
+          if (really.equalsIgnoreCase("yes")) {
+            success = true;
+            action.type = ActionType.DELETE;
+          }
+          break;
+
         default:
 
           System.out.println(help);
@@ -256,7 +267,7 @@ public class UserInterface {
   /* Everything that the user can do. Note that "ADD" covers both adding and
    * modifying existing passwords, and "CHANGE" refers to modifying the overall
    * account password. */
-  public enum ActionType {ADD, REMOVE, LOG, CHANGE, EXIT};
+  public enum ActionType {ADD, REMOVE, LOG, CHANGE, EXIT, DELETE};
 
   /* Holds an ActionType and a LoginInfo containing information pertaining to
    * that type. */

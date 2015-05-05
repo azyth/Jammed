@@ -19,7 +19,7 @@ public abstract class Request implements java.io.Serializable{
 	// Each Request class and subclass needs a serial version UID
 	// Adding one to each
 	
-	public enum EventType { LOGIN, LOG, USER_DATA_OP, TERMINATION }
+	public enum EventType { LOGIN, LOG, USER_DATA_OP, TERMINATION, DELETION }
 	public enum MessageType { REQUEST, RESPONSE }
 	public enum ErrorMessage { BAD_ARGUMENT, BAD_CREDENTIALS, NO_SUCH_USER,
     DUPLICATE_USERNAME, BAD_REQUEST, DATABASE_FAILURE, BAD_USERNAME, OTHER,
