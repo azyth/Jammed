@@ -273,9 +273,9 @@ public class Communication implements Runnable{
               if (cyphertext == null || iv == null) {
                 UDResponse =
                   new UserDataReq(false, ErrorMessage.DATABASE_FAILURE);
-                System.out.println("cypher/iv are null");
-                System.out.println("Ciphertext: " + cyphertext);
-                System.out.println("IV: " + iv);
+                //System.out.println("cypher/iv are null");
+                //System.out.println("Ciphertext: " + cyphertext);
+                //System.out.println("IV: " + iv);
               } else {
                 UDResponse =
                   new UserDataReq(true, ErrorMessage.NONE, cyphertext, iv);
