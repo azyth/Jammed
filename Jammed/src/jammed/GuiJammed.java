@@ -189,6 +189,19 @@ public class GuiJammed {
                         server.close();
                         System.exit(0);
                         break;
+                    case DEL_ACCOUNT:
+                        if(action.DELETE_ACCOUNT) {
+                            LoginInfo userToDelete = action.pwdChange;
+                            // userToDeleteContains the username of the user who requested that change
+                            // and the website field says "DELETE"
+                            // TODO send delete request to server
+                            System.out.println(userToDelete.username);
+                        }
+                        MG.resetAction();
+                        //server.send(new TerminationReq(TerminationReq.Term.USER_REQUEST));
+                        //server.close();
+                        //System.exit(0);
+                        break;
                     case NULL:
                         // do nothing
                         MG.setServerInfoLabel("Not a valid action");
