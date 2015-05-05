@@ -1,7 +1,6 @@
 package jammed;
 
 // TODO: Fix all of the exceptions!
-// TODO: Soft code host name and port
 
 import jammed.Request.ErrorMessage;
 import jammed.UserDataReq.ReqType;
@@ -22,6 +21,7 @@ import javax.net.ssl.*;
 
 import java.security.KeyStore;
 import java.util.HashSet;
+import java.util.Set;
 import java.io.FileReader;
 import java.io.BufferedReader;
 
@@ -31,18 +31,22 @@ import java.io.BufferedReader;
  * @Author Daniel Etter (dje67)
  * @version Alpha (1.0) 3.20.15
  */
-public class Communication implements Runnable{
+public class Communication implements Runnable{	
 	private Socket socket = null;
 	private ObjectInputStream rx = null;
 	private ObjectOutputStream tx = null;
+	
+	private String username;
+	private Set<String> userHash = null;
 
 	/**
 	 * Class Constructor
 	 * 
 	 * @throws SocketException
 	 */
-	public Communication(Socket socket) throws SocketException {
+	public Communication(Socket socket, Set<String> users) throws SocketException {
 		this.socket = socket;
+		this.userHash = users;
 		
 		try{
 			this.tx = new ObjectOutputStream(this.socket.getOutputStream());
@@ -100,7 +104,6 @@ public class Communication implements Runnable{
 		try{
 			
 		System.out.println("Accepting a new client...");
-		
 		// we have got a connection now, because we have called this function...
 	    System.out.println("Handling connection...");
 
