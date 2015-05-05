@@ -247,13 +247,13 @@ public class Jammed {
   public static class Shutdown extends Thread {
     @Override
     public void run() {
-      System.out.println("In shutdown hook.");
+     // System.out.println("In shutdown hook.");
       if (server.connected()) {
-        System.out.println("conencted server");
+       // System.out.println("conencted server");
         try {
           //Blank String Crypto check 
           if (UserData.listToString(plaindata).equals("")){
-            System.out.println("blank string crypto here");
+           // System.out.println("blank string crypto here");
             plaindata =
               UserData.stringToList("default\nplaceholder\ninserted");
             changes = true;
@@ -273,7 +273,7 @@ public class Jammed {
             UserDataReq uploadresp = (UserDataReq) server.receive();
             if (!uploadresp.getSuccess()){
               // something terrible happened
-              System.out.println("Passwords could not be stored!");
+              //System.out.println("Passwords could not be stored!");
             }
           }
 

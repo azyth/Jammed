@@ -273,7 +273,7 @@ public class GuiJammed {
               UserDataReq uploadresp = (UserDataReq) server.receive();
               if (!uploadresp.getSuccess()){
                 // something terrible happened
-                System.out.println("Passwords could not be stored!");
+                //System.out.println("Passwords could not be stored!");
               }
             }
 
