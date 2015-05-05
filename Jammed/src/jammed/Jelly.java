@@ -1,26 +1,12 @@
 package jammed;
 
-import java.io.UnsupportedEncodingException;
 import java.net.SocketException;
-
-import jammed.Request.ErrorMessage;
-import jammed.Request.EventType;
-import jammed.UserDataReq.ReqType;
-
-import java.io.EOFException;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.ServerSocket;
-
 import javax.net.ServerSocketFactory;
-
-import java.net.SocketException;
-
 import javax.net.ssl.*;
-
 import java.security.KeyStore;
 import java.io.FileReader;
 import java.io.BufferedReader;
@@ -46,12 +32,11 @@ public class Jelly {
       System.exit(1);
     }
     
-    // Network Information (default information)
+    /* Default Network Information */
     int port = 54309;
     String keyStoreFile = "jammedkeystore.jks";
 	String keyStorePwd = "cs5430";
     
-    // **** CONFIG INITIALIZATION ****
 	// Server config settings
 	// Line 0: port
 	// Line 1: KeyStoreFile
@@ -76,7 +61,7 @@ public class Jelly {
 		}
 	}
 	
-	// **** SSL INITIALIZATION ****
+	/* SSL Configuration */
 	try{
 		SSLContext context = SSLContext.getInstance("SSL");
 		KeyStore ks = KeyStore.getInstance("JKS");
@@ -85,8 +70,7 @@ public class Jelly {
 		ks.load(ksin, keyStorePwd.toCharArray());
 		kmf.init(ks, keyStorePwd.toCharArray());
 		context.init(kmf.getKeyManagers(), null, null);
-		ServerSocketFactory serverSocketFactory = context
-				.getServerSocketFactory();
+		ServerSocketFactory serverSocketFactory = context.getServerSocketFactory();
 		serverSocket = serverSocketFactory.createServerSocket(port);
 	}
 	catch(Exception e){
@@ -94,15 +78,14 @@ public class Jelly {
 		e.printStackTrace();
 	}
 	
-	//Hash table setup
+	/* Logged In Users Set Setup */
 	Set<String> login = Collections.synchronizedSet(new HashSet<String>());
 
-	// Main Server Loop
+	/* Main Server Loop */
     while (true) {
     	try{
     		Socket clientSocket = serverSocket.accept();
     		Communication client = new Communication(clientSocket, login);
-    		//client.setTimeout(60);
     		new Thread(client).start();
     	}
     	catch(IOException io){
@@ -110,6 +93,4 @@ public class Jelly {
     	}
     }
   }
-
-  
 }
