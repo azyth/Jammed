@@ -190,17 +190,17 @@ public class GuiJammed {
                         System.exit(0);
                         break;
                     case DEL_ACCOUNT:
-                        if(action.DELETE_ACCOUNT) {
-                            LoginInfo userToDelete = action.pwdChange;
-                            // userToDeleteContains the username of the user who requested that change
-                            // and the website field says "DELETE"
-                            // TODO send delete request to server
-                            System.out.println(userToDelete.username);
-                        }
                         MG.resetAction();
-                        //server.send(new TerminationReq(TerminationReq.Term.USER_REQUEST));
-                        //server.close();
-                        //System.exit(0);
+                        Request deletereq = new AccountDeletionReq();
+                        server.send(deletereq);
+
+                        AccountDeletionReq deletesuccess = (AccountDeletionReq) server.receive();
+                        if (!deletesuccess.getSuccess()) {
+                            // tell user
+                            MG.setServerInfoLabel("Your account could not be deleted.");
+                        } else {
+                            System.exit(0);
+                        }
                         break;
                     case NULL:
                         // do nothing
