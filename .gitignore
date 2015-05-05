@@ -24,4 +24,6 @@ guest*
 #user data
 Jammed/bin/root/users/*
 *sessionKey.txt
-*defaultKeyLocaton.txt
+*KeyLocaton.txt
+*Datatag.txt
+*IVtag.txt
