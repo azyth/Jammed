@@ -126,13 +126,6 @@ public class UserData {
 		IvParameterSpec ips = new IvParameterSpec(iv);
 		aes.init(Cipher.DECRYPT_MODE, this.dataSecKey, ips);
 				
-		byte[] tag = loadIV(dir+this.uname+DATATAG);
-	    byte[] newtag = tagdata(data);
-	    if (!(java.util.Arrays.equals(tag, newtag))){
-	    	System.out.println("Integrety has been comprimised, Data is not reliable.");
-	    	//TODO throw error??
-	    }
-		
 		byte[] text = aes.doFinal(data);
 		String userdata = new String(text, "UTF8");	
 		//System.out.println("data decrypted");
@@ -154,18 +147,13 @@ public class UserData {
 		aes.init(Cipher.ENCRYPT_MODE, this.dataSecKey, ips);
 
 		String text = listToString(data);
-		if (text.equalsIgnoreCase("")){  									//blank string crypto check
+		if (text.equalsIgnoreCase("")){  				//blank string crypto check
 			text = "default\nvalue\nhere";
 		}
 		byte[] textbyte = text.getBytes("UTF8");
 		
 		byte[] block = aes.doFinal(textbyte);
-		//System.out.println("data encrypted");
-		//System.out.println(block);
 		
-		storeIV(tagdata(iv), dir+this.uname+IVTAG);
-		storeIV(tagdata(block), dir+this.uname+DATATAG);
-
 		return block;
 	}
 	
@@ -178,8 +166,8 @@ public class UserData {
 	/* used to initiate secret key and store it to users machine, 
 	 * either to replace a compromised key or for a new user
 	 */
-	public static void enroll(String username, String password, String filepath) throws IOException, //add String filepath argument
-			GeneralSecurityException {
+	public static void enroll(String username, String password, String filepath) 
+			throws IOException,	GeneralSecurityException {
 		
 		storeKey(generateKey(),hashPwd(password),username, filepath);//(new AES KEY, filepath to save key file)
 		
@@ -189,7 +177,7 @@ public class UserData {
 	private static SecretKey generateKey() throws GeneralSecurityException {
 	    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
 	    keyGenerator.init(256); 
-//		System.out.println("key created");
+
 	    return keyGenerator.generateKey();
 	}
 	//generates a random string of bytes for a new IV
@@ -223,43 +211,22 @@ public class UserData {
 
 
     }
-    
-	
-
-	
-	//loads secret key from a local file and stores it to dataSecKey
-//	private void loadKey(String file) throws IOException, GeneralSecurityException {
-//		
-//		
-//		byte[] encoded = Files.readAllBytes(Paths.get(file));
-//		
-////		SecretKeyFactory skf = SecretKeyFactory.getInstance("AES");				//TODO change to secretKeySpec
-////		dataSecKey = skf.generateSecret(new SecretKeySpec(encoded,"AES"));
-//		dataSecKey = new SecretKeySpec(encoded,"AES");
-////		System.out.println("key loaded");
-//	}
 	
 	//writes secret key to a file on local machine for storage 
 	private static void storeKey(SecretKey key, SecretKey encryptionKey, String username, String filepath) //add String filepath argument
 			throws IOException, InvalidKeyException, IllegalBlockSizeException, 
-			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidParameterSpecException, InvalidAlgorithmParameterException {
-		//Path k = FileSystems.getDefault().getPath(dir, username+SECKEYFILE);
-		//Path i = FileSystems.getDefault().getPath(dir, username+"-iv"+SECKEYFILE);
-		//Files.deleteIfExists(Paths.get(dir, username+SECKEYFILE));
-		//Files.deleteIfExists(Paths.get(dir, username+"-iv"+SECKEYFILE));
+			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, 
+			InvalidParameterSpecException, InvalidAlgorithmParameterException {
 		
-		FileOutputStream fout = new FileOutputStream(filepath+username+SECKEYFILE);			//dir +"/"+
+		FileOutputStream fout = new FileOutputStream(filepath+username+SECKEYFILE);			
 		FileOutputStream iout = new FileOutputStream(filepath+username+IVFILE);
 		byte[] skey = key.getEncoded();
-		//System.out.println(skey.toString());
 		Keys keys = encKey(skey,encryptionKey);
 		byte[] encKey = keys.block;
 		byte[] iv = keys.ivector;
-		//System.out.println(encKey.toString());
 		try {
 			fout.write(encKey);
 			iout.write(iv);
-			//System.out.println("key stored");
 		} catch (Exception e) {
 			throw e;
 		}finally {
@@ -267,14 +234,12 @@ public class UserData {
 			iout.close();
 		}
 	}
-//	private static byte[] doubleKey(byte[] key) throws IOException{
-//		
-//		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-//		outputStream.write( key );
-//		outputStream.write( key );
-//
-//		return outputStream.toByteArray( );
-//	}
+	//deletes stored keys for this instance. BE VERY CAREFUL WITH THIS
+	public void deleteKeys() throws IOException{
+		Files.deleteIfExists(Paths.get(this.dir, this.uname+SECKEYFILE));
+		Files.deleteIfExists(Paths.get(this.dir, this.uname+IVFILE));
+	}
+
 	//encrypts the secret key with the users password.
 	private static Keys encKey(byte[] encodedSecretKey, SecretKey encryptionKey) 
 			throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, 
@@ -301,13 +266,9 @@ public class UserData {
 		pwc.init(Cipher.DECRYPT_MODE, new SecretKeySpec(hashPass.getEncoded(), "AES"),ips); //invalid key length?
 		byte[] decoded = pwc.doFinal(encoded);
 		this.dataSecKey = new SecretKeySpec(decoded,"AES");
-		
-		
 	}
 
-
-	
-
+	//
 	public byte[] loadIV(String file) throws IOException {
 		return Files.readAllBytes(Paths.get(file));
 	}

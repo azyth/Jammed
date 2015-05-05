@@ -23,7 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 
 /*
- * 
+ *    NOT FULLY IMPLIMENTED
 protocol:
     M:
 
