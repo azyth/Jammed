@@ -12,6 +12,8 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManagerFactory;
 import java.net.SocketException;
 import java.security.KeyStore;
+import java.io.FileReader;
+import java.io.BufferedReader;
 
 public class ClientCommunication{
 	private String hostname = "localhost";//"10.148.9.15"; //THIS IS THE ADRESS TO CONECT TO
@@ -24,8 +26,34 @@ public class ClientCommunication{
 	private boolean dummy = true;
 
 	public ClientCommunication() {
-			// Ensures dummy ClientCommunication object is returned
-			this.dummy = true;
+		BufferedReader read = null;
+		
+		// Client config settings
+		// Line 0: host name
+		// Line 1: port
+		// Line 2: trust store file name
+		// LIne 3: trust store password
+		
+		try{
+			read = new BufferedReader(new FileReader("client.config"));
+			
+			this.hostname = read.readLine();
+			this.port = Integer.parseInt(read.readLine());
+			this.trustStoreFile = read.readLine();
+			this.trustStorePwd = read.readLine();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		finally{
+			try{
+				if(read!=null) read.close();
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
 		// Read in configuration files for host name and port
 		// Ensures dummy ClientCommunication object is returned
 		this.dummy = true;
