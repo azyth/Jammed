@@ -82,7 +82,7 @@ public class Communication implements Runnable{
   public void close() {
     System.out.println("Closing connection...");
     synchronized (this.userHash) {
-      System.out.println("removing " + username + " from hashtable");
+      System.out.println(username+" Logged Out");
       this.userHash.remove(this.username);
     }
     try {
@@ -130,6 +130,7 @@ public class Communication implements Runnable{
                     loginsuccess = true;
                     // user won't be in the hash already if it didn't exist
                     this.userHash.add(username);
+                    System.out.println(username+" Logged In");
                   } else {														//failure to enroll
                     loginResponse =
                       new LoginReq(false, ErrorMessage.DATABASE_FAILURE);
@@ -152,6 +153,7 @@ public class Communication implements Runnable{
                       this.username = username;
                       loginsuccess = true;
                       this.userHash.add(username);
+                      System.out.println(username+" Logged In");
                     } else {
                       loginResponse =
                         new LoginReq(false, ErrorMessage.DUPLICATE_LOGIN);
