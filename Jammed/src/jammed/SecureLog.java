@@ -201,12 +201,12 @@ public class SecureLog {
 		mac.init(ak);
 
 		// compute the hmac on input data bytes
-		byte[] rawHmac = mac.doFinal(encEntry);
+		byte[] hmac = mac.doFinal(encEntry);
 
 		// base64-encode the hmac ???
 		//String result = Encoding.EncodeBase64(rawHmac);
 
-		return rawHmac;//TODO change to string
+		return hmac;//TODO change to string
 		
 	}
 	//writes a key or iv byte[] to a file. file must include filepath

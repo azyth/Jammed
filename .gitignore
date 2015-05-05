@@ -12,8 +12,9 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-# swp files (yay vim)
+# swp/swo files (yay vim)
 *.swp
+*.swo
 
 .idea/*
 *.iml
@@ -24,3 +25,8 @@ guest*
 #user data
 Jammed/bin/root/users/*
 *sessionKey.txt
+keystore.jks
+defaultKeyLocation.txt
+
+# .directory files (??? what are these?)
+.directory

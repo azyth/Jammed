@@ -3,6 +3,7 @@ package jammed;
 
 import java.io.EOFException;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -11,6 +12,10 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManagerFactory;
 import java.net.SocketException;
+
+import javax.net.ssl.*;
+
+import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.io.FileReader;
 import java.io.BufferedReader;
@@ -59,7 +64,7 @@ public class ClientCommunication{
 		this.dummy = true;
 	}
 
-	public void connect() {
+	public void connect() throws SocketException{
 		try {
 			SSLContext context = SSLContext.getInstance("SSL");
 			KeyStore ks = KeyStore.getInstance("JKS");
@@ -74,11 +79,11 @@ public class ClientCommunication{
 			this.tx = new ObjectOutputStream(socket.getOutputStream());
 			this.rx = new ObjectInputStream(socket.getInputStream());
 			this.dummy = false;
-		} catch (RuntimeException re) {
-			throw re;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		} catch (GeneralSecurityException e) {
+			throw new SocketException("Security exception in socket connect");
+	    } catch (IOException e) {
+	    	throw new SocketException("IOException in socket connect");
+	    }
 	}
 
 	public void send(Request thing) throws SocketException {
@@ -86,11 +91,9 @@ public class ClientCommunication{
 			assert(this.tx!=null);
 			this.tx.writeObject(thing);
 			this.tx.flush();
-		} catch (RuntimeException re) {
-			throw re;
-		} catch (Exception e) {
-			throw new SocketException("Error in ClientCommunication.send!");
-		}
+		} catch (IOException e) {
+		      throw new SocketException("IOException in socket send");
+	    }
 	}
 
 	public Request receive() throws SocketException {
@@ -102,13 +105,11 @@ public class ClientCommunication{
 				// FIXME: Determine if this is a hack fix or properly ignoring
 				// this exception.
 				continue;
-			} catch (RuntimeException re) {
-				throw re;
-			} catch (Exception e) {
-				System.out.println(e.getClass());
-				e.printStackTrace();
-				throw new SocketException("Error in Communication.receive!");
-			}
+			} catch (IOException e) {
+		        throw new SocketException("IOException in socket receive");
+		      } catch (ClassNotFoundException e) {
+		        throw new SocketException("ClassNotFoundException in socket receive");
+		      }
 		}
 	}
 
@@ -121,11 +122,13 @@ public class ClientCommunication{
 			if (this.tx != null) this.tx.close();
 			if (this.rx != null) this.rx.close();
 			if (this.socket != null) this.socket.close();
-		} catch (RuntimeException re) {
-			throw re;
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Error in ClientCommunication.close!");
-		}
+		} catch (IOException e) {
+		      // if the connection errors out, we don't have to do anything...we don't
+		      // want this connection anymore anyway
+		    }
+	}
+	
+	public boolean connected(){
+		return !this.dummy;
 	}
 }
