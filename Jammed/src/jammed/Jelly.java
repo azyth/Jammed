@@ -22,9 +22,11 @@ import java.net.SocketException;
 import javax.net.ssl.*;
 
 import java.security.KeyStore;
-import java.util.HashSet;
 import java.io.FileReader;
 import java.io.BufferedReader;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 // TODO: Add proper system logging
 // TODO: Add more verbose error handling and reporting
@@ -91,12 +93,15 @@ public class Jelly {
 	catch(Exception e){
 		e.printStackTrace();
 	}
+	
+	//Hash table setup
+	Set<String> login = Collections.synchronizedSet(new HashSet<String>());
 
 	// Main Server Loop
     while (true) {
     	try{
     		Socket clientSocket = serverSocket.accept();
-    		Communication client = new Communication(clientSocket);
+    		Communication client = new Communication(clientSocket, login);
     		//client.setTimeout(60);
     		new Thread(client).start();
     	}
