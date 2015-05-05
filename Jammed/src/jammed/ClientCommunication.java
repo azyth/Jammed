@@ -65,11 +65,12 @@ public class ClientCommunication{
 	}
 
 	public void connect() throws SocketException{
+		FileInputStream ksin = null;
 		try {
 			SSLContext context = SSLContext.getInstance("SSL");
 			KeyStore ks = KeyStore.getInstance("JKS");
 			TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
-			FileInputStream ksin = new FileInputStream(this.trustStoreFile);
+			ksin = new FileInputStream(this.trustStoreFile);
 			ks.load(ksin, this.trustStorePwd.toCharArray());
 			tmf.init(ks);
 			context.init(null, tmf.getTrustManagers(), null);
@@ -79,11 +80,20 @@ public class ClientCommunication{
 			this.tx = new ObjectOutputStream(socket.getOutputStream());
 			this.rx = new ObjectInputStream(socket.getInputStream());
 			this.dummy = false;
+			ksin.close();
 		} catch (GeneralSecurityException e) {
 			throw new SocketException("Security exception in socket connect");
 	    } catch (IOException e) {
 	    	throw new SocketException("IOException in socket connect");
 	    }
+		finally{
+			try{
+				if(ksin != null) ksin.close();
+			}
+			catch(IOException io){
+				throw new SocketException("IOException in socket connect");
+			}
+		}
 	}
 
 	public void send(Request thing) throws SocketException {

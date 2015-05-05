@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -51,6 +52,10 @@ protocol:
 	recording this as the line number could be useful or writing entry as hashnum:entry could be useful.  
  */
 
+/**
+ * Skeleton code in place, but current implementation is defunct.
+ * @deprecated
+ */
 public class SecureLog {
 
 	private static final String LOGGINGMASTERKEY = "nutritionfactsLogKey.txt";
@@ -58,7 +63,7 @@ public class SecureLog {
 	private static String dir = "keys/";
 	private SecretKey ek;
 	private SecretKey ak;
-	private byte[] iv;
+	//private byte[] iv;
 	//private String m;
 	//private byte[] c;
 	//private byte[] t;
@@ -128,7 +133,7 @@ public class SecureLog {
 		//TODO get encoded of c and t
 		//TODO concatenate c and t into e
 		
-		String e = "c and t";
+		String e = Arrays.toString(t);// c concat e, TODO: correct this for byte array functionality
 		return e;
 		
 	}
@@ -218,7 +223,12 @@ public class SecureLog {
 		} catch (Exception e) {
 			return false; //throw e;
 		}finally {
-			fout.close();
+			try{
+				if(fout != null) fout.close();
+			}
+			catch(IOException io){
+				return false;
+			}
 		}
 		return true;
 	}

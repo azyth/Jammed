@@ -260,11 +260,13 @@ public class UserData {
 			fout.write(encKey);
 			iout.write(iv);
 			//System.out.println("key stored");
+			fout.close();
+			iout.close();
 		} catch (Exception e) {
 			throw e;
 		}finally {
-			fout.close();
-			iout.close();
+			if(fout != null) fout.close();
+			if(iout != null) iout.close();
 		}
 	}
 //	private static byte[] doubleKey(byte[] key) throws IOException{

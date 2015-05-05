@@ -75,10 +75,11 @@ public class DB {
         }
 
         // create server log file
+        FileOutputStream initLog = null;
         try {
             Path lgPath = Paths.get(serverLogPath + "log.txt");
             Files.createFile(lgPath);
-            FileOutputStream initLog = new FileOutputStream(serverLogPath + "log.txt");
+            initLog = new FileOutputStream(serverLogPath + "log.txt");
 
             String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
             String initialCreation = "Database initialization time: " + timeStamp + "\n";
@@ -90,9 +91,15 @@ public class DB {
             //System.out.println("Could not create server log file!");
             return false;
         }
-
+        finally{
+        	try{
+        		if(initLog != null) initLog.close();
+        	}
+        	catch(IOException io){
+        		return false;
+        	}
+        }
         return true;
-
     }
 
     /********************************************************/
@@ -203,10 +210,12 @@ public class DB {
                 return false;
             }
         }
+        OutputStreamWriter appendLog = null;
+        BufferedWriter bw = null;
 
         try {
-            OutputStreamWriter appendLog = new OutputStreamWriter(new FileOutputStream(sLogPath, true), "UTF-8");
-            BufferedWriter bw = new BufferedWriter(appendLog);
+            appendLog = new OutputStreamWriter(new FileOutputStream(sLogPath, true), "UTF-8");
+            bw = new BufferedWriter(appendLog);
 
             String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
             bw.write("Time Written: " + timeStamp + " | Entry: " + dataToLog);
@@ -216,6 +225,14 @@ public class DB {
         } catch(Exception e) {
             //System.out.println("Could not append data to log!");
             return false;
+        } finally{
+        	try{
+        		if(appendLog != null) appendLog.close();
+        		if(bw != null) bw.close();
+        	}
+        	catch(IOException io){
+        		return false;
+        	}
         }
         return true;
 
@@ -400,10 +417,11 @@ public class DB {
 
         String filePathName = usersPath + uid + "/" + uid + userLogSuffix;
         String dataToWrite;
-
+        BufferedWriter bw = null;
+        OutputStreamWriter writer = null;
         try {
-            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(filePathName, true), "UTF-8");
-            BufferedWriter bw = new BufferedWriter(writer);
+            writer = new OutputStreamWriter(new FileOutputStream(filePathName, true), "UTF-8");
+            bw = new BufferedWriter(writer);
 
             String timeStamp = new SimpleDateFormat("yyyy/MM/dd_HH:mm:ss").format(Calendar.getInstance().getTime());
             dataToWrite = "Time Written: " + timeStamp + " | Entry: " + fileData;
@@ -414,6 +432,15 @@ public class DB {
         } catch(Exception e) {
             //System.out.println("Could not write data to file!");
             return false;
+        }
+        finally{
+        	try{
+        		if(writer != null) writer.close();
+        		if(bw != null)bw.close();
+        	}
+        	catch(IOException io){
+        		return false;
+        	}
         }
         return true;
 
@@ -428,15 +455,23 @@ public class DB {
         if (!searchUser(uid)) {
             return false;
         }
-
+        FileOutputStream fileOut = null;
         String filePath = usersPath + uid + "/" + uid + userDataSuffix;
         try {
-            FileOutputStream fileOut = new FileOutputStream(filePath);
+            fileOut = new FileOutputStream(filePath);
 
             fileOut.write(fileData);
             fileOut.close();
         } catch (Exception e) {
             return false;
+        }
+        finally{
+        	try{
+        		if(fileOut != null) fileOut.close();
+        	}
+        	catch(IOException io){
+        		return false;
+        	}
         }
 
         boolean didUpdateServerLog = writeServerLog("User data written for user " + uid);
@@ -458,14 +493,22 @@ public class DB {
 
 
         String filePath = usersPath + uid + "/" + uid + userPWDSuffix;
-
+        FileOutputStream fileOut = null;
         try {
-            FileOutputStream fileOut = new FileOutputStream(filePath);
+            fileOut = new FileOutputStream(filePath);
 
             fileOut.write(fileData);
             fileOut.close();
         } catch (Exception e) {
             return false;
+        }
+        finally{
+        	try{
+        		if(fileOut != null) fileOut.close();
+        	}
+        	catch(IOException io){
+        		return false;
+        	}
         }
 
         boolean didUpdateServerLog = writeServerLog("pwd written for user " + uid);
@@ -486,14 +529,22 @@ public class DB {
         }
 
         String filePath = usersPath + uid + "/" + uid + userIVSuffix;
-
+        FileOutputStream fileOut = null;
         try {
-            FileOutputStream fileOut = new FileOutputStream(filePath);
+            fileOut = new FileOutputStream(filePath);
 
             fileOut.write(fileData);
             fileOut.close();
         } catch (Exception e) {
             return false;
+        }
+        finally{
+        	try{
+        		if(fileOut != null) fileOut.close();
+        	}
+        	catch(IOException io){
+        		return false;
+        	}
         }
 
         boolean didUpdateServerLog = writeServerLog("IV written for user " + uid);

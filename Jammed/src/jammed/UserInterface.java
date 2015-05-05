@@ -61,7 +61,7 @@ public class UserInterface {
     		"Jammed/bin/: ");
     
     String dir = br.readLine();
-    if (dir.isEmpty()){}
+    if ((dir != null) && (dir.isEmpty())){}
     else{login.directory = dir+"/";}
 
     System.out.println("Enter \"*\" in the username field in order to enroll " +
@@ -249,7 +249,7 @@ public class UserInterface {
 
           System.out.print("Really delete? [yes/no]: ");
           String really = br.readLine();
-          if (really.equalsIgnoreCase("yes")) {
+          if ((really != null) && (really.equalsIgnoreCase("yes"))) {
             success = true;
             action.type = ActionType.DELETE;
           }
