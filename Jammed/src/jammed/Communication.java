@@ -26,10 +26,9 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 
 /**
- * Provides a wrapper class abstraction for socket communications.
+ * Communication object is a runnable thread object handling one client connection
  * 
- * @Author Daniel Etter (dje67)
- * @version Alpha (1.0) 3.20.15
+ * @version Final (3.0) 5.5.15
  */
 public class Communication implements Runnable{	
   private Socket socket = null;
@@ -39,11 +38,7 @@ public class Communication implements Runnable{
   private String username;
   private Set<String> userHash = null;
 
-  /**
-   * Class Constructor
-   * 
-   * @throws SocketException
-   */
+
   public Communication(Socket socket, Set<String> users) throws SocketException {
     this.socket = socket;
     this.userHash = users;
@@ -53,7 +48,6 @@ public class Communication implements Runnable{
       this.rx = new ObjectInputStream(this.socket.getInputStream());
     }
     catch(IOException io){
-      io.printStackTrace();
       throw new SocketException("Error creating a new communication handler");
     }
   }
@@ -64,7 +58,6 @@ public class Communication implements Runnable{
       this.tx.flush();
     } catch (Exception e) {
       System.err.println(e.getClass());
-      e.printStackTrace();
       throw new SocketException("Error in Communication.send!");
     }
   }
@@ -75,12 +68,12 @@ public class Communication implements Runnable{
         Request got = (Request) this.rx.readObject();
         return got;
       } catch (EOFException e) {
-        // FIXME: Determine if this is a hack fix or properly ignoring
-        // this exception.
+    	  // This is intentionally ignored, as we ensure one object is sent at a time
+    	  // therefore an EOF corresponds to the end of this communication rather than
+    	  // an error.
         continue;
       } catch (Exception e) {
         System.err.println(e.getClass());
-        // TODO?e.printStackTrace();
         throw new SocketException("Error in Communication.receive!");
       }
     }
@@ -107,22 +100,17 @@ public class Communication implements Runnable{
   public void run() {
     try{
 
-      System.out.println("Accepting a new client...");
-      // we have got a connection now, because we have called this function...
-      System.out.println("Handling connection...");
+      System.out.println("Handling new connection from "+this.socket.getInetAddress().toString());
 
       Request req;
       boolean loginsuccess = false;
       String username = null;
-      //String toLog = "";
 
       while (!loginsuccess) {
         req = receive();
 
         switch (req.getEvent()) {
           case LOGIN:
-            // this is the only one we want to handle at this time...
-            // TODO check logging throughout
             LoginReq login = (LoginReq) req;
             LoginReq loginResponse;
 
@@ -139,7 +127,6 @@ public class Communication implements Runnable{
                     loginResponse = new LoginReq(true, ErrorMessage.NONE);
                     username = login.getUsername();
                     this.username = username;
-                    //toLog = username + " enrolled";
                     loginsuccess = true;
                     // user won't be in the hash already if it didn't exist
                     this.userHash.add(username);
@@ -150,7 +137,6 @@ public class Communication implements Runnable{
                 } else {
                   loginResponse =
                     new LoginReq(false, ErrorMessage.DUPLICATE_USERNAME);
-                  // TODO anything to log here?
                 }
               }
 
@@ -164,7 +150,6 @@ public class Communication implements Runnable{
                       loginResponse = new LoginReq(true, ErrorMessage.NONE);
                       username = login.getUsername();
                       this.username = username;
-                      //toLog = username + " logged in";
                       loginsuccess = true;
                       this.userHash.add(username);
                     } else {
@@ -190,7 +175,6 @@ public class Communication implements Runnable{
             send(loginResponse);
             break;
 
-            // TODO is there anything to log in these bad cases?
           case LOG:
             LogReq loginLogResponse = new LogReq(ErrorMessage.BAD_REQUEST);
             send(loginLogResponse);
@@ -239,7 +223,6 @@ public class Communication implements Runnable{
             LoginReq sessionloginresp;
             if (((LoginReq) req).getUpdating()) {									
               boolean sucess = DB.storeUserPWD(((LoginReq) req).getUsername(), ((LoginReq) req).getPassword());
-              System.out.println(sucess);
               sessionloginresp = new LoginReq(sucess, ErrorMessage.NONE);
             }else{
               sessionloginresp =
@@ -253,7 +236,7 @@ public class Communication implements Runnable{
 
             if (log == null) {
               logResponse = new LogReq(ErrorMessage.DATABASE_FAILURE);
-              System.out.println("log is null");
+              System.err.println("log is null");
             } else {
               logResponse = new LogReq(log);
             }
@@ -273,9 +256,6 @@ public class Communication implements Runnable{
               if (cyphertext == null || iv == null) {
                 UDResponse =
                   new UserDataReq(false, ErrorMessage.DATABASE_FAILURE);
-                //System.out.println("cypher/iv are null");
-                //System.out.println("Ciphertext: " + cyphertext);
-                //System.out.println("IV: " + iv);
               } else {
                 UDResponse =
                   new UserDataReq(true, ErrorMessage.NONE, cyphertext, iv);
