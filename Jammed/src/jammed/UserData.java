@@ -15,6 +15,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidParameterSpecException;
 import java.util.ArrayList;
+import java.util.Arrays.*;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -127,7 +128,7 @@ public class UserData {
 				
 		byte[] tag = loadIV(dir+this.uname+DATATAG);
 	    byte[] newtag = tagdata(data);
-	    if (!tag.equals(newtag)){
+	    if (!(java.util.Arrays.equals(tag, newtag))){
 	    	System.out.println("Integrety has been comprimised, Data is not reliable.");
 	    	//TODO throw error??
 	    }
